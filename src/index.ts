@@ -1,23 +1,14 @@
-import { Server } from '@modelcontextprotocol/sdk/server/index.js';
-import { StdioServerTransport } from '@modelcontextprotocol/sdk/server/stdio.js';
+import { FastMCP } from 'fastmcp';
 
-const server = new Server(
-	{
-		name: 'devflow-mcp',
-		version: '0.1.0',
-	},
-	{
-		capabilities: {
-			tools: {},
-			resources: {},
-			prompts: {},
-		},
-	},
-);
+const server = new FastMCP({
+	name: 'devflow-mcp',
+	version: '0.1.0',
+});
 
 async function main(): Promise<void> {
-	const transport = new StdioServerTransport();
-	await server.connect(transport);
+	await server.start({
+		transportType: 'stdio',
+	});
 	console.error('DevFlow MCP Server running on stdio');
 }
 

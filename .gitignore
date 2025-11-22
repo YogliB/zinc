@@ -1,8 +1,23 @@
 node_modules/
 dist/
 coverage/
+
+# Build artifacts
+*.d.ts
+*.js.map
+*.d.ts.map
+
+# Logs
 *.log
+
+# Environment
 .DS_Store
 .env
 .env.local
+
+# DevFlow
 .devflow/
+
+# Vitest side-effect files
+.vitest/
+vitest.workspace.ts.timestamp-*
