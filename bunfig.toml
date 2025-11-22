@@ -1,0 +1,14 @@
+# Bun configuration
+# Install exact versions, never use ranges
+
+[install]
+# Always use exact versions from package.json
+exact = true
+# Don't save lockfile changes unless explicitly requested
+frozen = false
+# Trust the package.json versions
+trust = true
+
+[packages]
+# Ensure all packages use exact versions
+# Override any packages that might have pre-release or range specs
