@@ -4,530 +4,332 @@
 
 ---
 
-## Quick Navigation
+## Quick Start
 
-### 📚 Getting Started
+**New to DevFlow?** Start here:
 
-- **[Quick Start](./QUICKSTART.md)** - 5-minute hello world guide
-- **[Overview](./OVERVIEW.md)** - Architecture philosophy, vision, and core concepts
-- **[Integration Guide](./INTEGRATION.md)** - Cross-layer workflows and unified context
-
-### 🔧 Layer Documentation
-
-1. **[Rules Engine](./RULES.md)** - Project coding standards and conventions
-2. **[Memory System](./MEMORY.md)** - Session continuity and decision tracking
-3. **[Documentation Layer](./DOCS.md)** - AI-optimized documentation management
-4. **[Planning Layer](./PLANNING.md)** - Task planning with automatic validation
-
-### 📖 Reference Documentation
-
-- **[MCP Primitives](./MCP-PRIMITIVES.md)** - Complete tools, resources, prompts reference
-- **[Agent Compatibility](./AGENT-COMPATIBILITY.md)** - Platform-specific integration guides
-- **[Implementation Details](./IMPLEMENTATION.md)** - Technical architecture and implementation details
-- **[Examples](./EXAMPLES.md)** - Real-world usage patterns and workflows
+1. **[5-Minute Quick Start](./QUICKSTART.md)** - Get running immediately
+2. **[Overview](./OVERVIEW.md)** - Understand the architecture
+3. **[Integration Guide](./INTEGRATION.md)** - Connect to your AI agent
 
 ---
 
-## What is DevFlow?
+## Documentation by User Type
 
-DevFlow is a comprehensive MCP (Model Context Protocol) server that solves the fundamental problem of **AI agents forgetting context between sessions**. It provides four independent but complementary layers:
+### 🆕 First-Time Users
 
-### 🎯 The Four Layers
+1. [Quick Start](./QUICKSTART.md) - Get running in 5 minutes
+2. [Overview](./OVERVIEW.md) - Understand the vision and architecture
+3. [Integration Guide](./INTEGRATION.md) - See how layers work together
 
-#### 1. **Rules** - Project Standards Engine
+### 👨‍💻 Developers
 
-Define and enforce project-specific coding standards, conventions, and constraints across any AI agent.
+1. [Implementation Details](./IMPLEMENTATION.md) - Technical architecture
+2. [MCP Primitives](./MCP-PRIMITIVES.md) - Complete API reference
+3. [Examples](./EXAMPLES.md) - Code samples and patterns
 
-**Key Features:**
+### 🏢 Teams
+
+1. [Rules Engine](./RULES.md) - Enforce team standards
+2. [Memory System](./MEMORY.md) - Track decisions and context
+3. [Integration Guide](./INTEGRATION.md#common-workflows) - Team workflows
+
+### 🤝 Contributors
+
+1. [Overview](./OVERVIEW.md#implementation-roadmap) - Development roadmap
+2. [Implementation Details](./IMPLEMENTATION.md) - Architecture details
+3. [Agent Compatibility](./AGENT-COMPATIBILITY.md) - Platform integrations
+
+---
+
+## The Four Layers
+
+### 1. [Rules Engine](./RULES.md)
+
+**Project-specific coding standards, conventions, and constraints enforced across any AI agent.**
 
 - Three activation modes: `always`, `manual`, `context` (file-pattern based)
 - Cross-agent compatibility (Cursor, Zed, VSCode, Claude Desktop)
 - Priority-based conflict resolution
 - Automatic format conversion (`.cursorrules`, `AGENTS.md`)
 
-**Example:**
+### 2. [Memory System](./MEMORY.md)
 
-```markdown
----
-id: typescript-standards
-type: always
-priority: 8
----
-
-# TypeScript Standards
-
-- Use explicit types for all function signatures
-- Never use `any` - prefer `unknown`
-- Enable `strict` mode in tsconfig.json
-```
-
-#### 2. **Memory** - Session Continuity (Cline-Inspired)
-
-Maintain conversation context, architectural decisions, and progress across sessions.
-
-**Key Features:**
+**Session continuity, architectural decisions, and progress tracking that persists across conversations.**
 
 - Four-file architecture: `activeContext`, `progress`, `decisionLog`, `projectContext`
 - Git-friendly markdown storage
 - Automatic staleness detection
 - Optional SQLite indexing for semantic search
 
-**Example:**
+### 3. [Documentation Layer](./DOCS.md)
 
-```markdown
-# Active Context
-
-**Current Focus:** Implementing OAuth authentication
-**Blocker:** Waiting on Redis setup (High severity)
-
-## Recent Decisions
-
-- #47: Session-based auth over JWT (2024-03-18)
-```
-
-#### 3. **Documentation** - AI-Optimized Knowledge Base
-
-Structured, validated, LLM-friendly project documentation.
-
-**Key Features:**
+**AI-optimized project documentation with enforced structure, consistency validation, and cross-model compatibility.**
 
 - Three templates: API, Architecture, Guide
 - Automated consistency validation
 - LLM-specific optimization (Claude, GPT-4, Gemini)
 - Cross-reference linking
 
-**Example:**
+### 4. [Planning Layer](./PLANNING.md)
 
-```markdown
----
-type: api
-stability: stable
-related:
-    architecture: [architecture/authentication.md]
-    decisions: [decision-47]
----
-
-# Authentication API
-
-**Purpose:** Authenticate users and create sessions.
-```
-
-#### 4. **Planning** - Validated Task Management
-
-Feature planning with automatic execution validation and dependency tracking.
-
-**Key Features:**
+**Feature planning with task decomposition, dependency management, and automatic execution validation.**
 
 - Task complexity scoring (1-10)
-- Dependency management
+- Dependency management and milestone grouping
 - **Automatic validation** via file monitoring, tests, git commits
 - Confidence scoring for completion (0-1)
 
-**Example:**
+---
 
-```json
-{
-	"task": "Implement SessionManager class",
-	"complexity": 7,
-	"validation": {
-		"confidence": 0.85,
-		"evidence": {
-			"filesChanged": ["src/auth/session.ts"],
-			"testsPassed": true,
-			"lintPassed": true
-		}
-	}
-}
-```
+## Topic-Based Navigation
+
+### Getting Started
+
+- Installation → [Quick Start](./QUICKSTART.md#step-1-install-devflow)
+- Project Setup → [Quick Start](./QUICKSTART.md#step-2-initialize-in-your-project)
+- First Rule → [Quick Start](./QUICKSTART.md#step-3-create-your-first-rule)
+- Agent Connection → [Quick Start](./QUICKSTART.md#step-5-connect-to-your-ai-agent)
+
+### Rules Management
+
+- Creating Rules → [Rules Engine](./RULES.md#mcp-primitives)
+- Rule Types → [Rules Engine](./RULES.md#file-format-mdc-markdown-component)
+- Priority System → [Rules Engine](./RULES.md#conflict-resolution)
+- Examples → [Rules Engine](./RULES.md#examples)
+
+### Memory & Context
+
+- Decision Logging → [Memory System](./MEMORY.md#decisionlogmd)
+- Active Context → [Memory System](./MEMORY.md#activecontextmd)
+- Progress Tracking → [Memory System](./MEMORY.md#progressmd)
+- Project Context → [Memory System](./MEMORY.md#projectcontextmd)
+
+### Documentation
+
+- Templates → [Documentation Layer](./DOCS.md#template-specifications)
+- API Docs → [Documentation Layer](./DOCS.md#api-template)
+- Architecture Docs → [Documentation Layer](./DOCS.md#architecture-template)
+- Validation → [Documentation Layer](./DOCS.md#validation-rules)
+
+### Planning
+
+- Creating Plans → [Planning Layer](./PLANNING.md#plan-schema)
+- Task Management → [Planning Layer](./PLANNING.md#task-structure)
+- Auto-Validation → [Planning Layer](./PLANNING.md#automatic-validation)
+- Milestones → [Planning Layer](./PLANNING.md#milestone-grouping)
+
+### Integration
+
+- Unified Context → [Integration Guide](./INTEGRATION.md#unified-context-loading)
+- Cross-Layer Linking → [Integration Guide](./INTEGRATION.md#bidirectional-linking)
+- Workflows → [Integration Guide](./INTEGRATION.md#common-workflows)
+- Consistency Checks → [Integration Guide](./INTEGRATION.md#consistency-validation)
+
+### Agent Platforms
+
+- Claude Desktop → [Agent Compatibility](./AGENT-COMPATIBILITY.md#claude-desktop)
+- Cursor → [Agent Compatibility](./AGENT-COMPATIBILITY.md#cursor)
+- Zed → [Agent Compatibility](./AGENT-COMPATIBILITY.md#zed)
+- VSCode → [Agent Compatibility](./AGENT-COMPATIBILITY.md#vscode)
 
 ---
 
-## Why DevFlow?
+## Common Use Cases
 
-### The Problem
+### "I want to enforce TypeScript standards"
 
-Current AI coding tools suffer from **context fragmentation**:
+1. Read [Rules Engine](./RULES.md#overview)
+2. Create rules with [Rules: Create Tool](./RULES.md#rulescreate)
+3. See [Rule Examples](./RULES.md#examples)
 
-- ❌ Rules scattered across multiple formats (`.cursorrules`, wikis, READMEs)
-- ❌ Memory resets between sessions (agents forget previous work)
-- ❌ Documentation optimized for humans, not LLMs
-- ❌ Planning tools require manual status updates
+### "I want to track architectural decisions"
 
-### The Solution
+1. Read [Memory System](./MEMORY.md#decisionlogmd)
+2. Use [Decision Logging Tool](./MEMORY.md#memorydecisionlog)
+3. See [Decision Template](./MEMORY.md#decision_template)
 
-DevFlow **unifies all context** in a single, git-friendly, agent-agnostic system:
+### "I want to plan a new feature"
 
-- ✅ **One source of truth** for project standards
-- ✅ **Persistent memory** that survives session resets
-- ✅ **AI-optimized docs** with enforced structure
-- ✅ **Automatic validation** of task completion
+1. Read [Planning Layer](./PLANNING.md#overview)
+2. Use [Plan Create Tool](./PLANNING.md#plancreate)
+3. See [Common Workflows](./INTEGRATION.md#workflow-1-starting-a-new-feature)
 
-### Unique Differentiators
+### "I want to create AI-optimized documentation"
 
-| Feature         | Existing Tools    | **DevFlow**                                   |
-| --------------- | ----------------- | --------------------------------------------- |
-| Memory System   | Manual updates    | ✅ **Cline-inspired 4-file structure**        |
-| Task Validation | Manual status     | ✅ **Automatic via file/test/git monitoring** |
-| Documentation   | Human-centric     | ✅ **AI-optimized with templates**            |
-| Rules Engine    | Platform-specific | ✅ **Cross-agent compatible**                 |
-| Integration     | Siloed layers     | ✅ **Bidirectional cross-layer linking**      |
-| Consistency     | No validation     | ✅ **Multi-layer consistency checks**         |
+1. Read [Documentation Layer](./DOCS.md#overview)
+2. Choose a [Template](./DOCS.md#template-specifications)
+3. Use [Doc Create Tool](./DOCS.md#doccreate)
 
-**DevFlow is the first MCP server to unify memory, rules, documentation, and planning with automatic validation and cross-layer consistency.**
+### "I want to onboard a new team member"
+
+1. Follow [Onboarding Workflow](./INTEGRATION.md#workflow-5-onboarding-new-team-member)
+2. Share [Project Context](./MEMORY.md#projectcontextmd)
+3. Review [Active Rules](./RULES.md#devflowcontextrules)
+
+### "I need to debug an issue"
+
+1. Follow [Debugging Workflow](./INTEGRATION.md#workflow-4-debugging-issue-resolution)
+2. Add [Blocker](./MEMORY.md#memoryblockeradd)
+3. Log [Resolution](./MEMORY.md#memoryblockerresolve)
+
+### "I need to review code quality"
+
+1. Follow [Code Review Workflow](./INTEGRATION.md#workflow-3-code-review-quality-check)
+2. Use [Rules Validate](./RULES.md#rulesvalidate)
+3. Check [Consistency](./INTEGRATION.md#consistency-validation)
 
 ---
 
-## Getting Started
+## Reference
 
-### Installation (When Implemented)
+### Core Documentation
+
+| Document                           | Purpose                                                  |
+| ---------------------------------- | -------------------------------------------------------- |
+| [OVERVIEW.md](./OVERVIEW.md)       | Vision, architecture philosophy, differentiation         |
+| [RULES.md](./RULES.md)             | Layer 1: Rules engine specification                      |
+| [MEMORY.md](./MEMORY.md)           | Layer 2: Memory system architecture                      |
+| [DOCS.md](./DOCS.md)               | Layer 3: Documentation management                        |
+| [PLANNING.md](./PLANNING.md)       | Layer 4: Planning and validation                         |
+| [INTEGRATION.md](./INTEGRATION.md) | Cross-layer workflows and unified context                |
+| [SECURITY.md](./SECURITY.md)       | Security policy, best practices, vulnerability reporting |
+
+### API & Technical Reference
+
+| Document                                           | Purpose                                   |
+| -------------------------------------------------- | ----------------------------------------- |
+| [MCP-PRIMITIVES.md](./MCP-PRIMITIVES.md)           | Complete tools, resources, prompts API    |
+| [AGENT-COMPATIBILITY.md](./AGENT-COMPATIBILITY.md) | Platform-specific integration guides      |
+| [IMPLEMENTATION.md](./IMPLEMENTATION.md)           | Technical architecture and implementation |
+| [EXAMPLES.md](./EXAMPLES.md)                       | Real-world usage patterns and workflows   |
+
+### Additional Resources
+
+| Document                     | Purpose                                 |
+| ---------------------------- | --------------------------------------- |
+| [SETUP.md](./SETUP.md)       | Project setup and dependency management |
+| [SECURITY.md](./SECURITY.md) | Security policy and best practices      |
+
+---
+
+## Troubleshooting
+
+### Installation Issues
+
+- [DevFlow command not found](./QUICKSTART.md#devflow-command-not-found)
+- [Permission denied](./QUICKSTART.md#permission-denied)
+
+### Rules Issues
+
+- [Rules not loading](./RULES.md#rules-not-loading)
+- [Rule conflicts](./RULES.md#conflicts-between-rules)
+- [Agent not respecting rules](./RULES.md#agent-not-respecting-rules)
+
+### Memory Issues
+
+- [Memory not loading](./MEMORY.md#memory-not-loading)
+- [Slow search](./MEMORY.md#slow-search-phase-1)
+- [SQLite sync issues](./MEMORY.md#sqlite-index-out-of-sync-phase-2)
+
+### Integration Issues
+
+- [Broken cross-references](./INTEGRATION.md#issue-broken-cross-references)
+- [Stale context](./INTEGRATION.md#issue-stale-context)
+- [Conflicting information](./INTEGRATION.md#issue-conflicting-information)
+
+---
+
+## Quick Command Reference
 
 ```bash
+# Installation
 npm install -g devflow-mcp
-```
 
-### Initialize DevFlow in Your Project
-
-```bash
-cd your-project
+# Setup
 devflow init
-```
 
-This creates:
+# Rules
+devflow rules:create --name "Rule Name" --type always
+devflow rules:list
+devflow rules:validate src/file.ts
 
-```
-.devflow/
-├── rules/
-│   ├── global/
-│   ├── contextual/
-│   └── manual/
-├── memory/
-│   ├── activeContext.md
-│   ├── progress.md
-│   ├── decisionLog.md
-│   └── projectContext.md
-└── plans/
-    ├── active/
-    ├── completed/
-    └── templates/
-```
+# Memory
+devflow memory:decision:log --title "Decision Title"
+devflow memory:context:set --focus "Current Task"
+devflow memory:recall --query "authentication"
 
-### Add to Claude Desktop
+# Documentation
+devflow doc:create --type api --title "API Name"
+devflow doc:validate docs/api/auth.md
 
-Edit `~/Library/Application Support/Claude/claude_desktop_config.json`:
+# Planning
+devflow plan:create --name "Feature Name" --size medium
+devflow plan:task:update --task-id task-123 --status completed
 
-```json
-{
-	"mcpServers": {
-		"devflow": {
-			"command": "devflow",
-			"args": ["serve"]
-		}
-	}
-}
-```
-
-### Add to Cursor
-
-```bash
-devflow generate cursorrules
-# Creates/updates .cursorrules from DevFlow rules
-```
-
-### Add to Zed
-
-Edit `~/.config/zed/settings.json`:
-
-```json
-{
-	"context_servers": {
-		"devflow": {
-			"command": "devflow serve --stdio"
-		}
-	}
-}
+# Integration
+devflow sync:validate
+devflow status
 ```
 
 ---
 
-## Quick Start Workflows
+## Contributing to Documentation
 
-### Workflow 1: Define Project Rules
+Found an issue or want to improve the docs?
 
-```typescript
-// In your AI conversation
-await callTool('rules:create', {
-	name: 'TypeScript Standards',
-	type: 'always',
-	priority: 8,
-	content: `# TypeScript Standards
-  
-- Use explicit types for all functions
-- Never use \`any\` - prefer \`unknown\`
-- Enable \`strict\` mode`,
-	tags: ['typescript', 'code-quality'],
-});
+1. **Typos/Errors** - Open an issue or submit a PR
+2. **Missing Examples** - Add to [EXAMPLES.md](./EXAMPLES.md)
+3. **New Use Cases** - Update this README with relevant links
+4. **Unclear Sections** - Flag for rewriting
+
+**Documentation Standards:**
+
+- Use clear, concise language
+- Include examples for all features
+- Keep files under 500 lines
+- Link related resources
+- Use active voice and short sentences
+
+---
+
+## Architecture Overview
+
+DevFlow provides a unified context system across four independent layers:
+
 ```
-
-### Workflow 2: Log an Architectural Decision
-
-```typescript
-await callTool('memory:decision:log', {
-	title: 'Session-based Authentication over JWT',
-	context: 'Need authentication with instant revocation',
-	decision: 'Use sessions with Redis',
-	rationale: 'Security requirement for instant token revocation',
-	alternatives: [
-		{
-			name: 'JWT',
-			pros: ['Stateless', 'Easier scaling'],
-			cons: ['Cannot instantly revoke'],
-			whyRejected: 'Instant revocation is non-negotiable',
-		},
-	],
-	impact: 'high',
-	tags: ['authentication', 'security'],
-});
-```
-
-### Workflow 3: Plan a Feature
-
-```typescript
-await callTool('plan:create', {
-	name: 'OAuth Authentication',
-	description: 'Implement OAuth with Google and GitHub',
-	size: 'medium',
-	milestones: [
-		{
-			name: 'Research & Design',
-			tasks: ['Research OAuth providers', 'Design session architecture'],
-		},
-		{
-			name: 'Implementation',
-			tasks: [
-				'Implement SessionManager',
-				'Integrate Passport.js',
-				'Add OAuth callbacks',
-			],
-		},
-		{
-			name: 'Testing',
-			tasks: ['Write integration tests', 'Deploy to staging'],
-		},
-	],
-});
-```
-
-### Workflow 4: Complete a Task (with Auto-Validation)
-
-```typescript
-// Work on the task, then mark complete
-await callTool('plan:task:update', {
-	planId: 'feature-123',
-	taskId: 'task-458',
-	status: 'completed',
-});
-
-// DevFlow automatically:
-// - Detects file changes since task started
-// - Runs tests and checks results
-// - Validates against project rules
-// - Updates memory progress
-// - Returns confidence score (0-1)
+┌─────────────────────────────────────────────────────────────┐
+│                    Unified Context                          │
+│  (Auto-loaded when agent connects to DevFlow MCP server)   │
+└─────────────────────────────────────────────────────────────┘
+         ↓              ↓              ↓              ↓
+    ┌────────┐   ┌──────────┐   ┌──────────────┐   ┌─────────┐
+    │ Rules  │   │ Memory   │   │Documentation │   │Planning │
+    │ Engine │ ↔ │ System   │ ↔ │   Layer      │ ↔ │ Layer   │
+    └────────┘   └──────────┘   └──────────────┘   └─────────┘
+       ↓              ↓              ↓              ↓
+    Project      Decision       Knowledge      Task
+   Standards     Tracking         Base      Validation
 ```
 
 ---
 
-## Documentation Structure
+## Project Status
 
-### For New Users
+**Current Phase:** Phase 1 - Foundation
 
-**Start Here:**
+- ✅ Project structure and tooling
+- ✅ Documentation architecture
+- ⏳ Core layer implementations
+- ⏳ MCP server implementation
 
-1. [Quick Start](./QUICKSTART.md) - Get running in 5 minutes
-2. [Overview](./OVERVIEW.md) - Understand the vision and architecture
-3. [Integration Guide](./INTEGRATION.md) - See how layers work together
-
-### For Deep Dives
-
-**Layer-Specific Details:**
-
-- [Rules Engine](./RULES.md) - Rules system internals
-- [Memory System](./MEMORY.md) - Memory system internals
-- [Documentation Layer](./DOCS.md) - Documentation templates and validation
-- [Planning Layer](./PLANNING.md) - Automatic validation engine
-
-### For Implementation
-
-**Technical References:**
-
-- [MCP Primitives](./MCP-PRIMITIVES.md) - Complete API reference
-- [Agent Compatibility](./AGENT-COMPATIBILITY.md) - Platform integration guides
-- [Implementation Details](./IMPLEMENTATION.md) - Architecture and tech stack
-
-### For Examples
-
-**Real-World Usage:**
-
-- [Examples](./EXAMPLES.md) - Common workflows and patterns
-
----
-
-## Core Concepts
-
-### MCP Primitives
-
-DevFlow exposes functionality through three MCP primitives:
-
-#### **Resources** (Auto-Loaded Context)
-
-```typescript
-devflow://context/unified     // All layers summary
-devflow://context/rules       // Active rules
-devflow://context/memory      // Current focus and decisions
-devflow://plans/active        // Active plans
-devflow://docs/*              // Documentation files
-```
-
-#### **Tools** (Actionable Operations)
-
-```typescript
-rules:create, rules:validate
-memory:decision:log, memory:context:set
-doc:create, doc:validate
-plan:create, plan:task:update, plan:task:validate
-```
-
-#### **Prompts** (Workflow Templates)
-
-```typescript
-init_session; // Session initialization
-plan_feature; // Guided feature planning
-decision_template; // Decision logging guide
-create_documentation; // Doc creation wizard
-```
-
-### Cross-Layer Integration
-
-Every layer can reference others:
-
-```typescript
-// Rule references Decision
-{
-  ruleId: "auth-token-handling",
-  linkedDecisions: ["decision-47"]
-}
-
-// Decision references Rule and Documentation
-{
-  decisionId: "decision-47",
-  relatedRules: ["auth-token-handling"],
-  relatedDocs: ["docs/architecture/authentication.md"]
-}
-
-// Plan references all three
-{
-  planId: "feature-123",
-  relatedRules: ["auth-token-handling"],
-  relatedDecisions: ["decision-47"],
-  relatedDocs: ["docs/architecture/authentication.md"]
-}
-```
-
-**Consistency Validation:**
-
-```typescript
-await callTool('sync:validate');
-// Checks all cross-references, detects orphaned links,
-// suggests fixes for stale documentation
-```
-
----
-
-## Implementation Roadmap
-
-### Phase 1: Foundation (Weeks 1-2)
-
-- ✅ File storage infrastructure
-- ✅ Core MCP primitives (tools, resources)
-- ✅ Basic CRUD for all layers
-- ✅ Auto-loading resources
-
-### Phase 2: Integration (Weeks 3-4)
-
-- ⏳ Cross-layer linking system
-- ⏳ Unified context resource
-- ⏳ Consistency validation
-- ⏳ Agent format detection
-
-### Phase 3: Intelligence (Weeks 5-6)
-
-- ⏳ Automatic task validation
-- ⏳ SQLite semantic search
-- ⏳ LLM-specific doc optimization
-- ⏳ Rule conflict detection
-
-### Phase 4: Polish (Weeks 7-8)
-
-- ⏳ Management UI (Tauri + Svelte)
-- ⏳ Visual editors and dashboards
-- ⏳ Analytics and metrics
-- ⏳ Performance optimization
-
----
-
-## Technology Stack
-
-**Core Server:**
-
-- TypeScript 5.3+ (type safety, developer experience)
-- MCP SDK (@modelcontextprotocol/sdk)
-- Node.js 20+
-
-**Storage:**
-
-- Markdown files (primary, git-friendly)
-- `.mdc` format for rules (Markdown Component)
-- JSON for plans
-- SQLite (optional, Phase 2 for semantic search)
-
-**Transports:**
-
-- Stdio (local tools: Zed, VSCode, Cursor)
-- HTTP + SSE (remote/cloud deployments)
-
-**Future UI:**
-
-- Tauri (native performance)
-- Svelte (reactive, lightweight)
-- Monaco Editor (code/rule editing)
-
----
-
-## Contributing
-
-DevFlow is designed to be **modular and extensible**.
-
-**Focus Areas:**
-
-- Additional agent integrations
-- Performance optimizations
-- Template libraries (rules, docs, plans)
-- UI improvements
-- Documentation examples
-
-**Repository:** `https://github.com/yogevbd/dev-toolkit-mcp` (when published)
-
----
-
-## License
-
-MIT - Build whatever you want on top of DevFlow.
+[Full implementation roadmap →](./OVERVIEW.md#implementation-roadmap)
 
 ---
 
 ## Resources
 
-**MCP Documentation:**
+**External Links:**
 
 - [Model Context Protocol](https://modelcontextprotocol.io)
 - [MCP SDK](https://github.com/modelcontextprotocol/typescript-sdk)
@@ -535,20 +337,8 @@ MIT - Build whatever you want on top of DevFlow.
 **Inspiration:**
 
 - [Cline Memory Bank](https://docs.cline.bot/prompting/cline-memory-bank)
-- [Software Planning MCP](https://github.com/NightTrek/Software-planning-mcp)
-- [Cursor Rules](https://cursor.com/docs/context/rules)
 - [AGENTS.md Standard](https://www.infoq.com/news/2025/08/agents-md/)
 
 ---
 
-## Questions?
-
-**Documentation Issues:** If you find gaps or errors in these docs, please open an issue.
-
-**Feature Requests:** Suggestions for new capabilities are welcome.
-
-**Integration Help:** Need help integrating with a specific agent? Check [Agent Compatibility](./AGENT-COMPATIBILITY.md).
-
----
-
-**Ready to dive in?** Start with the [Quick Start Guide](./QUICKSTART.md) or read the [Overview](./OVERVIEW.md) for the full vision and architecture.
+**Ready to dive in?** Start with the [Quick Start Guide](./QUICKSTART.md) or explore the [Overview](./OVERVIEW.md).
