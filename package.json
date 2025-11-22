@@ -22,7 +22,7 @@
 		"lint:fix": "eslint --fix .",
 		"format": "prettier --write .",
 		"type-check": "bun run tsc --noEmit",
-		"prepare": "husky install"
+		"prepare": "husky"
 	},
 	"keywords": [
 		"mcp",

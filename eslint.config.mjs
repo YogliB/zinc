@@ -7,7 +7,7 @@ import prettier from 'eslint-plugin-prettier/recommended';
 
 export default [
 	eslint.configs.recommended,
-	tseslint.configs.recommended,
+	...tseslint.configs.recommended,
 	sonarjs.configs.recommended,
 	prettier,
 ];
