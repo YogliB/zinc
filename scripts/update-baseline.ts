@@ -1,4 +1,4 @@
-import { readFileSync, writeFileSync, existsSync } from 'fs';
+import { readFileSync, writeFileSync, existsSync } from 'node:fs';
 
 interface TestFileMetrics {
 	name: string;
@@ -27,13 +27,13 @@ interface PerformanceBaseline {
 const RESULTS_FILE = '.vitest/results.json';
 const BASELINE_FILE = '.vitest-performance.json';
 
-function parseVitestResults(): PerformanceMetrics | null {
+function parseVitestResults(): PerformanceMetrics | undefined {
 	if (!existsSync(RESULTS_FILE)) {
-		return null;
+		return undefined;
 	}
 
 	try {
-		const content = readFileSync(RESULTS_FILE, 'utf-8');
+		const content = readFileSync(RESULTS_FILE, 'utf8');
 		const results = JSON.parse(content);
 
 		const files = new Map<string, TestFileMetrics>();
@@ -69,14 +69,14 @@ function parseVitestResults(): PerformanceMetrics | null {
 		};
 	} catch (error) {
 		console.error('Failed to parse Vitest results:', error);
-		return null;
+		return undefined;
 	}
 }
 
 function loadBaseline(): PerformanceBaseline {
 	if (existsSync(BASELINE_FILE)) {
 		try {
-			return JSON.parse(readFileSync(BASELINE_FILE, 'utf-8'));
+			return JSON.parse(readFileSync(BASELINE_FILE, 'utf8'));
 		} catch (error) {
 			console.error('Failed to parse baseline file:', error);
 		}
@@ -100,7 +100,7 @@ function loadBaseline(): PerformanceBaseline {
 }
 
 function saveBaseline(baseline: PerformanceBaseline): void {
-	writeFileSync(BASELINE_FILE, JSON.stringify(baseline, null, '\t'));
+	writeFileSync(BASELINE_FILE, JSON.stringify(baseline, undefined, '\t'));
 	console.log(`✅ Baseline updated: ${BASELINE_FILE}`);
 }
 
@@ -114,29 +114,29 @@ function main() {
 		console.error(
 			'This will overwrite the performance baseline. Use with caution.',
 		);
-		process.exit(1);
+		throw new Error('Missing --update-baseline flag');
 	}
 
 	const current = parseVitestResults();
 
 	if (!current) {
 		console.error('No Vitest results found. Run tests first with CI=1.');
-		process.exit(1);
+		throw new Error('Missing Vitest results');
 	}
 
-	const current_baseline = loadBaseline();
-	const oldBaseline = { ...current_baseline.baseline };
+	const currentBaseline = loadBaseline();
+	const oldBaseline = { ...currentBaseline.baseline };
 
-	current_baseline.baseline = current;
-	if (!current_baseline.history) {
-		current_baseline.history = [];
+	currentBaseline.baseline = current;
+	if (!currentBaseline.history) {
+		currentBaseline.history = [];
 	}
-	current_baseline.history.push(oldBaseline);
-	if (current_baseline.history.length > 10) {
-		current_baseline.history = current_baseline.history.slice(-10);
+	currentBaseline.history.push(oldBaseline);
+	if (currentBaseline.history.length > 10) {
+		currentBaseline.history = currentBaseline.history.slice(-10);
 	}
 
-	saveBaseline(current_baseline);
+	saveBaseline(currentBaseline);
 
 	console.log('\nBaseline Update Summary:');
 	console.log(
@@ -145,7 +145,7 @@ function main() {
 	console.log(`Test Count: ${oldBaseline.testCount} → ${current.testCount}`);
 	console.log(`Files: ${oldBaseline.fileCount} → ${current.fileCount}`);
 	console.log(
-		`\nPrevious baselines kept in history: ${current_baseline.history?.length || 0}/10`,
+		`\nPrevious baselines kept in history: ${currentBaseline.history?.length || 0}/10`,
 	);
 }
 

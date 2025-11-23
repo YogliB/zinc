@@ -1,4 +1,4 @@
-import { readFileSync, existsSync } from 'fs';
+import { readFileSync, existsSync } from 'node:fs';
 
 interface TestFileMetrics {
 	name: string;
@@ -27,13 +27,13 @@ interface PerformanceBaseline {
 const RESULTS_FILE = '.vitest/results.json';
 const BASELINE_FILE = '.vitest-performance.json';
 
-function parseVitestResults(): PerformanceMetrics | null {
+function parseVitestResults(): PerformanceMetrics | undefined {
 	if (!existsSync(RESULTS_FILE)) {
-		return null;
+		return undefined;
 	}
 
 	try {
-		const content = readFileSync(RESULTS_FILE, 'utf-8');
+		const content = readFileSync(RESULTS_FILE, 'utf8');
 		const results = JSON.parse(content);
 
 		const files = new Map<string, TestFileMetrics>();
@@ -69,14 +69,14 @@ function parseVitestResults(): PerformanceMetrics | null {
 		};
 	} catch (error) {
 		console.error('Failed to parse Vitest results:', error);
-		return null;
+		return undefined;
 	}
 }
 
 function loadBaseline(): PerformanceBaseline {
 	if (existsSync(BASELINE_FILE)) {
 		try {
-			return JSON.parse(readFileSync(BASELINE_FILE, 'utf-8'));
+			return JSON.parse(readFileSync(BASELINE_FILE, 'utf8'));
 		} catch (error) {
 			console.error('Failed to parse baseline file:', error);
 		}
@@ -132,7 +132,7 @@ function generateReport(
 	if (isRegression) {
 		report += `⚠️ **Performance Regression**: ${regressionPercent}% slower than baseline (threshold: ${(thresholds.maxRegression * 100).toFixed(1)}%)\n\n`;
 	} else if (regression < 0) {
-		report += `✅ **Performance Improvement**: ${Math.abs(regressionPercent)}% faster than baseline\n\n`;
+		report += `✅ **Performance Improvement**: ${Math.abs(Number(regressionPercent))}% faster than baseline\n\n`;
 	} else {
 		report += `✅ **Performance Stable**: Within threshold\n\n`;
 	}
@@ -173,7 +173,7 @@ function main() {
 		console.error(
 			'No Vitest results found. Make sure CI=1 is set when running tests.',
 		);
-		process.exit(1);
+		throw new Error('Missing Vitest results');
 	}
 
 	const baseline = loadBaseline();
@@ -194,11 +194,10 @@ function main() {
 		console.error(
 			'\n❌ Performance check failed. Please investigate test performance.',
 		);
-		process.exit(1);
+		throw new Error('Performance check failed');
 	}
 
 	console.log('\n✅ Performance check passed.');
-	process.exit(0);
 }
 
 main();
