@@ -17,7 +17,7 @@ describe('MemoryRepository', () => {
 		});
 		repository = new MemoryRepository({
 			storageEngine,
-			memorybankPath: 'memory-bank',
+			memorybankPath: '.devflow/memory',
 		});
 	});
 
@@ -117,10 +117,13 @@ describe('MemoryRepository', () => {
 
 		it('should filter out non-markdown files', async () => {
 			await storageEngine.writeFile(
-				'memory-bank/memory.md',
+				'.devflow/memory/memory.md',
 				'---\n---\n\nContent',
 			);
-			await storageEngine.writeFile('memory-bank/other.txt', 'Text file');
+			await storageEngine.writeFile(
+				'.devflow/memory/other.txt',
+				'Text file',
+			);
 
 			const memories = await repository.listMemories();
 
@@ -154,15 +157,15 @@ describe('MemoryRepository', () => {
 				content: 'Content',
 			});
 
-			expect(await storageEngine.exists('memory-bank/to-delete.md')).toBe(
-				true,
-			);
+			expect(
+				await storageEngine.exists('.devflow/memory/to-delete.md'),
+			).toBe(true);
 
 			await repository.deleteMemory('to-delete');
 
-			expect(await storageEngine.exists('memory-bank/to-delete.md')).toBe(
-				false,
-			);
+			expect(
+				await storageEngine.exists('.devflow/memory/to-delete.md'),
+			).toBe(false);
 		});
 
 		it('should throw FileNotFoundError when deleting nonexistent memory', async () => {
@@ -291,7 +294,7 @@ describe('MemoryRepository', () => {
 	describe('Error handling', () => {
 		it('should handle corrupted markdown gracefully', async () => {
 			await storageEngine.writeFile(
-				'memory-bank/corrupted.md',
+				'.devflow/memory/corrupted.md',
 				'Invalid YAML\n---\n\nContent',
 			);
 

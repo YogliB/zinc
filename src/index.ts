@@ -7,6 +7,7 @@ import {
 	createMemorySaveTool,
 	createMemoryListTool,
 	createMemoryDeleteTool,
+	createMemoryInitTool,
 } from './mcp/tools/memory';
 import {
 	createContextResource,
@@ -15,6 +16,7 @@ import {
 import {
 	createMemoryContextPrompt,
 	createMemoryLoadPrompt,
+	createMemoryUpdatePrompt,
 } from './mcp/prompts/memory';
 
 let memoryRepository: MemoryRepository;
@@ -32,10 +34,9 @@ async function initializeServer(): Promise<void> {
 
 		memoryRepository = new MemoryRepository({
 			storageEngine,
-			memorybankPath: 'memory-bank',
 		});
 		console.error(
-			'[DevFlow:INFO] MemoryRepository initialized (path: memory-bank)',
+			'[DevFlow:INFO] MemoryRepository initialized (path: .devflow/memory)',
 		);
 	} catch (error) {
 		const errorMessage =
@@ -77,6 +78,10 @@ async function main(): Promise<void> {
 		server.addTool(memoryDeleteTool);
 		console.error('[DevFlow:INFO] Registered tool: memory-delete');
 
+		const memoryInitTool = createMemoryInitTool(memoryRepository);
+		server.addTool(memoryInitTool);
+		console.error('[DevFlow:INFO] Registered tool: memory-init');
+
 		console.error(
 			'[DevFlow:INFO] All memory tools registered successfully',
 		);
@@ -105,6 +110,10 @@ async function main(): Promise<void> {
 		const memoryLoadPrompt = createMemoryLoadPrompt(memoryRepository);
 		server.addPrompt(memoryLoadPrompt);
 		console.error('[DevFlow:INFO] Registered prompt: memory:load');
+
+		const memoryUpdatePrompt = createMemoryUpdatePrompt(memoryRepository);
+		server.addPrompt(memoryUpdatePrompt);
+		console.error('[DevFlow:INFO] Registered prompt: memory:update');
 
 		console.error(
 			'[DevFlow:INFO] All memory prompts registered successfully',

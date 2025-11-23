@@ -52,7 +52,7 @@ describe('Memory Tools', () => {
 			(
 				mockRepository.getMemory as ReturnType<typeof vi.fn>
 			).mockRejectedValueOnce(
-				new FileNotFoundError('memory-bank/test-memory.md'),
+				new FileNotFoundError('.devflow/memory/test-memory.md'),
 			);
 
 			const tool = createMemoryGetTool(mockRepository);
@@ -309,7 +309,7 @@ describe('Memory Tools', () => {
 			(
 				mockRepository.deleteMemory as ReturnType<typeof vi.fn>
 			).mockRejectedValueOnce(
-				new FileNotFoundError('memory-bank/test-memory.md'),
+				new FileNotFoundError('.devflow/memory/test-memory.md'),
 			);
 
 			const tool = createMemoryDeleteTool(mockRepository);

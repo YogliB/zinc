@@ -15,7 +15,7 @@ export class MemoryRepository {
 
 	constructor(options: MemoryRepositoryOptions) {
 		this.storageEngine = options.storageEngine;
-		this.memorybankPath = options.memorybankPath ?? 'memory-bank';
+		this.memorybankPath = options.memorybankPath ?? '.devflow/memory';
 	}
 
 	private buildMemoryPath(name: string): string {

@@ -60,7 +60,6 @@ describe('Server Initialization Integration', () => {
 		});
 		const memoryRepository = new MemoryRepository({
 			storageEngine,
-			memorybankPath: 'memory-bank',
 		});
 
 		expect(memoryRepository).toBeDefined();
@@ -74,9 +73,11 @@ describe('Server Initialization Integration', () => {
 		});
 
 		const testContent = 'test memory content';
-		await storageEngine.writeFile('memory-bank/test.md', testContent);
+		await storageEngine.writeFile('.devflow/memory/test.md', testContent);
 
-		const readContent = await storageEngine.readFile('memory-bank/test.md');
+		const readContent = await storageEngine.readFile(
+			'.devflow/memory/test.md',
+		);
 		expect(readContent).toContain(testContent);
 	});
 
@@ -88,7 +89,6 @@ describe('Server Initialization Integration', () => {
 		});
 		const memoryRepository = new MemoryRepository({
 			storageEngine,
-			memorybankPath: 'memory-bank',
 		});
 
 		const testMemory = 'test memory data';
@@ -110,7 +110,6 @@ describe('Server Initialization Integration', () => {
 		});
 		const memoryRepository = new MemoryRepository({
 			storageEngine,
-			memorybankPath: 'memory-bank',
 		});
 
 		const testData = 'env var test data';
@@ -128,7 +127,6 @@ describe('Server Initialization Integration', () => {
 		});
 		const memoryRepository = new MemoryRepository({
 			storageEngine,
-			memorybankPath: 'memory-bank',
 		});
 
 		expect(projectRoot).toBeDefined();
@@ -137,7 +135,7 @@ describe('Server Initialization Integration', () => {
 		expect(memoryRepository).toBeDefined();
 	});
 
-	it('should create memory-bank directory on first write', async () => {
+	it('should create .devflow/memory directory on first write', async () => {
 		const projectRoot = await detectProjectRoot();
 		const storageEngine = new StorageEngine({
 			rootPath: projectRoot,
@@ -145,15 +143,14 @@ describe('Server Initialization Integration', () => {
 		});
 		const memoryRepository = new MemoryRepository({
 			storageEngine,
-			memorybankPath: 'memory-bank',
 		});
 
-		const bankExists = await storageEngine.exists('memory-bank');
+		const bankExists = await storageEngine.exists('.devflow/memory');
 		expect(bankExists).toBe(false);
 
 		await memoryRepository.saveMemory('first', { content: 'content' });
 
-		const bankExistsAfter = await storageEngine.exists('memory-bank');
+		const bankExistsAfter = await storageEngine.exists('.devflow/memory');
 		expect(bankExistsAfter).toBe(true);
 	});
 
@@ -165,7 +162,6 @@ describe('Server Initialization Integration', () => {
 		});
 		const memoryRepository = new MemoryRepository({
 			storageEngine,
-			memorybankPath: 'memory-bank',
 		});
 
 		await memoryRepository.saveMemory('memory1', { content: 'content1' });

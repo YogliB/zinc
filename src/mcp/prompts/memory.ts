@@ -161,3 +161,5 @@ export function createMemoryLoadPrompt(
 		},
 	};
 }
+
+export { createMemoryUpdatePrompt } from './memory-update';

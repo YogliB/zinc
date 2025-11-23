@@ -241,3 +241,5 @@ export function createMemoryDeleteTool(repository: MemoryRepository) {
 		},
 	};
 }
+
+export { createMemoryInitTool } from './memory-init';

@@ -31,7 +31,7 @@ describe('[Integration:Memory] Memory MCP End-to-End', () => {
 
 		repository = new MemoryRepository({
 			storageEngine,
-			memorybankPath: 'memory-bank',
+			memorybankPath: '.devflow/memory',
 		});
 	});
 

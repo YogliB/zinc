@@ -102,7 +102,7 @@ High-level abstractions for working with specific file types.
 
 #### MemoryRepository
 
-Manages memory bank files in `memory-bank/` directory.
+Manages memory bank files in `.devflow/memory/` directory.
 
 ```typescript
 import { MemoryRepository } from '@/layers/memory/repository';
@@ -242,7 +242,7 @@ await engine.writeFile('../../secret.txt', 'data');
 
 ### Memory Files
 
-Location: `memory-bank/<name>.md`
+Location: `.devflow/memory/<name>.md`
 
 **Frontmatter Fields:**
 
