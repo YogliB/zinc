@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'node:path';
 import { PathValidationError, FileNotFoundError, WriteError } from './errors';
 
 export interface StorageEngineOptions {
@@ -53,8 +53,8 @@ export class StorageEngine {
 			const validatedPath = this.validatePath(filePath);
 			this.log('debug', `Reading file: ${filePath}`);
 
-			const { readFile } = await import('fs/promises');
-			const content = await readFile(validatedPath, 'utf-8');
+			const { readFile } = await import('node:fs/promises');
+			const content = await readFile(validatedPath, 'utf8');
 			this.log(
 				'debug',
 				`Successfully read file: ${filePath} (${content.length} bytes)`,
@@ -85,7 +85,7 @@ export class StorageEngine {
 			const directory = path.dirname(validatedPath);
 
 			try {
-				const { mkdir } = await import('fs/promises');
+				const { mkdir } = await import('node:fs/promises');
 				await mkdir(directory, { recursive: true });
 			} catch (mkdirError) {
 				throw new WriteError(
@@ -94,8 +94,8 @@ export class StorageEngine {
 				);
 			}
 
-			const { writeFile } = await import('fs/promises');
-			await writeFile(validatedPath, content, 'utf-8');
+			const { writeFile } = await import('node:fs/promises');
+			await writeFile(validatedPath, content, 'utf8');
 			this.log(
 				'debug',
 				`Successfully wrote file: ${filePath} (${content.length} bytes)`,
@@ -118,7 +118,7 @@ export class StorageEngine {
 	async exists(filePath: string): Promise<boolean> {
 		try {
 			const validatedPath = this.validatePath(filePath);
-			const { access } = await import('fs/promises');
+			const { access } = await import('node:fs/promises');
 			await access(validatedPath);
 			return true;
 		} catch {
@@ -130,7 +130,7 @@ export class StorageEngine {
 		try {
 			const validatedPath = this.validatePath(filePath);
 			this.log('debug', `Deleting file: ${filePath}`);
-			const { unlink } = await import('fs/promises');
+			const { unlink } = await import('node:fs/promises');
 			await unlink(validatedPath);
 			this.log('debug', `Successfully deleted file: ${filePath}`);
 		} catch (error) {
@@ -151,21 +151,21 @@ export class StorageEngine {
 	}
 
 	async listFiles(
-		dirPath: string = '',
+		directoryPath: string = '',
 		options: { recursive?: boolean } = {},
 	): Promise<string[]> {
 		try {
-			const safeDir = dirPath || '.';
-			const validatedPath = this.validatePath(safeDir);
-			this.log('debug', `Listing files in: ${safeDir}`);
+			const safeDirectory = directoryPath || '.';
+			const validatedPath = this.validatePath(safeDirectory);
+			this.log('debug', `Listing files in: ${safeDirectory}`);
 
 			const files: string[] = [];
 
-			const readDir = async (
+			const readDirectory = async (
 				currentValidatedPath: string,
 			): Promise<void> => {
 				try {
-					const { readdir } = await import('fs/promises');
+					const { readdir } = await import('node:fs/promises');
 					const entries = await readdir(currentValidatedPath, {
 						withFileTypes: true,
 					});
@@ -177,31 +177,31 @@ export class StorageEngine {
 						);
 						const relativePath = path
 							.relative(this.rootPath, fullPath)
-							.replace(/\\/g, '/');
+							.replaceAll('\\', '/');
 
 						if (entry.isFile()) {
 							files.push(relativePath);
 						} else if (entry.isDirectory() && options.recursive) {
-							await readDir(fullPath);
+							await readDirectory(fullPath);
 						}
 					}
-				} catch (err) {
+				} catch (error) {
 					if (
-						err instanceof Error &&
-						'code' in err &&
-						err.code === 'ENOENT'
+						error instanceof Error &&
+						'code' in error &&
+						error.code === 'ENOENT'
 					) {
 						this.log(
 							'debug',
 							`Directory not found: ${currentValidatedPath}`,
 						);
 					} else {
-						throw err;
+						throw error;
 					}
 				}
 			};
 
-			await readDir(validatedPath);
+			await readDirectory(validatedPath);
 			return files;
 		} catch (error) {
 			if (error instanceof PathValidationError) {

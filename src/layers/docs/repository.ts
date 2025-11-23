@@ -1,28 +1,28 @@
-import path from 'path';
+import path from 'node:path';
 import { StorageEngine } from '../../core/storage/engine';
 import { parseMarkdown, stringifyMarkdown } from '../../core/storage/markdown';
 import {
-	DocsFileSchema,
-	type DocsFile,
-	type DocsFrontmatter,
-} from '../../core/schemas/docs';
+	DocumentationFileSchema,
+	type DocumentationFile,
+	type DocumentationFrontmatter,
+} from '../../core/schemas/documentation';
 import { ValidationError, FileNotFoundError } from '../../core/storage/errors';
 
-export interface DocsRepositoryOptions {
+export interface DocumentationRepositoryOptions {
 	storageEngine: StorageEngine;
-	docsPath?: string;
+	documentationPath?: string;
 }
 
-export class DocsRepository {
+export class DocumentationRepository {
 	private storageEngine: StorageEngine;
-	private docsPath: string;
+	private documentationPath: string;
 
-	constructor(options: DocsRepositoryOptions) {
+	constructor(options: DocumentationRepositoryOptions) {
 		this.storageEngine = options.storageEngine;
-		this.docsPath = options.docsPath ?? 'docs';
+		this.documentationPath = options.documentationPath ?? 'docs';
 	}
 
-	private buildDocsPath(relativePath: string): string {
+	private buildDocumentationPath(relativePath: string): string {
 		const normalized = path.normalize(relativePath);
 
 		if (path.isAbsolute(normalized) || normalized.startsWith('..')) {
@@ -31,22 +31,22 @@ export class DocsRepository {
 			);
 		}
 
-		return `${this.docsPath}/${normalized}`;
+		return `${this.documentationPath}/${normalized}`;
 	}
 
-	async getDoc(path: string): Promise<DocsFile> {
-		const filePath = this.buildDocsPath(path);
+	async getDoc(filePath: string): Promise<DocumentationFile> {
+		const fullPath = this.buildDocumentationPath(filePath);
 
 		try {
-			const content = await this.storageEngine.readFile(filePath);
+			const content = await this.storageEngine.readFile(fullPath);
 			const parsed = parseMarkdown(content);
 
-			const docsFile: DocsFile = {
+			const documentationFile: DocumentationFile = {
 				frontmatter: parsed.frontmatter,
 				content: parsed.content,
 			};
 
-			const validated = DocsFileSchema.parse(docsFile);
+			const validated = DocumentationFileSchema.parse(documentationFile);
 			return validated;
 		} catch (error) {
 			if (error instanceof FileNotFoundError) {
@@ -58,33 +58,36 @@ export class DocsRepository {
 			}
 
 			throw new ValidationError(
-				`Failed to load docs file "${path}": ${error instanceof Error ? error.message : 'Unknown error'}`,
+				`Failed to load docs file "${filePath}": ${error instanceof Error ? error.message : 'Unknown error'}`,
 			);
 		}
 	}
 
-	async saveDoc(path: string, data: Partial<DocsFile>): Promise<void> {
+	async saveDoc(
+		filePath: string,
+		data: Partial<DocumentationFile>,
+	): Promise<void> {
 		try {
 			const frontmatter = data.frontmatter ?? {};
 			const content = data.content ?? '';
 
-			const docsFile: DocsFile = {
+			const documentationFile: DocumentationFile = {
 				frontmatter,
 				content,
 			};
 
-			const validated = DocsFileSchema.parse(docsFile);
+			const validated = DocumentationFileSchema.parse(documentationFile);
 			const markdown = stringifyMarkdown(validated);
-			const filePath = this.buildDocsPath(path);
+			const fullPath = this.buildDocumentationPath(filePath);
 
-			await this.storageEngine.writeFile(filePath, markdown);
+			await this.storageEngine.writeFile(fullPath, markdown);
 		} catch (error) {
 			if (error instanceof ValidationError) {
 				throw error;
 			}
 
 			throw new ValidationError(
-				`Failed to save docs file "${path}": ${error instanceof Error ? error.message : 'Unknown error'}`,
+				`Failed to save docs file "${filePath}": ${error instanceof Error ? error.message : 'Unknown error'}`,
 			);
 		}
 	}
@@ -92,8 +95,8 @@ export class DocsRepository {
 	async listDocs(directory?: string): Promise<string[]> {
 		try {
 			const searchPath = directory
-				? this.buildDocsPath(directory)
-				: this.docsPath;
+				? this.buildDocumentationPath(directory)
+				: this.documentationPath;
 			const files = await this.storageEngine.listFiles(searchPath, {
 				recursive: true,
 			});
@@ -105,30 +108,30 @@ export class DocsRepository {
 		}
 	}
 
-	async deleteDoc(path: string): Promise<void> {
+	async deleteDoc(filePath: string): Promise<void> {
 		try {
-			const filePath = this.buildDocsPath(path);
-			await this.storageEngine.delete(filePath);
+			const fullPath = this.buildDocumentationPath(filePath);
+			await this.storageEngine.delete(fullPath);
 		} catch (error) {
 			if (error instanceof FileNotFoundError) {
 				throw error;
 			}
 
 			throw new ValidationError(
-				`Failed to delete docs file "${path}": ${error instanceof Error ? error.message : 'Unknown error'}`,
+				`Failed to delete docs file "${filePath}": ${error instanceof Error ? error.message : 'Unknown error'}`,
 			);
 		}
 	}
 
 	async createDoc(
-		path: string,
-		frontmatter?: DocsFrontmatter,
+		filePath: string,
+		frontmatter?: DocumentationFrontmatter,
 		content = '',
 	): Promise<void> {
-		const docsFile: DocsFile = {
+		const documentationFile: DocumentationFile = {
 			frontmatter: frontmatter ?? {},
 			content,
 		};
-		await this.saveDoc(path, docsFile);
+		await this.saveDoc(filePath, documentationFile);
 	}
 }

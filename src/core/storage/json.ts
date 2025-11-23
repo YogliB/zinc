@@ -18,6 +18,6 @@ export function stringifyJSON<T>(
 	options?: JSONStringifyOptions,
 ): string {
 	const indent =
-		options?.pretty !== false ? (options?.indent ?? 2) : undefined;
-	return JSON.stringify(data, null, indent);
+		options?.pretty === false ? undefined : (options?.indent ?? 2);
+	return JSON.stringify(data, undefined, indent);
 }

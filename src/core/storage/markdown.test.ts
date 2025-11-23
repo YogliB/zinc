@@ -195,13 +195,13 @@ title: Test
 			};
 
 			const result = stringifyMarkdown(file);
-			expect(result).toContain('quote: "He said \\"hello\\""');
+			expect(result).toContain(String.raw`quote: "He said \"hello\""`);
 		});
 
 		it('should handle null and undefined values', () => {
 			const file = {
 				frontmatter: {
-					empty: null,
+					empty: undefined,
 					undef: undefined,
 				},
 				content: 'Content here.',
@@ -249,7 +249,7 @@ This is a test article with some content.
 			};
 
 			let current = stringifyMarkdown(file);
-			for (let i = 0; i < 3; i++) {
+			for (let index = 0; index < 3; index++) {
 				const parsed = parseMarkdown(current);
 				current = stringifyMarkdown(parsed);
 			}

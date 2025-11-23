@@ -13,12 +13,12 @@ export {
 	type RulesFrontmatter,
 } from './rules';
 export {
-	DocsFileSchema,
-	DocsFrontmatterSchema,
-	validateDocsFile,
-	type DocsFile,
-	type DocsFrontmatter,
-} from './docs';
+	DocumentationFileSchema,
+	DocumentationFrontmatterSchema,
+	validateDocumentationFile,
+	type DocumentationFile,
+	type DocumentationFrontmatter,
+} from './documentation';
 export {
 	PlansFileSchema,
 	PlansFrontmatterSchema,

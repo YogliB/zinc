@@ -26,13 +26,11 @@ export function stringifyMarkdown(file: MarkdownFile): string {
 		} else if (value instanceof Date) {
 			frontmatterLines.push(`${key}: "${value.toISOString()}"`);
 		} else if (typeof value === 'string' && value.includes('\n')) {
-			frontmatterLines.push(`${key}: |`);
-			frontmatterLines.push(
-				value
-					.split('\n')
-					.map((line) => `  ${line}`)
-					.join('\n'),
-			);
+			const multilineValue = value
+				.split('\n')
+				.map((line) => `  ${line}`)
+				.join('\n');
+			frontmatterLines.push(`${key}: |`, multilineValue);
 		} else if (Array.isArray(value)) {
 			frontmatterLines.push(`${key}: ${JSON.stringify(value)}`);
 		} else if (typeof value === 'object') {
@@ -44,9 +42,7 @@ export function stringifyMarkdown(file: MarkdownFile): string {
 		}
 	}
 
-	frontmatterLines.push('---');
-	frontmatterLines.push('');
-	frontmatterLines.push(file.content);
+	frontmatterLines.push('---', '', file.content);
 
 	return frontmatterLines.join('\n');
 }

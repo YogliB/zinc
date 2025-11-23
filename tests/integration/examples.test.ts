@@ -1,5 +1,9 @@
 import { describe, it, expect } from 'vitest';
 
+function throwError() {
+	throw new Error('test error');
+}
+
 describe('Integration Test Examples', () => {
 	it('should handle async operations', async () => {
 		const result = await Promise.resolve('integration test');
@@ -7,15 +11,15 @@ describe('Integration Test Examples', () => {
 	});
 
 	it('should work with objects', async () => {
-		const obj = { name: 'test', value: 42 };
-		expect(obj.name).toBe('test');
-		expect(obj.value).toBe(42);
+		const object = { name: 'test', value: 42 };
+		expect(object.name).toBe('test');
+		expect(object.value).toBe(42);
 	});
 
 	it('should handle arrays', async () => {
-		const arr = [1, 2, 3, 4, 5];
-		expect(arr).toHaveLength(5);
-		expect(arr[0]).toBe(1);
+		const array = [1, 2, 3, 4, 5];
+		expect(array).toHaveLength(5);
+		expect(array[0]).toBe(1);
 	});
 
 	it('should handle multiple assertions', async () => {
@@ -26,18 +30,16 @@ describe('Integration Test Examples', () => {
 	});
 
 	it('should handle errors', async () => {
-		const throwError = () => {
-			throw new Error('test error');
-		};
 		expect(throwError).toThrow('test error');
 	});
 });
 
 describe('Integration - Data Persistence', () => {
 	it('should simulate data save and retrieve', async () => {
-		const store = new Map();
-		store.set('key1', 'value1');
-		store.set('key2', 'value2');
+		const store = new Map([
+			['key1', 'value1'],
+			['key2', 'value2'],
+		]);
 
 		expect(store.get('key1')).toBe('value1');
 		expect(store.size).toBe(2);

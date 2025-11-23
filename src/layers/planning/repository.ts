@@ -1,4 +1,4 @@
-import path from 'path';
+import path from 'node:path';
 import { StorageEngine } from '../../core/storage/engine';
 import { parseMarkdown, stringifyMarkdown } from '../../core/storage/markdown';
 import {

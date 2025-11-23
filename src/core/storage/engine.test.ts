@@ -1,21 +1,21 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
-import { mkdir, rm } from 'fs/promises';
+import { mkdir, rm } from 'node:fs/promises';
 import { StorageEngine } from './engine';
 import { PathValidationError, FileNotFoundError } from './errors';
 
-const baseTestDir = '.test-storage';
-const testStorageDir = '.test-storage/engine-storage';
+const baseTestDirectory = '.test-storage';
+const testStorageDirectory = '.test-storage/engine-storage';
 
 describe('StorageEngine', () => {
 	let engine: StorageEngine;
 
 	beforeEach(async () => {
-		await mkdir(testStorageDir, { recursive: true });
-		engine = new StorageEngine({ rootPath: testStorageDir });
+		await mkdir(testStorageDirectory, { recursive: true });
+		engine = new StorageEngine({ rootPath: testStorageDirectory });
 	});
 
 	afterEach(async () => {
-		await rm(baseTestDir, { recursive: true, force: true });
+		await rm(baseTestDirectory, { recursive: true, force: true });
 	});
 
 	describe('validatePath', () => {
@@ -203,7 +203,7 @@ describe('StorageEngine', () => {
 		});
 
 		it('should return empty array for empty directories', async () => {
-			await mkdir(testStorageDir + '/empty', { recursive: true });
+			await mkdir(testStorageDirectory + '/empty', { recursive: true });
 
 			const files = await engine.listFiles('empty');
 			expect(files).toEqual([]);
