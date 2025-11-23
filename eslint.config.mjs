@@ -13,6 +13,7 @@ export default [
 		ignores: [
 			'dist/**',
 			'node_modules/**',
+			'coverage/**',
 			'**/*.d.ts.map',
 			'vitest.config.d.ts',
 			'vitest.config.js',
