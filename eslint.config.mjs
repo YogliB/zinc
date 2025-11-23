@@ -1,7 +1,7 @@
 // @ts-check
 
 import eslint from '@eslint/js';
-import tseslint from 'typescript-eslint';
+import { configs as tsConfigs } from 'typescript-eslint';
 import sonarjs from 'eslint-plugin-sonarjs';
 import prettier from 'eslint-plugin-prettier/recommended';
 import importPlugin from 'eslint-plugin-import';
@@ -17,7 +17,7 @@ export default [
 		],
 	},
 	eslint.configs.recommended,
-	...tseslint.configs.recommended,
+	...tsConfigs.recommended,
 	sonarjs.configs.recommended,
 	importPlugin.flatConfigs.recommended,
 	importPlugin.flatConfigs.typescript,
