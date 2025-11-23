@@ -13,7 +13,7 @@
 | --- | --------------- | ------ | ---- | ------------------------------------ |
 | 1   | dev-toolkit-mcp | 🟢     | -    | Server init + wire MemoryRepository  |
 | 2   | dev-toolkit-mcp | 🟢     | -    | MCP memory tools (4 tools, 22 tests) |
-| 3   | dev-toolkit-mcp | ⏸️     | -    | MCP memory resources                 |
+| 3   | dev-toolkit-mcp | 🟢     | -    | MCP memory resources                 |
 | 4   | dev-toolkit-mcp | ⏸️     | -    | Integration tests + docs             |
 
 Status: 🟢 done · 🟡 in‑progress · 🟠 review · ⏸️ not‑started · 🔴 blocked · ⚫ canceled
@@ -104,7 +104,7 @@ Status: 🟢 done · 🟡 in‑progress · 🟠 review · ⏸️ not‑started �
 
 ---
 
-## PR3: MCP Memory Resources — ⏸️
+## PR3: MCP Memory Resources — 🟢
 
 **Repo:** dev-toolkit-mcp · **Link:** - · **ETA:** 1h dev + 15m review
 **Files:** `src/mcp/resources/memory.ts`, `src/index.ts`
