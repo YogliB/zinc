@@ -4,6 +4,8 @@
 
 🚧 **Status:** In Development (Phase 1 - Foundation)
 
+[![CI](https://github.com/yogev-boaron-ben-har/dev-toolkit-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/yogev-boaron-ben-har/dev-toolkit-mcp/actions/workflows/ci.yml)
+
 ## What is DevFlow?
 
 DevFlow solves the fundamental problem of **AI agents forgetting context between sessions**. It provides four independent but complementary layers that work with any MCP-compatible AI agent:

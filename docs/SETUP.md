@@ -146,6 +146,30 @@ bun test --reporter=verbose
 bun run test:ui  # Interactive debugging
 ```
 
+## Continuous Integration
+
+All code is validated by GitHub Actions CI before merge:
+
+- **Linting** — ESLint code quality checks
+- **Formatting** — Prettier consistency validation
+- **Type Checking** — TypeScript compilation
+- **Testing** — Vitest test suite with coverage
+
+The CI workflow runs on every push to `main`/`develop` and all pull requests. All checks must pass before code can be merged.
+
+### Before Pushing
+
+Run these locally to catch issues early:
+
+```bash
+bun run lint       # Check code quality
+bun run format     # Auto-fix formatting
+bun run type-check # Validate types
+bun test           # Run tests
+```
+
+See [CI Workflow Documentation](./CI.md) for detailed troubleshooting and branch protection setup.
+
 ## Git Hooks
 
 Pre-commit hooks automatically:
@@ -173,9 +197,11 @@ See `docs/SECURITY.md` for security best practices and version management strate
 
 1. Read the [Quick Start Guide](./QUICKSTART.md)
 2. Review the [Architecture Overview](./OVERVIEW.md)
-3. Start implementing features following the [layer documentation](./README.md)
+3. Review the [CI Workflow Documentation](./CI.md)
+4. Start implementing features following the [layer documentation](./README.md)
 
 ---
 
 **Last updated:** 2024-03-20  
-**For security considerations:** See `docs/SECURITY.md`
+**For security considerations:** See `docs/SECURITY.md`  
+**For CI/CD details:** See `docs/CI.md`
