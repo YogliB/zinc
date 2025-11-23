@@ -12,33 +12,35 @@ export default defineConfig({
 
 		// Performance: Parallel execution (Option 1)
 		pool: 'forks',
-		fileParallelism: true,
-		maxConcurrency: 10,
 		poolOptions: {
 			forks: {
-				singleFork: false,
+				singleFork: process.env.CI ? true : false,
 			},
 		},
 
 		// Performance: Within-file concurrent tests (Option 3)
 		sequence: {
-			concurrent: true,
+			concurrent: process.env.CI ? false : true,
 			shuffle: false,
 		},
 
 		// Environment-specific optimizations (Option 2)
 		...(process.env.CI
 			? {
-					// CI: Full isolation and safety
+					// CI: Sequential execution to prevent file system race conditions
 					isolate: true,
 					bail: 0,
+					fileParallelism: false,
+					maxConcurrency: 1,
 				}
 			: {
-					// Dev: Fast feedback and early exit
+					// Dev: Fast feedback with parallel execution
 					isolate: false,
 					bail: 1,
 					watch: true,
 					changed: true,
+					fileParallelism: true,
+					maxConcurrency: 10,
 				}),
 
 		// Timeouts

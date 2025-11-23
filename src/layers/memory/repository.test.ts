@@ -5,7 +5,11 @@ import { StorageEngine } from '../../core/storage/engine';
 import { MemoryRepository } from './repository';
 import { FileNotFoundError } from '../../core/storage/errors';
 
-const testDir = join(process.cwd(), '.test-memory-repo');
+const testDir = join(
+	process.cwd(),
+	'.test-storage',
+	`memory-${process.pid}-${Date.now()}`,
+);
 
 describe('MemoryRepository', () => {
 	let storageEngine: StorageEngine;

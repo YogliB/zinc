@@ -18,6 +18,10 @@ coverage/
 # DevFlow
 .devflow/
 
+# Test directories
+.test-storage/
+.test-memory-repo/
+
 # Vitest side-effect files
 .vitest/
 vitest.workspace.ts.timestamp-*

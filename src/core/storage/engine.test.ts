@@ -4,7 +4,11 @@ import { join } from 'path';
 import { StorageEngine } from './engine';
 import { PathValidationError, FileNotFoundError } from './errors';
 
-const testDir = join(process.cwd(), '.test-storage');
+const testDir = join(
+	process.cwd(),
+	'.test-storage',
+	`engine-${process.pid}-${Date.now()}`,
+);
 
 describe('StorageEngine', () => {
 	let engine: StorageEngine;
