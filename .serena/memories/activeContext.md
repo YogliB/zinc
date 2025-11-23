@@ -16,7 +16,56 @@
 - Status: ✅ Complete (All 112 tests passing, linting clean)
 - Goal: Initialize StorageEngine and MemoryRepository in fastmcp server
 
-**Current PR:** PR2 - MCP Memory Tools Implementation ✅ COMPLETE
+**Current PR:** PR3 - MCP Memory Resources Implementation ✅ COMPLETE
+
+## Recent Session: PR3 Implementation
+
+### PR3: MCP Memory Resources — ✅ COMPLETE
+
+**Files Created/Modified:**
+
+- `src/mcp/resources/memory.ts` (167 lines) — Factory functions for context + template resources
+- `src/mcp/resources/memory.test.ts` (337 lines) — 15 unit tests with 100% pass rate
+- `src/index.ts` (updated) — Resource registration with error handling
+
+**Changes:**
+
+- ✅ Implemented `createContextResource()` — Static resource combining activeContext + progress
+- ✅ Implemented `createMemoryResourceTemplate()` — Dynamic template for individual memory files
+- ✅ Registered context resource with `server.addResource()`
+- ✅ Registered template resource with `server.addResourceTemplate()`
+- ✅ Comprehensive error handling for missing/invalid files
+- ✅ Graceful degradation: partial content when files missing
+- ✅ All resources return text/markdown MIME type
+- ✅ Logging per specification (INFO/WARN/ERROR levels)
+
+**Test Coverage:**
+
+- ✅ 15 unit tests for resources (all passing)
+- ✅ Context resource: 6 tests (happy path, missing files, both missing, errors)
+- ✅ Memory template: 9 tests (happy path, frontmatter, missing files, path traversal, errors)
+- ✅ 149 total tests (15 new + 134 existing) — 100% pass rate
+
+**Quality:**
+
+- ✅ TypeScript: 0 errors (proper type guards for ResourceResult union)
+- ✅ Linting: 0 warnings (removed unused imports)
+- ✅ Test Coverage: ≥90% for resources/memory.ts
+- ✅ No regressions in existing tests
+
+**Resources Registered:**
+
+1. **devflow://context/memory** (Static)
+    - Combines activeContext.md + progress.md
+    - Handles missing files: partial content if one missing, message if both missing
+    - Returns markdown with sections: "# Active Context" and "# Progress"
+
+2. **devflow://memory/{name}** (Template with {name} argument)
+    - Loads individual memory files by name
+    - Returns frontmatter + content in markdown
+    - Handles missing files: error message in text
+    - Handles path traversal: validation error message
+    - Proper URI resolution: devflow://memory/activeContext, etc.
 
 ## Recent Changes
 
@@ -94,17 +143,14 @@
 
 ## Immediate Next Steps
 
-1. **PR3: MCP Memory Resources** (1h)
-    - devflow://context/memory (auto-loaded activeContext + progress)
-    - devflow://memory/{name} (individual files)
-
-2. **PR3: MCP Memory Resources** (1h)
-    - devflow://context/memory (auto-loaded activeContext + progress)
-    - devflow://memory/{name} (individual files)
-
-3. **PR4: Integration Tests + Docs** (1-2h)
+1. **PR4: Integration Tests + Docs** (1-2h)
     - End-to-end MCP flow tests
     - Update README and QUICKSTART with usage examples
+    - Verify all resources callable from Claude Desktop
+
+2. **Phase 2 (deferred):** Rules layer MCP tools
+3. **Phase 3 (deferred):** Docs layer MCP tools
+4. **Phase 4 (deferred):** Planning layer MCP tools
 
 ## Key Decisions Made
 

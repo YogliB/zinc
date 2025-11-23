@@ -8,6 +8,10 @@ import {
 	createMemoryListTool,
 	createMemoryDeleteTool,
 } from './mcp/tools/memory';
+import {
+	createContextResource,
+	createMemoryResourceTemplate,
+} from './mcp/resources/memory';
 
 let memoryRepository: MemoryRepository;
 
@@ -72,13 +76,30 @@ async function main(): Promise<void> {
 		console.error(
 			'[DevFlow:INFO] All memory tools registered successfully',
 		);
+
+		const contextResource = createContextResource(memoryRepository);
+		server.addResource(contextResource);
+		console.error(
+			'[DevFlow:INFO] Registered resource: devflow://context/memory',
+		);
+
+		const memoryResourceTemplate =
+			createMemoryResourceTemplate(memoryRepository);
+		server.addResourceTemplate(memoryResourceTemplate);
+		console.error(
+			'[DevFlow:INFO] Registered resource template: devflow://memory/{name}',
+		);
+
+		console.error(
+			'[DevFlow:INFO] All memory resources registered successfully',
+		);
 	} catch (error) {
 		const errorMessage =
 			error instanceof Error
 				? error.message
-				: 'Unknown error during tool registration';
+				: 'Unknown error during tool/resource registration';
 		console.error(
-			`[DevFlow:ERROR] Failed to register tools: ${errorMessage}`,
+			`[DevFlow:ERROR] Failed to register tools/resources: ${errorMessage}`,
 		);
 		throw error;
 	}
