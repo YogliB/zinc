@@ -19,23 +19,19 @@ Plan to migrate dev-toolkit-mcp from raw `@modelcontextprotocol/sdk@0.7.0` to `f
 ## Plan Structure
 
 1. **Phase 1: Research & Verification** (4 TODOs)
-
     - Verify package availability
     - Understand API patterns
     - Assess migration impact
 
 2. **Phase 2: Environment Setup** (3 TODOs)
-
     - Update package.json and install
     - Verify build integrity
 
 3. **Phase 3: Code Migration** (3 TODOs)
-
     - Rewrite src/index.ts
     - Update type definitions
 
 4. **Phase 4: Testing & Verification** (3 TODOs)
-
     - Run existing tests
     - Manual verification
     - CI/CD validation

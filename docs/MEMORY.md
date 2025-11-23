@@ -235,7 +235,6 @@ Use session-based authentication with Redis as session store.
 ### Rationale
 
 1. **Security Requirements:** Application handles sensitive financial data requiring:
-
     - Instant token revocation (logout, compromise)
     - Session invalidation across all devices
     - Session duration limits

@@ -21,13 +21,11 @@
 ## Immediate Next Steps
 
 1. **File Storage Infrastructure**
-
     - Implement abstraction layer for reading/writing files
     - Support Markdown and JSON formats
     - Add file validation and error handling
 
 2. **MCP Primitives**
-
     - Define tools for accessing all four layers
     - Create resources for layer content
     - Implement prompts for agent guidance

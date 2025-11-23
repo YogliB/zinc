@@ -17,32 +17,27 @@
 ### ⏳ MVP Priorities (In Order)
 
 1. **Phase 1: Wire Storage to MCP Server** (2-3 hours)
-
     - Initialize StorageEngine in MCP server
     - Initialize layer repositories
     - Add error handling middleware
 
 2. **Phase 2: Implement MCP Tools** (3-4 hours)
-
     - Rules tools: `getRules`, `listRules`, `validateRules`
     - Memory tools: `getMemory`, `listMemories`, `saveMemory`, `deleteMemory`
     - Docs tools (stubs): `getDocs`, `listDocs`
     - Planning tools (stubs): `listPlans`
 
 3. **Phase 3: Implement MCP Resources** (2-3 hours)
-
     - Rules as resource
     - Memory files as resources
     - All resources include embeddings/search support
 
 4. **Phase 4: Implement CLI Commands** (2-3 hours)
-
     - `devflow init` - Scaffold project structure
     - `devflow serve` - Start MCP server
     - `devflow validate` - Check project structure
 
 5. **Phase 5: Integration Testing** (2-3 hours)
-
     - Test tools with real MCP client simulation
     - Test CLI commands end-to-end
     - Test with example project

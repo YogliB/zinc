@@ -303,18 +303,15 @@ interface Session {
 ### Authentication Flow
 
 1. **Client Request**
-
     - User submits email/password via POST `/auth/login`
     - Request includes credentials in body
 
 2. **Credential Validation**
-
     - API server queries database for user
     - Compares password hash using bcrypt
     - Validates account status (not locked/disabled)
 
 3. **Session Creation**
-
     - Generate unique session ID (UUID v4)
     - Store session in Redis with TTL
     - Set httpOnly cookie with session ID
@@ -326,18 +323,15 @@ interface Session {
 ### Authenticated Request Flow
 
 1. **Client Request**
-
     - Browser automatically sends session cookie
     - Middleware intercepts request
 
 2. **Session Validation**
-
     - Extract session ID from cookie
     - Query Redis for session data
     - Verify session not expired
 
 3. **Request Processing**
-
     - Attach user context to request object
     - Proceed to route handler
 
@@ -348,11 +342,9 @@ interface Session {
 ### Logout Flow
 
 1. **Client Request**
-
     - User triggers logout (POST `/auth/logout`)
 
 2. **Session Revocation**
-
     - Delete session from Redis
     - Clear cookie on client
 

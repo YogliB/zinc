@@ -123,6 +123,47 @@ devflow generate cursorrules
 
 **[Detailed Roadmap](./docs/OVERVIEW.md#implementation-roadmap)**
 
+## Development
+
+### Scripts
+
+```bash
+# Linting and formatting
+bun run lint           # Run ESLint
+bun run lint:fix      # Fix ESLint issues
+bun run format        # Format with Prettier
+bun run format:check  # Check formatting
+
+# Type checking and testing
+bun run type-check    # TypeScript type checking
+bun run test          # Run all tests
+bun run test:watch    # Run tests in watch mode
+bun run test:coverage # Generate coverage report
+
+# Circular dependency checks
+bun run check:circular        # Quick check (circular deps only)
+bun run check:circular:verbose # Full dependency tree
+bun run check:circular:ci      # CI mode (fails on circular deps)
+```
+
+### Circular Dependency Checks
+
+The project uses [dpdm-fast](https://github.com/GrinZero/dpdm-fast) to automatically detect circular dependencies in the codebase. This runs both locally and in CI to prevent architectural issues from accumulating.
+
+**Local workflow:**
+
+```bash
+# Before committing, check for circular dependencies
+bun run check:circular
+
+# For debugging, see the full dependency tree
+bun run check:circular:verbose
+```
+
+**CI enforcement:**
+
+The `circular-deps` job runs on every push and PR. If circular dependencies are detected, CI will fail and block merging. This ensures code quality stays high as the project evolves.
+
 ## Technology Stack
 
 - **TypeScript 5.3+** - Type safety and developer experience
@@ -130,6 +171,7 @@ devflow generate cursorrules
 - **Bun 1.3.2** - Fast package management and runtime
 - **Vitest** - Modern testing framework
 - **Markdown/JSON** - Git-friendly storage
+- **dpdm-fast** - Circular dependency detection
 
 ## Contributing
 

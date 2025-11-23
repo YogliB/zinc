@@ -29,6 +29,9 @@
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
 		"type-check": "bun run tsc --noEmit",
+		"check:circular": "bunx dpdm-fast --no-warning --no-tree ./src/index.ts",
+		"check:circular:verbose": "bunx dpdm-fast ./src/index.ts",
+		"check:circular:ci": "bunx dpdm-fast --no-warning --no-tree --no-progress --exit-code circular:1 --tsconfig ./tsconfig.json ./src/index.ts",
 		"prepare": "husky"
 	},
 	"keywords": [
@@ -50,6 +53,7 @@
 		"@types/node": "24.10.1",
 		"@vitest/coverage-v8": "4.0.13",
 		"@vitest/ui": "4.0.13",
+		"dpdm-fast": "1.0.14",
 		"eslint": "9.39.1",
 		"eslint-config-prettier": "10.1.8",
 		"eslint-import-resolver-typescript": "4.4.4",
