@@ -2,6 +2,12 @@ import { FastMCP } from 'fastmcp';
 import { StorageEngine } from './core/storage/engine';
 import { MemoryRepository } from './layers/memory/repository';
 import { detectProjectRoot } from './core/config';
+import {
+	createMemoryGetTool,
+	createMemorySaveTool,
+	createMemoryListTool,
+	createMemoryDeleteTool,
+} from './mcp/tools/memory';
 
 let memoryRepository: MemoryRepository;
 
@@ -45,6 +51,37 @@ async function main(): Promise<void> {
 		name: 'devflow-mcp',
 		version: '0.1.0',
 	});
+
+	try {
+		const memoryGetTool = createMemoryGetTool(memoryRepository);
+		server.addTool(memoryGetTool);
+		console.error('[DevFlow:INFO] Registered tool: memory:get');
+
+		const memorySaveTool = createMemorySaveTool(memoryRepository);
+		server.addTool(memorySaveTool);
+		console.error('[DevFlow:INFO] Registered tool: memory:save');
+
+		const memoryListTool = createMemoryListTool(memoryRepository);
+		server.addTool(memoryListTool);
+		console.error('[DevFlow:INFO] Registered tool: memory:list');
+
+		const memoryDeleteTool = createMemoryDeleteTool(memoryRepository);
+		server.addTool(memoryDeleteTool);
+		console.error('[DevFlow:INFO] Registered tool: memory:delete');
+
+		console.error(
+			'[DevFlow:INFO] All memory tools registered successfully',
+		);
+	} catch (error) {
+		const errorMessage =
+			error instanceof Error
+				? error.message
+				: 'Unknown error during tool registration';
+		console.error(
+			`[DevFlow:ERROR] Failed to register tools: ${errorMessage}`,
+		);
+		throw error;
+	}
 
 	await server.start({
 		transportType: 'stdio',
