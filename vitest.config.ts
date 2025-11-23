@@ -1,5 +1,5 @@
 import { defineConfig } from 'vitest/config';
-import path from 'path';
+import path from 'node:path';
 
 export default defineConfig({
 	test: {
@@ -45,7 +45,7 @@ export default defineConfig({
 
 		// Timeouts
 		testTimeout: 5000,
-		hookTimeout: 10000,
+		hookTimeout: 10_000,
 
 		// Coverage configuration
 		coverage: {
