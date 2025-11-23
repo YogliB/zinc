@@ -29,9 +29,9 @@
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
 		"type-check": "bun run tsc --noEmit",
-		"check:circular": "bunx dpdm-fast --no-warning --no-tree ./src/index.ts",
-		"check:circular:verbose": "bunx dpdm-fast ./src/index.ts",
-		"check:circular:ci": "bunx dpdm-fast --no-warning --no-tree --no-progress --exit-code circular:1 --tsconfig ./tsconfig.json ./src/index.ts",
+		"check:circular": "dpdm-fast --no-warning --no-tree ./src/index.ts",
+		"check:circular:verbose": "dpdm-fast ./src/index.ts",
+		"check:circular:ci": "dpdm-fast --no-warning --no-tree --no-progress --exit-code circular:1 --tsconfig ./tsconfig.json ./src/index.ts",
 		"prepare": "husky"
 	},
 	"keywords": [
