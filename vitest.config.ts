@@ -10,7 +10,7 @@ export default defineConfig({
 		include: ['**/*.{test,spec}.ts'],
 		exclude: ['**/node_modules/**', '**/dist/**'],
 
-		// Performance: Parallel execution (Option 1)
+		// Performance: Parallel execution
 		pool: 'forks',
 		poolOptions: {
 			forks: {
@@ -18,13 +18,13 @@ export default defineConfig({
 			},
 		},
 
-		// Performance: Within-file concurrent tests (Option 3)
+		// Performance: Within-file concurrent tests
 		sequence: {
 			concurrent: process.env.CI ? false : true,
 			shuffle: false,
 		},
 
-		// Environment-specific optimizations (Option 2)
+		// Environment-specific optimizations
 		...(process.env.CI
 			? {
 					// CI: Sequential execution to prevent file system race conditions
