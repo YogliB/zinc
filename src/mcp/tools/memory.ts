@@ -10,7 +10,7 @@ type MemoryGetInput = z.infer<typeof MemoryGetInputSchema>;
 
 export function createMemoryGetTool(repository: MemoryRepository) {
 	return {
-		name: 'memory:get',
+		name: 'memory-get',
 		description: 'Get a memory file by name',
 		parameters: MemoryGetInputSchema,
 		execute: async (input: MemoryGetInput) => {
@@ -85,7 +85,7 @@ type MemorySaveInput = z.infer<typeof MemorySaveInputSchema>;
 
 export function createMemorySaveTool(repository: MemoryRepository) {
 	return {
-		name: 'memory:save',
+		name: 'memory-save',
 		description: 'Save or update a memory file',
 		parameters: MemorySaveInputSchema,
 		execute: async (input: MemorySaveInput) => {
@@ -145,7 +145,7 @@ const MemoryListInputSchema = z.object({}).optional();
 
 export function createMemoryListTool(repository: MemoryRepository) {
 	return {
-		name: 'memory:list',
+		name: 'memory-list',
 		description: 'List all memory files in the memory bank',
 		parameters: MemoryListInputSchema,
 		execute: async () => {
@@ -189,7 +189,7 @@ type MemoryDeleteInput = z.infer<typeof MemoryDeleteInputSchema>;
 
 export function createMemoryDeleteTool(repository: MemoryRepository) {
 	return {
-		name: 'memory:delete',
+		name: 'memory-delete',
 		description: 'Delete a memory file by name',
 		parameters: MemoryDeleteInputSchema,
 		execute: async (input: MemoryDeleteInput) => {
