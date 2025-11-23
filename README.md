@@ -4,7 +4,7 @@
 
 🚧 **Status:** In Development (Phase 1 - Foundation)
 
-[![CI](https://github.com/yogev-boaron-ben-har/dev-toolkit-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/yogev-boaron-ben-har/dev-toolkit-mcp/actions/workflows/ci.yml)
+[![CI](https://github.com/yogev-boaronben-har/dev-toolkit-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/yogev-boaronben-har/dev-toolkit-mcp/actions/workflows/ci.yml)
 
 ## What is DevFlow?
 
