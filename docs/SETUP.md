@@ -1,6 +1,8 @@
 # Project Setup Guide
 
-**DevFlow MCP** uses Bun as the package manager with strict, pinned dependency versions for reproducibility.
+**DevFlow MCP** - A memory-only MCP server for maintaining context across sessions.
+
+Uses Bun as the package manager with strict, pinned dependency versions for reproducibility.
 
 ## Prerequisites
 
@@ -43,12 +45,15 @@ bun run dev
 ```
 src/
 ├── core/              # Core infrastructure
-├── layers/            # The 4 layers
-│   ├── rules/        # Rules engine
-│   ├── memory/       # Memory system
-│   ├── docs/         # Documentation layer
-│   └── planning/     # Planning layer
+│   ├── config.ts     # Project root detection
+│   ├── schemas/      # Memory file validation
+│   └── storage/      # File I/O engine
+├── layers/
+│   └── memory/       # Memory system
 ├── mcp/              # MCP server
+│   ├── tools/        # Memory tools
+│   ├── resources/    # Memory resources
+│   └── prompts/      # Memory prompts
 ├── cli/              # CLI interface
 ├── utils/            # Utilities
 ├── index.ts          # Entry point
@@ -80,13 +85,7 @@ src/
 
 ## Dependency Management
 
-**All dependencies are pinned to exact versions** (no `^` or `~` ranges) for reproducibility:
-
-### Pinned Dependencies
-
-All 12 direct dependencies are pinned to exact versions in `package.json`. See `package.json` for the current versions.
-
-**Total:** 232 transitive dependencies locked in `bun.lock`
+**All dependencies are pinned to exact versions** (no `^` or `~` ranges) for reproducibility.
 
 ### Adding Dependencies
 
@@ -155,7 +154,7 @@ All code is validated by GitHub Actions CI before merge:
 - **Type Checking** — TypeScript compilation
 - **Testing** — Vitest test suite with coverage
 
-The CI workflow runs on every push to `main`/`develop` and all pull requests. All checks must pass before code can be merged.
+The CI workflow runs on every push to `main` and all pull requests. All checks must pass before code can be merged.
 
 ### Before Pushing
 
@@ -195,13 +194,18 @@ See `docs/SECURITY.md` for security best practices and version management strate
 
 ## Next Steps
 
-1. Read the [Quick Start Guide](./QUICKSTART.md)
-2. Review the [Architecture Overview](./OVERVIEW.md)
-3. Review the [CI Workflow Documentation](./CI.md)
-4. Start implementing features following the [layer documentation](./README.md)
+1. Review the [Memory System Documentation](./MEMORY.md)
+2. Review the [CI Workflow Documentation](./CI.md)
+3. Review the [Testing Guide](./TESTING.md)
+4. Start working with the memory tools and integration
 
 ---
 
-**Last updated:** 2024-03-20  
+**Last updated:** 2024-12-28  
 **For security considerations:** See `docs/SECURITY.md`  
 **For CI/CD details:** See `docs/CI.md`
+
+```
+
+Now let me create a new simplified `README.md` for the docs folder:
+```

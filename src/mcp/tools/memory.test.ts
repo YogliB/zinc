@@ -4,6 +4,8 @@ import {
 	createMemorySaveTool,
 	createMemoryListTool,
 	createMemoryDeleteTool,
+	createMemoryContextTool,
+	createMemoryUpdateTool,
 } from './memory';
 import { MemoryRepository } from '../../layers/memory/repository';
 import { FileNotFoundError, ValidationError } from '../../core/storage/errors';
@@ -216,6 +218,182 @@ describe('Memory Tools', () => {
 			expect(tool.name).toBe('memory-save');
 			expect(tool.description).toBe('Save or update a memory file');
 			expect(tool.parameters).toBeDefined();
+		});
+
+		describe('createMemoryContextTool', () => {
+			it('should return combined activeContext and progress', async () => {
+				const mockActiveContext = {
+					frontmatter: {},
+					content: '# Current Work\n\nWorking on feature X',
+				};
+				const mockProgress = {
+					frontmatter: {},
+					content: '# Milestone 1\n\nCompleted 3/5 tasks',
+				};
+
+				(mockRepository.getMemory as ReturnType<typeof vi.fn>)
+					.mockResolvedValueOnce(mockActiveContext)
+					.mockResolvedValueOnce(mockProgress);
+
+				const tool = createMemoryContextTool(mockRepository);
+				const result = await tool.execute();
+
+				expect(result.type).toBe('text');
+				expect(result.text).toContain('# Active Context');
+				expect(result.text).toContain('Working on feature X');
+				expect(result.text).toContain('# Progress');
+				expect(result.text).toContain('Completed 3/5 tasks');
+			});
+
+			it('should handle missing activeContext gracefully', async () => {
+				const mockProgress = {
+					frontmatter: {},
+					content: '# Milestone 1\n\nCompleted 3/5 tasks',
+				};
+
+				(mockRepository.getMemory as ReturnType<typeof vi.fn>)
+					.mockRejectedValueOnce(
+						new FileNotFoundError(
+							'.devflow/memory/activeContext.md',
+						),
+					)
+					.mockResolvedValueOnce(mockProgress);
+
+				const tool = createMemoryContextTool(mockRepository);
+				const result = await tool.execute();
+
+				expect(result.type).toBe('text');
+				expect(result.text).toContain('# Progress');
+				expect(result.text).toContain('Completed 3/5 tasks');
+			});
+
+			it('should return message when no files found', async () => {
+				(mockRepository.getMemory as ReturnType<typeof vi.fn>)
+					.mockRejectedValueOnce(
+						new FileNotFoundError(
+							'.devflow/memory/activeContext.md',
+						),
+					)
+					.mockRejectedValueOnce(
+						new FileNotFoundError('.devflow/memory/progress.md'),
+					);
+
+				const tool = createMemoryContextTool(mockRepository);
+				const result = await tool.execute();
+
+				expect(result.type).toBe('text');
+				expect(result.text).toContain('No memory files found');
+				expect(result.text).toContain('memory-init');
+			});
+		});
+
+		describe('createMemoryUpdateTool', () => {
+			it('should return all 4 memory files with workflow guide', async () => {
+				const mockFiles = {
+					projectContext: {
+						frontmatter: {},
+						content: '# Project Overview\n\nThis is a test project',
+					},
+					activeContext: {
+						frontmatter: {},
+						content: '# Current Work\n\nWorking on feature X',
+					},
+					progress: {
+						frontmatter: {},
+						content: '# Milestone 1\n\nCompleted 3/5 tasks',
+					},
+					decisionLog: {
+						frontmatter: {},
+						content: '# Decision 001\n\nUse TypeScript',
+					},
+				};
+
+				(mockRepository.getMemory as ReturnType<typeof vi.fn>)
+					.mockResolvedValueOnce(mockFiles.projectContext)
+					.mockResolvedValueOnce(mockFiles.activeContext)
+					.mockResolvedValueOnce(mockFiles.progress)
+					.mockResolvedValueOnce(mockFiles.decisionLog);
+
+				const tool = createMemoryUpdateTool(mockRepository);
+				const result = await tool.execute();
+
+				expect(result.type).toBe('text');
+				expect(result.text).toContain('Memory Bank Update Workflow');
+				expect(result.text).toContain('Project Context');
+				expect(result.text).toContain('Active Context');
+				expect(result.text).toContain('Progress');
+				expect(result.text).toContain('Decision Log');
+				expect(result.text).toContain('This is a test project');
+				expect(result.text).toContain('Working on feature X');
+				expect(result.text).toContain('Completed 3/5 tasks');
+				expect(result.text).toContain('Use TypeScript');
+			});
+
+			it('should include workflow checklist', async () => {
+				(
+					mockRepository.getMemory as ReturnType<typeof vi.fn>
+				).mockResolvedValue({ frontmatter: {}, content: 'Content' });
+
+				const tool = createMemoryUpdateTool(mockRepository);
+				const result = await tool.execute();
+
+				expect(result.text).toContain('What to Update');
+				expect(result.text).toContain('projectContext.md:');
+				expect(result.text).toContain('activeContext.md:');
+				expect(result.text).toContain('progress.md:');
+				expect(result.text).toContain('decisionLog.md:');
+				expect(result.text).toContain('Next Steps After Review');
+				expect(result.text).toContain('memory-save');
+			});
+
+			it('should handle missing files gracefully', async () => {
+				(mockRepository.getMemory as ReturnType<typeof vi.fn>)
+					.mockResolvedValueOnce({
+						frontmatter: {},
+						content: 'Project data',
+					})
+					.mockRejectedValueOnce(
+						new FileNotFoundError(
+							'.devflow/memory/activeContext.md',
+						),
+					)
+					.mockResolvedValueOnce({
+						frontmatter: {},
+						content: 'Progress data',
+					})
+					.mockRejectedValueOnce(
+						new FileNotFoundError('.devflow/memory/decisionLog.md'),
+					);
+
+				const tool = createMemoryUpdateTool(mockRepository);
+				const result = await tool.execute();
+
+				expect(result.type).toBe('text');
+				expect(result.text).toContain('Project Context');
+				expect(result.text).toContain('Project data');
+				expect(result.text).toContain('Active Context (Not Found)');
+				expect(result.text).toContain('Progress');
+				expect(result.text).toContain('Progress data');
+				expect(result.text).toContain('Decision Log (Not Found)');
+				expect(result.text).toContain(
+					'missing: activeContext, decisionLog',
+				);
+			});
+
+			it('should return message when all files missing', async () => {
+				(
+					mockRepository.getMemory as ReturnType<typeof vi.fn>
+				).mockRejectedValue(
+					new FileNotFoundError('.devflow/memory/test.md'),
+				);
+
+				const tool = createMemoryUpdateTool(mockRepository);
+				const result = await tool.execute();
+
+				expect(result.type).toBe('text');
+				expect(result.text).toContain('No memory files found');
+				expect(result.text).toContain('memory-init');
+			});
 		});
 	});
 

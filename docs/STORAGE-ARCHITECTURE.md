@@ -76,14 +76,11 @@ const json = stringifyJSON(data);
 
 ### 3. Zod Schemas
 
-Type-safe validation schemas for each file type.
+Type-safe validation schemas for memory files.
 
 **Available Schemas:**
 
-- `MemoryFileSchema` - Memory bank files
-- `RulesFileSchema` - Rules and agents files
-- `DocsFileSchema` - Documentation files
-- `PlansFileSchema` - Planning files
+- `MemoryFileSchema` - Memory bank files with validated frontmatter
 
 **Example:**
 
@@ -96,11 +93,9 @@ const data = MemoryFileSchema.parse({
 });
 ```
 
-### 4. Repository Classes
+### 4. MemoryRepository
 
-High-level abstractions for working with specific file types.
-
-#### MemoryRepository
+High-level abstraction for working with memory files.
 
 Manages memory bank files in `.devflow/memory/` directory.
 
@@ -123,63 +118,6 @@ const memories = await repo.listMemories();
 
 // Delete a memory
 await repo.deleteMemory('my-memory');
-```
-
-#### RulesRepository
-
-Manages rules and agent files.
-
-```typescript
-import { RulesRepository } from '@/layers/rules/repository';
-
-const repo = new RulesRepository({ storageEngine });
-
-// Get rules
-const rules = await repo.getRules();
-
-// Save rules
-await repo.saveRules({ frontmatter: {}, content: '# Rules' });
-```
-
-#### DocsRepository
-
-Manages documentation files.
-
-```typescript
-import { DocsRepository } from '@/layers/docs/repository';
-
-const repo = new DocsRepository({ storageEngine });
-
-// Get a doc
-const doc = await repo.getDoc('ARCHITECTURE');
-
-// Save a doc
-await repo.saveDoc('ARCHITECTURE', { frontmatter: {}, content: '...' });
-
-// List docs
-const docs = await repo.listDocs();
-```
-
-#### PlansRepository
-
-Manages plan files in `docs/plans/` directory.
-
-```typescript
-import { PlansRepository } from '@/layers/planning/repository';
-
-const repo = new PlansRepository({ storageEngine });
-
-// Get a plan
-const plan = await repo.getPlan('project-x');
-
-// Save a plan
-await repo.savePlan('project-x', { frontmatter: {}, content: '...' });
-
-// Update plan status
-await repo.updatePlanFrontmatter('project-x', { status: 'in-progress' });
-
-// List all plans
-const plans = await repo.listPlans();
 ```
 
 ## Error Handling
@@ -252,42 +190,6 @@ Location: `.devflow/memory/<name>.md`
 - `tags` (array of strings, optional) - Categorization tags
 - `category` (string, optional) - Category name
 
-### Rules Files
-
-Location: `zed-rules/AGENTS.md`
-
-**Frontmatter Fields:**
-
-- `title` (string, optional) - Rules document title
-- `version` (string, optional) - Rules version
-- `updated` (string | Date, optional) - Last update timestamp
-
-### Docs Files
-
-Location: `docs/**/*.md`
-
-**Frontmatter Fields:**
-
-- `title` (string, optional) - Document title
-- `description` (string, optional) - Brief description
-- `author` (string, optional) - Document author
-- `created` (string | Date, optional) - Creation timestamp
-- `updated` (string | Date, optional) - Last update timestamp
-- `tags` (array of strings, optional) - Categorization tags
-
-### Plans Files
-
-Location: `docs/plans/<name>.md`
-
-**Frontmatter Fields:**
-
-- `title` (string, optional) - Plan title
-- `status` (enum, optional) - `'draft'`, `'in-progress'`, `'completed'`, `'archived'`
-- `priority` (enum, optional) - `'low'`, `'medium'`, `'high'`
-- `created` (string | Date, optional) - Creation timestamp
-- `updated` (string | Date, optional) - Last update timestamp
-- `tags` (array of strings, optional) - Categorization tags
-
 ## Design Decisions
 
 ### Why Repository Pattern?
@@ -319,7 +221,7 @@ All components have comprehensive test coverage:
 
 - **StorageEngine** - Path validation, file operations, error handling
 - **Markdown Parser** - Frontmatter parsing, round-trip consistency
-- **Repositories** - CRUD operations, validation, error handling
+- **MemoryRepository** - CRUD operations, validation, error handling
 
 Run tests:
 
@@ -338,5 +240,4 @@ bun test --coverage
 - **Caching Layer** - In-memory caching for frequently accessed files
 - **Watch Mode** - File watcher integration for live updates
 - **Transactions** - Multi-file atomic operations
-- **Migrations** - Schema evolution and data migration tools
 - **Compression** - Optional file compression for storage efficiency

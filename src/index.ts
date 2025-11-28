@@ -8,16 +8,14 @@ import {
 	createMemoryListTool,
 	createMemoryDeleteTool,
 	createMemoryInitTool,
+	createMemoryContextTool,
+	createMemoryUpdateTool,
 } from './mcp/tools/memory';
 import {
 	createContextResource,
 	createMemoryResourceTemplate,
 } from './mcp/resources/memory';
-import {
-	createMemoryContextPrompt,
-	createMemoryLoadPrompt,
-	createMemoryUpdatePrompt,
-} from './mcp/prompts/memory';
+import { createMemoryLoadPrompt } from './mcp/prompts/memory';
 
 let memoryRepository: MemoryRepository;
 
@@ -82,6 +80,14 @@ async function main(): Promise<void> {
 		server.addTool(memoryInitTool);
 		console.error('[DevFlow:INFO] Registered tool: memory-init');
 
+		const memoryContextTool = createMemoryContextTool(memoryRepository);
+		server.addTool(memoryContextTool);
+		console.error('[DevFlow:INFO] Registered tool: memory-context');
+
+		const memoryUpdateTool = createMemoryUpdateTool(memoryRepository);
+		server.addTool(memoryUpdateTool);
+		console.error('[DevFlow:INFO] Registered tool: memory-update');
+
 		console.error(
 			'[DevFlow:INFO] All memory tools registered successfully',
 		);
@@ -103,21 +109,9 @@ async function main(): Promise<void> {
 			'[DevFlow:INFO] All memory resources registered successfully',
 		);
 
-		const memoryContextPrompt = createMemoryContextPrompt(memoryRepository);
-		server.addPrompt(memoryContextPrompt);
-		console.error('[DevFlow:INFO] Registered prompt: memory:context');
-
 		const memoryLoadPrompt = createMemoryLoadPrompt(memoryRepository);
 		server.addPrompt(memoryLoadPrompt);
 		console.error('[DevFlow:INFO] Registered prompt: memory:load');
-
-		const memoryUpdatePrompt = createMemoryUpdatePrompt(memoryRepository);
-		server.addPrompt(memoryUpdatePrompt);
-		console.error('[DevFlow:INFO] Registered prompt: memory:update');
-
-		console.error(
-			'[DevFlow:INFO] All memory prompts registered successfully',
-		);
 	} catch (error) {
 		const errorMessage =
 			error instanceof Error

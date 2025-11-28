@@ -16,14 +16,13 @@
 				"context_servers": {
 					"devflow": {
 						"tools": {
-							"memory:get": true,
-							"memory:save": true,
-							"memory:list": true,
-							"memory:delete": true
-						},
-						"prompts": {
-							"memory:context": true,
-							"memory:load": true
+							"memory-get": true,
+							"memory-save": true,
+							"memory-list": true,
+							"memory-delete": true,
+							"memory-init": true,
+							"memory-context": true,
+							"memory-update": true
 						}
 					}
 				}

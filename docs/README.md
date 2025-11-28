@@ -1,6 +1,6 @@
 # DevFlow MCP Documentation
 
-**Four-layer architecture for universal project context management across any AI agent.**
+**Memory-only MCP server for maintaining context across sessions with any AI agent.**
 
 ---
 
@@ -8,337 +8,306 @@
 
 **New to DevFlow?** Start here:
 
-1. **[5-Minute Quick Start](./QUICKSTART.md)** - Get running immediately
-2. **[Overview](./OVERVIEW.md)** - Understand the architecture
-3. **[Integration Guide](./INTEGRATION.md)** - Connect to your AI agent
+1. **[Memory System](./MEMORY.md)** - Complete memory documentation
+2. **[Setup Guide](./SETUP.md)** - Installation and configuration
+3. **[Testing Guide](./TESTING.md)** - Running and writing tests
 
 ---
 
-## Documentation by User Type
-
-### 🆕 First-Time Users
-
-1. [Quick Start](./QUICKSTART.md) - Get running in 5 minutes
-2. [Overview](./OVERVIEW.md) - Understand the vision and architecture
-3. [Integration Guide](./INTEGRATION.md) - See how layers work together
-
-### 👨‍💻 Developers
-
-1. [Implementation Details](./IMPLEMENTATION.md) - Technical architecture
-2. [MCP Primitives](./MCP-PRIMITIVES.md) - Complete API reference
-3. [Examples](./EXAMPLES.md) - Code samples and patterns
-
-### 🏢 Teams
-
-1. [Rules Engine](./RULES.md) - Enforce team standards
-2. [Memory System](./MEMORY.md) - Track decisions and context
-3. [Integration Guide](./INTEGRATION.md#common-workflows) - Team workflows
-
-### 🤝 Contributors
-
-1. [Overview](./OVERVIEW.md#implementation-roadmap) - Development roadmap
-2. [Implementation Details](./IMPLEMENTATION.md) - Architecture details
-3. [Agent Compatibility](./AGENT-COMPATIBILITY.md) - Platform integrations
-
----
-
-## The Four Layers
-
-### 1. [Rules Engine](./RULES.md)
-
-**Project-specific coding standards, conventions, and constraints enforced across any AI agent.**
-
-- Three activation modes: `always`, `manual`, `context` (file-pattern based)
-- Cross-agent compatibility (Cursor, Zed, VSCode, Claude Desktop)
-- Priority-based conflict resolution
-- Automatic format conversion (`.cursorrules`, `AGENTS.md`)
-
-### 2. [Memory System](./MEMORY.md)
-
-**Session continuity, architectural decisions, and progress tracking that persists across conversations.**
-
-- Four-file architecture: `activeContext`, `progress`, `decisionLog`, `projectContext`
-- Git-friendly markdown storage
-- Automatic staleness detection
-- Optional SQLite indexing for semantic search
-
-### 3. [Documentation Layer](./DOCS.md)
-
-**AI-optimized project documentation with enforced structure, consistency validation, and cross-model compatibility.**
-
-- Three templates: API, Architecture, Guide
-- Automated consistency validation
-- LLM-specific optimization (Claude, GPT-4, Gemini)
-- Cross-reference linking
-
-### 4. [Planning Layer](./PLANNING.md)
-
-**Feature planning with task decomposition, dependency management, and automatic execution validation.**
-
-- Task complexity scoring (1-10)
-- Dependency management and milestone grouping
-- **Automatic validation** via file monitoring, tests, git commits
-- Confidence scoring for completion (0-1)
-
----
-
-## Topic-Based Navigation
-
-### Getting Started
-
-- Installation → [Quick Start](./QUICKSTART.md#step-1-install-devflow)
-- Project Setup → [Quick Start](./QUICKSTART.md#step-2-initialize-in-your-project)
-- First Rule → [Quick Start](./QUICKSTART.md#step-3-create-your-first-rule)
-- Agent Connection → [Quick Start](./QUICKSTART.md#step-5-connect-to-your-ai-agent)
-
-### Rules Management
-
-- Creating Rules → [Rules Engine](./RULES.md#mcp-primitives)
-- Rule Types → [Rules Engine](./RULES.md#file-format-mdc-markdown-component)
-- Priority System → [Rules Engine](./RULES.md#conflict-resolution)
-- Examples → [Rules Engine](./RULES.md#examples)
-
-### Memory & Context
-
-- Decision Logging → [Memory System](./MEMORY.md#decisionlogmd)
-- Active Context → [Memory System](./MEMORY.md#activecontextmd)
-- Progress Tracking → [Memory System](./MEMORY.md#progressmd)
-- Project Context → [Memory System](./MEMORY.md#projectcontextmd)
-
-### Documentation
-
-- Templates → [Documentation Layer](./DOCS.md#template-specifications)
-- API Docs → [Documentation Layer](./DOCS.md#api-template)
-- Architecture Docs → [Documentation Layer](./DOCS.md#architecture-template)
-- Validation → [Documentation Layer](./DOCS.md#validation-rules)
-
-### Planning
-
-- Creating Plans → [Planning Layer](./PLANNING.md#plan-schema)
-- Task Management → [Planning Layer](./PLANNING.md#task-structure)
-- Auto-Validation → [Planning Layer](./PLANNING.md#automatic-validation)
-- Milestones → [Planning Layer](./PLANNING.md#milestone-grouping)
-
-### Integration
-
-- Unified Context → [Integration Guide](./INTEGRATION.md#unified-context-loading)
-- Cross-Layer Linking → [Integration Guide](./INTEGRATION.md#bidirectional-linking)
-- Workflows → [Integration Guide](./INTEGRATION.md#common-workflows)
-- Consistency Checks → [Integration Guide](./INTEGRATION.md#consistency-validation)
-
-### Agent Platforms
-
-- Claude Desktop → [Agent Compatibility](./AGENT-COMPATIBILITY.md#claude-desktop)
-- Cursor → [Agent Compatibility](./AGENT-COMPATIBILITY.md#cursor)
-- Zed → [Agent Compatibility](./AGENT-COMPATIBILITY.md#zed)
-- VSCode → [Agent Compatibility](./AGENT-COMPATIBILITY.md#vscode)
-
----
-
-## Common Use Cases
-
-### "I want to enforce TypeScript standards"
-
-1. Read [Rules Engine](./RULES.md#overview)
-2. Create rules with [Rules: Create Tool](./RULES.md#rulescreate)
-3. See [Rule Examples](./RULES.md#examples)
-
-### "I want to track architectural decisions"
-
-1. Read [Memory System](./MEMORY.md#decisionlogmd)
-2. Use [Decision Logging Tool](./MEMORY.md#memorydecisionlog)
-3. See [Decision Template](./MEMORY.md#decision_template)
-
-### "I want to plan a new feature"
-
-1. Read [Planning Layer](./PLANNING.md#overview)
-2. Use [Plan Create Tool](./PLANNING.md#plancreate)
-3. See [Common Workflows](./INTEGRATION.md#workflow-1-starting-a-new-feature)
-
-### "I want to create AI-optimized documentation"
-
-1. Read [Documentation Layer](./DOCS.md#overview)
-2. Choose a [Template](./DOCS.md#template-specifications)
-3. Use [Doc Create Tool](./DOCS.md#doccreate)
-
-### "I want to onboard a new team member"
-
-1. Follow [Onboarding Workflow](./INTEGRATION.md#workflow-5-onboarding-new-team-member)
-2. Share [Project Context](./MEMORY.md#projectcontextmd)
-3. Review [Active Rules](./RULES.md#devflowcontextrules)
-
-### "I need to debug an issue"
-
-1. Follow [Debugging Workflow](./INTEGRATION.md#workflow-4-debugging-issue-resolution)
-2. Add [Blocker](./MEMORY.md#memoryblockeradd)
-3. Log [Resolution](./MEMORY.md#memoryblockerresolve)
-
-### "I need to review code quality"
-
-1. Follow [Code Review Workflow](./INTEGRATION.md#workflow-3-code-review-quality-check)
-2. Use [Rules Validate](./RULES.md#rulesvalidate)
-3. Check [Consistency](./INTEGRATION.md#consistency-validation)
-
----
-
-## Reference
+## Documentation Index
 
 ### Core Documentation
 
-| Document                           | Purpose                                                  |
-| ---------------------------------- | -------------------------------------------------------- |
-| [OVERVIEW.md](./OVERVIEW.md)       | Vision, architecture philosophy, differentiation         |
-| [RULES.md](./RULES.md)             | Layer 1: Rules engine specification                      |
-| [MEMORY.md](./MEMORY.md)           | Layer 2: Memory system architecture                      |
-| [DOCS.md](./DOCS.md)               | Layer 3: Documentation management                        |
-| [PLANNING.md](./PLANNING.md)       | Layer 4: Planning and validation                         |
-| [INTEGRATION.md](./INTEGRATION.md) | Cross-layer workflows and unified context                |
-| [SECURITY.md](./SECURITY.md)       | Security policy, best practices, vulnerability reporting |
+| Document                             | Purpose                                        |
+| ------------------------------------ | ---------------------------------------------- |
+| [MEMORY.md](./MEMORY.md)             | Complete memory system documentation           |
+| [SETUP.md](./SETUP.md)               | Installation, configuration, and project setup |
+| [TESTING.md](./TESTING.md)           | Testing guide and strategies                   |
+| [SECURITY.md](./SECURITY.md)         | Security policy and best practices             |
+| [CI.md](./CI.md)                     | CI/CD workflow documentation                   |
+| [CI-QUICK-REF.md](./CI-QUICK-REF.md) | Quick CI reference guide                       |
 
-### API & Technical Reference
+### Technical Reference
 
-| Document                                           | Purpose                                   |
-| -------------------------------------------------- | ----------------------------------------- |
-| [MCP-PRIMITIVES.md](./MCP-PRIMITIVES.md)           | Complete tools, resources, prompts API    |
-| [AGENT-COMPATIBILITY.md](./AGENT-COMPATIBILITY.md) | Platform-specific integration guides      |
-| [IMPLEMENTATION.md](./IMPLEMENTATION.md)           | Technical architecture and implementation |
-| [EXAMPLES.md](./EXAMPLES.md)                       | Real-world usage patterns and workflows   |
-
-### Additional Resources
-
-| Document                     | Purpose                                 |
-| ---------------------------- | --------------------------------------- |
-| [SETUP.md](./SETUP.md)       | Project setup and dependency management |
-| [SECURITY.md](./SECURITY.md) | Security policy and best practices      |
+| Document                                             | Purpose                              |
+| ---------------------------------------------------- | ------------------------------------ |
+| [STORAGE-ARCHITECTURE.md](./STORAGE-ARCHITECTURE.md) | Storage engine and repository design |
 
 ---
 
-## Troubleshooting
+## Memory System Overview
 
-### Installation Issues
+DevFlow provides persistent context management across sessions through the memory system:
 
-- [DevFlow command not found](./QUICKSTART.md#devflow-command-not-found)
-- [Permission denied](./QUICKSTART.md#permission-denied)
+- **activeContext.md** - Current work and focus area
+- **progress.md** - Session progress and accomplishments
+- **decisionLog.md** - Architectural decisions and reasoning
+- **projectContext.md** - Project-wide metadata and setup
 
-### Rules Issues
+### Memory Tools
 
-- [Rules not loading](./RULES.md#rules-not-loading)
-- [Rule conflicts](./RULES.md#conflicts-between-rules)
-- [Agent not respecting rules](./RULES.md#agent-not-respecting-rules)
+- `memory-save` - Create or update memory files
+- `memory-get` - Retrieve specific memory by name
+- `memory-list` - List all memories in the bank
+- `memory-delete` - Remove memory files
+- `memory-init` - Initialize memory bank with core files
+- `memory-context` - Get combined context (activeContext + progress)
+- `memory-update` - Review and update all memory files
 
-### Memory Issues
+### Memory Resources
 
-- [Memory not loading](./MEMORY.md#memory-not-loading)
-- [Slow search](./MEMORY.md#slow-search-phase-1)
-- [SQLite sync issues](./MEMORY.md#sqlite-index-out-of-sync-phase-2)
+- `devflow://context/memory` - Combined context resource (Cursor)
+- `devflow://memory/{name}` - Individual memory file resource
 
-### Integration Issues
+### Memory Prompts
 
-- [Broken cross-references](./INTEGRATION.md#issue-broken-cross-references)
-- [Stale context](./INTEGRATION.md#issue-stale-context)
-- [Conflicting information](./INTEGRATION.md#issue-conflicting-information)
+- `memory:load` - Load and format specific memory (Zed workaround)
+
+---
+
+## Common Workflows
+
+### Initialize Memory System
+
+```bash
+devflow memory-init
+```
+
+This creates the four core memory files with templates ready for your project.
+
+### Save Current Context
+
+```bash
+devflow memory-save name=activeContext content="Working on authentication module..."
+```
+
+### Get Session Progress
+
+```bash
+devflow memory-context
+```
+
+Returns combined activeContext + progress for quick session refresh.
+
+### List All Memories
+
+```bash
+devflow memory-list
+```
+
+### Update Memory
+
+```bash
+devflow memory-update
+```
+
+Opens guided review workflow for all memory files.
+
+---
+
+## Agent Integration
+
+### Claude Desktop
+
+Add to your `mcp.json`:
+
+```json
+{
+	"mcpServers": {
+		"devflow": {
+			"command": "devflow",
+			"args": ["serve"]
+		}
+	}
+}
+```
+
+### Cursor
+
+Add to your `mcp.json`:
+
+```json
+{
+	"mcpServers": {
+		"devflow": {
+			"command": "devflow",
+			"args": ["serve", "--stdio"]
+		}
+	}
+}
+```
+
+### Zed
+
+Add to your `settings.json`:
+
+```json
+{
+	"context_servers": {
+		"devflow": {
+			"command": "devflow",
+			"args": ["serve", "--stdio"]
+		}
+	}
+}
+```
 
 ---
 
 ## Quick Command Reference
 
 ```bash
-# Installation
-npm install -g devflow-mcp
+# Initialize memory bank
+bun run serve
 
-# Setup
-devflow init
+# Run tests
+bun test
 
-# Rules
-devflow rules:create --name "Rule Name" --type always
-devflow rules:list
-devflow rules:validate src/file.ts
+# Type check
+bun run type-check
 
-# Memory
-devflow memory:decision:log --title "Decision Title"
-devflow memory:context:set --focus "Current Task"
-devflow memory:recall --query "authentication"
+# Lint code
+bun run lint
 
-# Documentation
-devflow doc:create --type api --title "API Name"
-devflow doc:validate docs/api/auth.md
+# Format code
+bun run format
 
-# Planning
-devflow plan:create --name "Feature Name" --size medium
-devflow plan:task:update --task-id task-123 --status completed
+# Check circular dependencies
+bun run check:circular
 
-# Integration
-devflow sync:validate
-devflow status
+# Build distribution
+bun run build
 ```
 
 ---
 
-## Contributing to Documentation
+## Development
 
-Found an issue or want to improve the docs?
+### Running Tests
 
-1. **Typos/Errors** - Open an issue or submit a PR
-2. **Missing Examples** - Add to [EXAMPLES.md](./EXAMPLES.md)
-3. **New Use Cases** - Update this README with relevant links
-4. **Unclear Sections** - Flag for rewriting
-
-**Documentation Standards:**
-
-- Use clear, concise language
-- Include examples for all features
-- Keep files under 500 lines
-- Link related resources
-- Use active voice and short sentences
-
----
-
-## Architecture Overview
-
-DevFlow provides a unified context system across four independent layers:
-
+```bash
+bun test                    # Run all tests
+bun test:watch             # Watch mode
+bun test:coverage          # Coverage report
+bun test:ui                # Interactive UI
 ```
-┌─────────────────────────────────────────────────────────────┐
-│                    Unified Context                          │
-│  (Auto-loaded when agent connects to DevFlow MCP server)   │
-└─────────────────────────────────────────────────────────────┘
-         ↓              ↓              ↓              ↓
-    ┌────────┐   ┌──────────┐   ┌──────────────┐   ┌─────────┐
-    │ Rules  │   │ Memory   │   │Documentation │   │Planning │
-    │ Engine │ ↔ │ System   │ ↔ │   Layer      │ ↔ │ Layer   │
-    └────────┘   └──────────┘   └──────────────┘   └─────────┘
-       ↓              ↓              ↓              ↓
-    Project      Decision       Knowledge      Task
-   Standards     Tracking         Base      Validation
+
+### Code Quality
+
+```bash
+bun run lint               # Check for issues
+bun run lint:fix           # Auto-fix issues
+bun run format             # Format code
+bun run type-check         # TypeScript validation
+bun run check:circular     # Check dependencies
+```
+
+### Building
+
+```bash
+bun run build              # Compile TypeScript
 ```
 
 ---
 
 ## Project Status
 
-**Current Phase:** Phase 1 - Foundation
+**Memory Module Status:** ✅ Fully Implemented
 
-- ✅ Project structure and tooling
-- ✅ Documentation architecture
-- ⏳ Core layer implementations
-- ⏳ MCP server implementation
+- ✅ Memory save/get/list/delete tools
+- ✅ Memory init tool with template generation
+- ✅ Memory context and update prompts
+- ✅ Dynamic memory resources
+- ✅ Comprehensive integration tests
+- ✅ Full type safety with Zod schemas
 
-[Full implementation roadmap →](./OVERVIEW.md#implementation-roadmap)
+---
+
+## Architecture
+
+DevFlow uses a modular architecture:
+
+```
+src/
+├── core/
+│   ├── config.ts          # Project root detection
+│   ├── schemas/           # Zod validation schemas
+│   └── storage/           # File I/O abstraction
+├── layers/
+│   └── memory/            # Memory repository
+├── mcp/
+│   ├── tools/memory.ts    # Memory tools
+│   ├── resources/memory.ts # Memory resources
+│   └── prompts/memory.ts  # Memory prompts
+├── cli/                   # CLI entry point
+└── index.ts              # Main server
+```
+
+---
+
+## Key Features
+
+- **Persistent Context** - Session continuity across conversations
+- **Git-Friendly** - Plain Markdown files, human-readable
+- **Type-Safe** - Full TypeScript with Zod validation
+- **Cross-Platform** - Works with Claude, Cursor, Zed, VSCode
+- **Simple API** - Easy-to-use tools and resources
+- **Zero Config** - Works out of the box after `memory-init`
+
+---
+
+## Troubleshooting
+
+### Memory not loading
+
+Check that `.devflow/memory/` directory exists:
+
+```bash
+ls -la .devflow/memory/
+```
+
+Run `memory-init` if missing.
+
+### Server won't start
+
+Check the error logs:
+
+```bash
+bun run dev 2>&1
+```
+
+Ensure all dependencies are installed:
+
+```bash
+bun install
+```
+
+### Tests failing
+
+Run with verbose output:
+
+```bash
+bun test --reporter=verbose
+```
+
+Check the [Testing Guide](./TESTING.md) for more help.
 
 ---
 
 ## Resources
 
-**External Links:**
+**External:**
 
 - [Model Context Protocol](https://modelcontextprotocol.io)
 - [MCP SDK](https://github.com/modelcontextprotocol/typescript-sdk)
 
-**Inspiration:**
+**Documentation:**
 
-- [Cline Memory Bank](https://docs.cline.bot/prompting/cline-memory-bank)
-- [AGENTS.md Standard](https://www.infoq.com/news/2025/08/agents-md/)
+- [Memory System](./MEMORY.md) - Complete memory documentation
+- [Storage Architecture](./STORAGE-ARCHITECTURE.md) - Technical details
+- [Setup Guide](./SETUP.md) - Installation and configuration
+- [Testing Guide](./TESTING.md) - Testing strategies
 
 ---
 
-**Ready to dive in?** Start with the [Quick Start Guide](./QUICKSTART.md) or explore the [Overview](./OVERVIEW.md).
+**Ready to start?** Read the [Memory System](./MEMORY.md) documentation or follow [Setup Guide](./SETUP.md).

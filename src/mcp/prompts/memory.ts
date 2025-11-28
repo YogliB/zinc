@@ -4,80 +4,6 @@ import type { Prompt } from 'fastmcp';
 
 type SessionAuth = Record<string, unknown> | undefined;
 
-export function createMemoryContextPrompt(
-	repository: MemoryRepository,
-): Prompt<SessionAuth> {
-	return {
-		name: 'memory:context',
-		description:
-			'Get combined memory context (activeContext + progress) - Zed workaround for auto-loaded resources',
-		arguments: [],
-		load: async (): Promise<string> => {
-			console.error(
-				'[DevFlow:INFO] Prompt called: memory:context (Zed workaround)',
-			);
-
-			const sections: string[] = [];
-
-			try {
-				const activeContext =
-					await repository.getMemory('activeContext');
-				sections.push(
-					'# Active Context\n',
-					activeContext.content,
-					'\n',
-				);
-				console.error(
-					'[DevFlow:INFO] Prompt operation succeeded: context (activeContext loaded)',
-				);
-			} catch (error) {
-				if (error instanceof FileNotFoundError) {
-					console.error(
-						'[DevFlow:WARN] Prompt operation partial: activeContext.md missing, returning progress only',
-					);
-				} else {
-					const errorMessage =
-						error instanceof Error
-							? error.message
-							: 'Unknown error';
-					console.error(
-						`[DevFlow:WARN] Failed to load activeContext in prompt: ${errorMessage}`,
-					);
-				}
-			}
-
-			try {
-				const progress = await repository.getMemory('progress');
-				sections.push('# Progress\n', progress.content);
-				console.error(
-					'[DevFlow:INFO] Prompt operation succeeded: context (progress loaded)',
-				);
-			} catch (error) {
-				if (error instanceof FileNotFoundError) {
-					console.error(
-						'[DevFlow:WARN] Prompt operation partial: progress.md missing, skipping',
-					);
-				} else {
-					const errorMessage =
-						error instanceof Error
-							? error.message
-							: 'Unknown error';
-					console.error(
-						`[DevFlow:WARN] Failed to load progress in prompt: ${errorMessage}`,
-					);
-				}
-			}
-
-			const combinedText =
-				sections.length > 0
-					? sections.join('\n')
-					: '# Memory Bank Context\n\nNo memory files found.';
-
-			return combinedText;
-		},
-	};
-}
-
 interface MemoryLoadPromptArguments {
 	name: string;
 }
@@ -161,5 +87,3 @@ export function createMemoryLoadPrompt(
 		},
 	};
 }
-
-export { createMemoryUpdatePrompt } from './memory-update';

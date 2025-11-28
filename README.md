@@ -1,74 +1,86 @@
 # DevFlow MCP
 
-**Universal project context management for AI agents** - unifying rules, memory, documentation, and planning in a single MCP server.
+**Memory-only MCP server for maintaining context across sessions with any AI agent.**
 
-🚧 **Status:** In Development (Phase 1 - Foundation)
+✅ **Status:** Production Ready
 
 [![CI](https://github.com/YogliB/dev-toolkit-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/YogliB/dev-toolkit-mcp/actions/workflows/ci.yml)
 
 ## What is DevFlow?
 
-DevFlow solves the fundamental problem of **AI agents forgetting context between sessions**. It provides four independent but complementary layers that work with any MCP-compatible AI agent:
+DevFlow solves the fundamental problem of **AI agents forgetting context between sessions**. It provides a persistent memory system that works with any MCP-compatible AI agent:
 
-- **Rules** - Project coding standards and conventions
-- **Memory** - Session continuity and decision tracking
-- **Documentation** - AI-optimized knowledge base
-- **Planning** - Task management with automatic validation
+- **Persistent Memory** - Session continuity across conversations
+- **Decision Tracking** - Log and recall architectural decisions
+- **Progress Management** - Track accomplishments and blockers
+- **Project Context** - Maintain project-wide metadata
 
 ## Quick Start
 
 ```bash
-# Install (when available)
+# Install
 npm install -g devflow-mcp
 
 # Initialize in your project
 cd your-project
-devflow init
+devflow memory-init
 ```
 
-**📚 [5-Minute Quick Start Guide](./docs/QUICKSTART.md)** - Get started immediately
+**📚 [Memory System Documentation](./docs/MEMORY.md)** - Complete guide
 
-## Documentation
+## Memory System
 
-### For New Users
+DevFlow provides four core memory files for comprehensive context management:
 
-- **[Quick Start](./docs/QUICKSTART.md)** - 5-minute hello world
-- **[Overview](./docs/OVERVIEW.md)** - Vision and architecture
-- **[Integration Guide](./docs/INTEGRATION.md)** - Cross-layer workflows
+### Core Memory Files
 
-### Layer Documentation
+- **activeContext.md** - Current work and immediate focus
+- **progress.md** - Session progress and accomplishments
+- **decisionLog.md** - Architectural decisions and reasoning
+- **projectContext.md** - Project metadata and setup information
 
-- **[Rules Engine](./docs/RULES.md)** - Define project standards
-- **[Memory System](./docs/MEMORY.md)** - Session continuity
-- **[Documentation Layer](./docs/DOCS.md)** - AI-optimized docs
-- **[Planning Layer](./docs/PLANNING.md)** - Task validation
+### Memory Tools
 
-### Reference
+All tools available via MCP protocol:
 
-- **[MCP Primitives](./docs/MCP-PRIMITIVES.md)** - Tools, resources, prompts API
-- **[Agent Compatibility](./docs/AGENT-COMPATIBILITY.md)** - Platform-specific guides
-- **[Implementation Details](./docs/IMPLEMENTATION.md)** - Technical architecture
-- **[Examples](./docs/EXAMPLES.md)** - Real-world workflows
+- `memory-save` - Create/update memory files with optional frontmatter
+- `memory-get` - Retrieve specific memory by name
+- `memory-list` - List all memories in the bank
+- `memory-delete` - Remove memory files
+- `memory-init` - Initialize memory bank with core template files
+- `memory-context` - Get combined activeContext + progress for quick session refresh
+- `memory-update` - Review all memory files with guided update workflow
 
-**📖 [Full Documentation Index](./docs/README.md)**
+### Memory Resources
 
-## Memory MCP
+- `devflow://context/memory` - Combined context resource (Cursor)
+- `devflow://memory/{name}` - Individual memory file resource
 
-**Memory tools and resources** for maintaining context across sessions in Cursor and Zed.
+### Memory Prompts
 
-### Features
+- `memory:load` - Load and format specific memory (Zed workaround)
+- `memory:context` - Get session context summary
 
-- **memory:save** - Create/update memory files with metadata
-- **memory:get** - Retrieve specific memory by name
-- **memory:list** - List all memories in the bank
-- **memory:delete** - Remove memory files
-- **devflow://context/memory** (Cursor) - Auto-loaded session context
-- **@memory:context** (Zed) - Manual context prompt
-- **@memory:load** (Zed) - Load specific memory via prompt
+## Setup by Agent
 
-### Setup
+### Claude Desktop
 
-#### Cursor
+Create `mcp.json` in your project root:
+
+```json
+{
+	"mcpServers": {
+		"devflow": {
+			"command": "devflow",
+			"args": ["serve"]
+		}
+	}
+}
+```
+
+Then use tools like `/memory-save name=activeContext content="..."`
+
+### Cursor
 
 Create `mcp.json` in your project root:
 
@@ -83,14 +95,16 @@ Create `mcp.json` in your project root:
 }
 ```
 
-Then use in Cursor Composer or Chat:
+Use in Composer or Chat:
 
-```
-/memory:save name=activeContext content="Current work..."
-/memory:list
-```
+- `/memory-save` - Save memory
+- `/memory-list` - List memories
+- `/memory-context` - Get session context
+- `/memory-update` - Review and update
 
-#### Zed
+Access auto-loaded context via `devflow://context/memory` resource.
+
+### Zed
 
 Add to your `settings.json`:
 
@@ -105,125 +119,69 @@ Add to your `settings.json`:
 }
 ```
 
-Then use in Zed Assistant:
+Use in Assistant:
 
-- Type `@memory:context` to get session context
-- Type `@memory:load name=<name>` to load specific memory
-- Use `/memory:save`, `/memory:get`, `/memory:list`, `/memory:delete` commands
+- `/memory-context` - Get combined context
+- `/memory-update` - Review all files
+- `/memory-save`, `/memory-get`, `/memory-list`, `/memory-delete`
+- `/memory-init` - Initialize
 
-**See [Memory Configuration Guide](./docs/MEMORY.md) for details**
+**[Setup Guide](./docs/SETUP.md)** - Detailed configuration instructions
 
-## Why DevFlow?
+## Documentation
 
-Current AI coding tools suffer from **context fragmentation**:
+### Getting Started
 
-- ❌ Rules scattered across `.cursorrules`, wikis, READMEs
-- ❌ Memory resets between sessions
-- ❌ Documentation optimized for humans, not LLMs
-- ❌ Planning tools require manual status updates
+- **[Memory System](./docs/MEMORY.md)** - Complete memory documentation
+- **[Setup Guide](./docs/SETUP.md)** - Installation and configuration
+- **[Testing Guide](./docs/TESTING.md)** - Running and writing tests
 
-**DevFlow unifies everything:**
+### Reference
 
-- ✅ One source of truth for project standards
-- ✅ Persistent memory across sessions
-- ✅ AI-optimized documentation
-- ✅ Automatic task validation
+- **[Storage Architecture](./docs/STORAGE-ARCHITECTURE.md)** - Technical details
+- **[Security Policy](./docs/SECURITY.md)** - Best practices
+- **[CI Workflow](./docs/CI.md)** - Continuous integration
+
+**📖 [Full Documentation Index](./docs/README.md)**
 
 ## Key Features
 
-- **Cross-Agent Compatible** - Works with Claude Desktop, Cursor, Zed, VSCode
-- **Git-Friendly Storage** - Human-readable Markdown and JSON
-- **Automatic Validation** - Tasks validated via file changes, tests, commits
-- **Bidirectional Linking** - Rules ↔ Memory ↔ Docs ↔ Plans
-- **Modular Architecture** - Use one layer or all four
+- **Persistent Across Sessions** - Memory survives between conversations
+- **Git-Friendly Storage** - Plain Markdown files, human-readable
+- **Type-Safe** - Full TypeScript with Zod validation
+- **Cross-Platform** - Works with Claude, Cursor, Zed, VSCode
+- **Simple API** - Easy-to-use tools and resources
+- **Zero Config** - Works immediately after `memory-init`
+- **Optional Metadata** - Frontmatter for organization
+- **Large File Support** - Handles files up to 2MB+
 
-## Agent Integration
+## Why DevFlow?
 
-### Claude Desktop
+Current AI coding tools suffer from **context loss**:
 
-```json
-{
-	"mcpServers": {
-		"devflow": {
-			"command": "devflow",
-			"args": ["serve"]
-		}
-	}
-}
-```
+- ❌ Memory resets between conversations
+- ❌ Decisions get forgotten and re-debated
+- ❌ Progress tracking scattered across multiple places
+- ❌ Context loading manual and tedious
 
-### Cursor
+**DevFlow fixes this:**
 
-```bash
-devflow generate cursorrules
-```
-
-### Zed
-
-```json
-{
-	"context_servers": {
-		"devflow": {
-			"command": "devflow serve --stdio"
-		}
-	}
-}
-```
-
-**[Platform-Specific Setup Guides](./docs/AGENT-COMPATIBILITY.md)**
+- ✅ Persistent memory across all sessions
+- ✅ Automatic context availability
+- ✅ Centralized decision tracking
+- ✅ Works with any MCP-compatible agent
 
 ## Project Status
 
-**Current Phase:** Phase 1 - Foundation (Weeks 1-2)
+**Memory Module:** ✅ Production Ready
 
-- ✅ Project structure and tooling
-- ✅ Documentation architecture
-- ⏳ File storage infrastructure
-- ⏳ Core MCP primitives
-- ⏳ Layer implementations
-
-**[Detailed Roadmap](./docs/OVERVIEW.md#implementation-roadmap)**
-
-## Development
-
-### Scripts
-
-```bash
-# Linting and formatting
-bun run lint           # Run ESLint
-bun run lint:fix      # Fix ESLint issues
-bun run format        # Format with Prettier
-bun run format:check  # Check formatting
-
-# Type checking and testing
-bun run type-check    # TypeScript type checking
-bun run test          # Run all tests
-bun run test:watch    # Run tests in watch mode
-bun run test:coverage # Generate coverage report
-
-# Circular dependency checks
-bun run check:circular        # Quick check (circular deps only)
-bun run check:circular:verbose # Full dependency tree
-bun run check:circular:ci      # CI mode (fails on circular deps)
-```
-
-### Circular Dependency Checks
-
-The project uses [dpdm-fast](https://github.com/GrinZero/dpdm-fast) to automatically detect circular dependencies in the codebase. This runs both locally and in CI to prevent architectural issues from accumulating.
-
-**Local workflow:**
-
-```bash
-# Before committing, check for circular dependencies
-bun run check:circular
-
-# For debugging, see the full dependency tree
-bun run check:circular:verbose
-```
-
-**CI enforcement:**
-
-The `circular-deps` job runs on every push and PR. If circular dependencies are detected, CI will fail and block merging. This ensures code quality stays high as the project evolves.
+- ✅ Memory save/get/list/delete tools
+- ✅ Memory init tool with template generation
+- ✅ Memory context and update tools
+- ✅ Dynamic memory resources
+- ✅ Comprehensive integration tests (26/26 passing)
+- ✅ Full type safety with Zod schemas
+- ✅ Cross-platform MCP compatibility
 
 ## Technology Stack
 
@@ -232,41 +190,131 @@ The `circular-deps` job runs on every push and PR. If circular dependencies are 
 - **Bun 1.3.2** - Fast package management and runtime
 - **Vitest** - Modern testing framework
 - **Markdown/JSON** - Git-friendly storage
-- **dpdm-fast** - Circular dependency detection
+- **Zod** - Schema validation
+
+## Development
+
+### Quick Commands
+
+```bash
+# Install dependencies
+bun install
+
+# Run tests
+bun test
+
+# Type check
+bun run type-check
+
+# Build
+bun run build
+
+# Lint & format
+bun run lint:fix
+bun run format
+```
+
+### Testing
+
+```bash
+# All tests
+bun test
+
+# Watch mode
+bun test:watch
+
+# Coverage
+bun test:coverage
+
+# Interactive UI
+bun test:ui
+```
+
+**[Testing Guide](./docs/TESTING.md)** - Detailed testing documentation
 
 ## Contributing
 
-DevFlow is designed to be modular and extensible. Contributions welcome!
+DevFlow is actively maintained and welcomes contributions!
 
 **Focus Areas:**
 
-- Additional agent integrations
+- Bug fixes and stability improvements
+- Documentation enhancements
 - Performance optimizations
-- Template libraries (rules, docs, plans)
-- Documentation improvements
+- Additional agent integration examples
+- Testing improvements
+
+**Getting Started:**
+
+1. Fork the repository
+2. Create a feature branch
+3. Make your changes
+4. Run tests: `bun test`
+5. Submit a pull request
+
+**Before Pushing:**
+
+```bash
+bun run lint:fix    # Fix linting
+bun run format      # Format code
+bun run type-check  # Check types
+bun test            # Run tests
+```
+
+See [Setup Guide](./docs/SETUP.md) for detailed development instructions.
+
+## Architecture
+
+DevFlow uses a clean, modular architecture focused on memory:
+
+```
+src/
+├── core/
+│   ├── config.ts          # Project root detection
+│   ├── schemas/           # Zod validation (memory only)
+│   └── storage/           # File I/O abstraction
+├── layers/
+│   └── memory/            # Memory repository
+├── mcp/
+│   ├── tools/memory.ts    # 7 memory tools
+│   ├── resources/memory.ts # 2 memory resources
+│   └── prompts/memory.ts  # 2 memory prompts
+├── cli/                   # CLI entry point
+├── index.ts              # Main MCP server
+└── index.test.ts         # Integration tests
+```
+
+**[Storage Architecture](./docs/STORAGE-ARCHITECTURE.md)** - Technical deep dive
+
+## Security
+
+- **Path Validation** - All file operations validated to prevent traversal attacks
+- **Type Safety** - Full TypeScript with Zod schema validation
+- **No External Calls** - Everything local to your project
+- **Git-Friendly** - Easy to audit changes in version control
+
+**[Security Policy](./docs/SECURITY.md)** - Full details
 
 ## License
 
-MIT - Build whatever you want on top of DevFlow.
+MIT - Build whatever you want with DevFlow.
 
 ## Resources
 
-**Project Links:**
+**External:**
 
-- [Documentation](./docs/README.md)
-- [Setup Guide](./SETUP.md)
-- [Architecture Overview](./docs/OVERVIEW.md)
+- [Model Context Protocol](https://modelcontextprotocol.io) - MCP specification
+- [MCP SDK](https://github.com/modelcontextprotocol/typescript-sdk) - TypeScript SDK
 
-**MCP Resources:**
+**Documentation:**
 
-- [Model Context Protocol](https://modelcontextprotocol.io)
-- [MCP SDK](https://github.com/modelcontextprotocol/typescript-sdk)
-
-**Inspiration:**
-
-- [Cline Memory Bank](https://docs.cline.bot/prompting/cline-memory-bank)
-- [AGENTS.md Standard](https://www.infoq.com/news/2025/08/agents-md/)
+- [Memory System](./docs/MEMORY.md) - Complete documentation
+- [Storage Architecture](./docs/STORAGE-ARCHITECTURE.md) - Technical reference
+- [Setup Guide](./docs/SETUP.md) - Installation guide
+- [Testing Guide](./docs/TESTING.md) - Testing strategies
 
 ---
 
-**Ready to start?** Follow the **[Quick Start Guide](./docs/QUICKSTART.md)** or dive into the **[Documentation](./docs/README.md)**.
+**Ready to start?** Read the [Memory System Documentation](./docs/MEMORY.md) or follow the [Setup Guide](./docs/SETUP.md).
+
+For issues, questions, or suggestions, please open an issue on GitHub.

@@ -28,7 +28,7 @@ describe('Memory Init Tool', () => {
 		it('should initialize memory bank with 4 core files', async () => {
 			(
 				mockRepository.saveMemory as ReturnType<typeof vi.fn>
-			).mockResolvedValue(undefined);
+			).mockResolvedValue();
 
 			const tool = createMemoryInitTool(mockRepository);
 			const result = await tool.execute();
@@ -47,7 +47,7 @@ describe('Memory Init Tool', () => {
 		it('should set correct path in result', async () => {
 			(
 				mockRepository.saveMemory as ReturnType<typeof vi.fn>
-			).mockResolvedValue(undefined);
+			).mockResolvedValue();
 
 			const tool = createMemoryInitTool(mockRepository);
 			const result = await tool.execute();
@@ -59,7 +59,7 @@ describe('Memory Init Tool', () => {
 		it('should include timestamp in result', async () => {
 			(
 				mockRepository.saveMemory as ReturnType<typeof vi.fn>
-			).mockResolvedValue(undefined);
+			).mockResolvedValue();
 
 			const tool = createMemoryInitTool(mockRepository);
 			const result = await tool.execute();
@@ -74,7 +74,7 @@ describe('Memory Init Tool', () => {
 		it('should call saveMemory for each template', async () => {
 			(
 				mockRepository.saveMemory as ReturnType<typeof vi.fn>
-			).mockResolvedValue(undefined);
+			).mockResolvedValue();
 
 			const tool = createMemoryInitTool(mockRepository);
 			await tool.execute();
@@ -85,7 +85,7 @@ describe('Memory Init Tool', () => {
 		it('should save files with correct names', async () => {
 			(
 				mockRepository.saveMemory as ReturnType<typeof vi.fn>
-			).mockResolvedValue(undefined);
+			).mockResolvedValue();
 
 			const tool = createMemoryInitTool(mockRepository);
 			await tool.execute();
@@ -104,7 +104,7 @@ describe('Memory Init Tool', () => {
 		it('should save files with frontmatter', async () => {
 			(
 				mockRepository.saveMemory as ReturnType<typeof vi.fn>
-			).mockResolvedValue(undefined);
+			).mockResolvedValue();
 
 			const tool = createMemoryInitTool(mockRepository);
 			await tool.execute();
@@ -123,7 +123,7 @@ describe('Memory Init Tool', () => {
 		it('should save files with content', async () => {
 			(
 				mockRepository.saveMemory as ReturnType<typeof vi.fn>
-			).mockResolvedValue(undefined);
+			).mockResolvedValue();
 
 			const tool = createMemoryInitTool(mockRepository);
 			await tool.execute();
@@ -174,7 +174,7 @@ describe('Memory Init Tool', () => {
 		it('should include success message in result', async () => {
 			(
 				mockRepository.saveMemory as ReturnType<typeof vi.fn>
-			).mockResolvedValue(undefined);
+			).mockResolvedValue();
 
 			const tool = createMemoryInitTool(mockRepository);
 			const result = await tool.execute();
@@ -187,7 +187,7 @@ describe('Memory Init Tool', () => {
 		it('should handle optional input schema', async () => {
 			(
 				mockRepository.saveMemory as ReturnType<typeof vi.fn>
-			).mockResolvedValue(undefined);
+			).mockResolvedValue();
 
 			const tool = createMemoryInitTool(mockRepository);
 
@@ -201,7 +201,7 @@ describe('Memory Init Tool', () => {
 		it('should create files in correct order', async () => {
 			(
 				mockRepository.saveMemory as ReturnType<typeof vi.fn>
-			).mockResolvedValue(undefined);
+			).mockResolvedValue();
 
 			const tool = createMemoryInitTool(mockRepository);
 			await tool.execute();
@@ -220,7 +220,7 @@ describe('Memory Init Tool', () => {
 		it('should return proper JSON structure on success', async () => {
 			(
 				mockRepository.saveMemory as ReturnType<typeof vi.fn>
-			).mockResolvedValue(undefined);
+			).mockResolvedValue();
 
 			const tool = createMemoryInitTool(mockRepository);
 			const result = await tool.execute();

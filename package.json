@@ -1,7 +1,7 @@
 {
 	"name": "devflow-mcp",
-	"version": "0.1.0",
-	"description": "A comprehensive MCP server for universal project context management",
+	"version": "1.0.0",
+	"description": "Memory-only MCP server for maintaining context across sessions with any AI agent",
 	"type": "module",
 	"main": "dist/index.js",
 	"types": "dist/index.d.ts",
@@ -38,11 +38,11 @@
 	},
 	"keywords": [
 		"mcp",
-		"project-context",
-		"rules",
 		"memory",
-		"documentation",
-		"planning"
+		"context",
+		"persistent",
+		"session",
+		"ai-agent"
 	],
 	"author": "",
 	"license": "MIT",
