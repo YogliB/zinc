@@ -32,7 +32,7 @@ function readDecisionLogTemplate(): string {
 	return readFileSync(path.join(currentDirectory, 'decisionLog.md'), 'utf8');
 }
 
-export function loadTemplate(templateName: string): LoadedTemplate {
+function loadTemplate(templateName: string): LoadedTemplate {
 	let content: string;
 
 	try {
