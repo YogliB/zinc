@@ -206,8 +206,11 @@ bun test
 # Type check
 bun run type-check
 
-# Build
+# Build standalone executable
 bun run build
+
+# The build creates a single executable at dist/devflow
+# with embedded Bun runtime and bytecode compilation
 
 # Lint & format
 bun run lint:fix

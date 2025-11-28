@@ -31,7 +31,7 @@ export function createMemoryInitTool(repository: MemoryRepository) {
 				const filesCreated: string[] = [];
 				const timestamp = new Date().toISOString();
 
-				const templates = loadAllTemplates();
+				const templates = await loadAllTemplates();
 
 				for (const template of templates) {
 					try {

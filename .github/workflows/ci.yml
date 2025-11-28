@@ -120,6 +120,51 @@ jobs:
             - name: Type check with TypeScript
               run: bun run type-check
 
+    build:
+        name: Build Executable
+        runs-on: ubuntu-latest
+        steps:
+            - name: Checkout code
+              uses: actions/checkout@v4
+
+            - name: Setup Bun
+              uses: oven-sh/setup-bun@v1
+              with:
+                  bun-version: 1.3.2
+
+            - name: Restore Bun dependencies cache
+              uses: actions/cache@v4
+              with:
+                  path: ~/.bun/install/cache
+                  key: ${{ runner.os }}-bun-${{ hashFiles('bun.lock') }}
+                  restore-keys: |
+                      ${{ runner.os }}-bun-
+
+            - name: Install dependencies
+              run: bun install --frozen-lockfile
+
+            - name: Build executable
+              run: bun run build
+
+            - name: Verify executable exists
+              run: test -f ./dist/devflow
+
+            - name: Check executable size
+              run: |
+                  SIZE=$(stat -f%z ./dist/devflow 2>/dev/null || stat -c%s ./dist/devflow)
+                  echo "Executable size: $(numfmt --to=iec-i --suffix=B $SIZE)"
+                  if [ $SIZE -gt 104857600 ]; then
+                    echo "Warning: Executable size exceeds 100MB"
+                    exit 1
+                  fi
+
+            - name: Upload executable artifact
+              uses: actions/upload-artifact@v4
+              with:
+                  name: devflow-executable
+                  path: ./dist/devflow
+                  retention-days: 7
+
     test:
         name: Test
         runs-on: ubuntu-latest
@@ -222,7 +267,16 @@ jobs:
     ci-status:
         name: CI Status
         runs-on: ubuntu-latest
-        needs: [lint, format, type-check, test, security-audit, circular-deps]
+        needs:
+            [
+                lint,
+                format,
+                type-check,
+                build,
+                test,
+                security-audit,
+                circular-deps,
+            ]
         if: always()
         steps:
             - name: Checkout code
@@ -233,6 +287,7 @@ jobs:
                   if [[ "${{ needs.lint.result }}" == "failure" || \
                         "${{ needs.format.result }}" == "failure" || \
                         "${{ needs.type-check.result }}" == "failure" || \
+                        "${{ needs.build.result }}" == "failure" || \
                         "${{ needs.test.result }}" == "failure" || \
                         "${{ needs.security-audit.result }}" == "failure" || \
                         "${{ needs.circular-deps.result }}" == "failure" ]]; then

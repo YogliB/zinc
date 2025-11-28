@@ -13,7 +13,7 @@ The CI workflow (`ci.yml`) runs on:
 
 ## Jobs
 
-The CI pipeline consists of 5 jobs that run in parallel (with a final status check):
+The CI pipeline consists of 6 jobs that run in parallel (with a final status check):
 
 ### 1. Lint
 
@@ -54,7 +54,28 @@ The CI pipeline consists of 5 jobs that run in parallel (with a final status che
 
 **Duration:** ~40-60 seconds
 
-### 4. Test
+### 4. Build
+
+**Purpose:** Compiles the standalone executable and verifies build integrity.
+
+**Command:** `bun run build`
+
+**Fails if:**
+
+- Executable compilation fails
+- Template files cannot be embedded
+- Bytecode compilation encounters errors
+- Executable size exceeds 100MB threshold
+
+**Verification:**
+
+- Checks that `dist/devflow` executable exists
+- Validates executable size is under 100MB
+- Uploads executable as artifact (7-day retention)
+
+**Duration:** ~2-3 minutes
+
+### 5. Test
 
 **Purpose:** Runs the test suite with Vitest and generates coverage reports, with performance monitoring.
 
@@ -84,13 +105,13 @@ The CI pipeline consists of 5 jobs that run in parallel (with a final status che
 
 **Duration:** ~60-120 seconds (includes performance analysis)
 
-### 5. CI Status
+### 6. CI Status
 
 **Purpose:** Aggregates results from all jobs and provides a final pass/fail decision.
 
 **Fails if:**
 
-- Any of the four main jobs (lint, format, type-check, test) failed
+- Any of the main jobs (lint, format, type-check, build, test) failed
 
 **Duration:** ~5 seconds
 

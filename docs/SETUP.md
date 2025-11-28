@@ -28,17 +28,17 @@ bun run dev
 
 ## Available Commands
 
-| Command                 | Purpose                       |
-| ----------------------- | ----------------------------- |
-| `bun run dev`           | Development mode              |
-| `bun run build`         | Compile TypeScript to `dist/` |
-| `bun test`              | Run tests (Vitest)            |
-| `bun run test:ui`       | Interactive test dashboard    |
-| `bun run test:coverage` | Coverage report               |
-| `bun run lint`          | Check code with ESLint        |
-| `bun run lint:fix`      | Auto-fix linting issues       |
-| `bun run format`        | Format with Prettier          |
-| `bun run type-check`    | TypeScript validation         |
+| Command                 | Purpose                                   |
+| ----------------------- | ----------------------------------------- |
+| `bun run dev`           | Development mode                          |
+| `bun run build`         | Build standalone executable with bytecode |
+| `bun test`              | Run tests (Vitest)                        |
+| `bun run test:ui`       | Interactive test dashboard                |
+| `bun run test:coverage` | Coverage report                           |
+| `bun run lint`          | Check code with ESLint                    |
+| `bun run lint:fix`      | Auto-fix linting issues                   |
+| `bun run format`        | Format with Prettier                      |
+| `bun run type-check`    | TypeScript validation                     |
 
 ## Project Structure
 
@@ -62,12 +62,19 @@ src/
 
 ## Configuration
 
+### Build System
+
+- **Bun Compiler** with bytecode compilation for ~2x faster startup
+- Standalone executable includes embedded Bun runtime (~72MB)
+- Template files embedded directly in executable
+- No external dependencies needed at runtime
+
 ### TypeScript (`tsconfig.json`)
 
 - Strict mode enabled
 - Path aliases: `@/*` maps to `src/*`
 - ES2020 target, ESNext modules
-- Source maps and declarations enabled
+- TypeScript used for type-checking only (not compilation)
 
 ### Linting & Formatting
 
@@ -151,7 +158,8 @@ All code is validated by GitHub Actions CI before merge:
 
 - **Linting** — ESLint code quality checks
 - **Formatting** — Prettier consistency validation
-- **Type Checking** — TypeScript compilation
+- **Type Checking** — TypeScript validation
+- **Build** — Executable compilation test
 - **Testing** — Vitest test suite with coverage
 
 The CI workflow runs on every push to `main` and all pull requests. All checks must pass before code can be merged.

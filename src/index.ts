@@ -129,11 +129,13 @@ async function main(): Promise<void> {
 	console.error('DevFlow MCP Server running on stdio');
 }
 
-await main().catch((error) => {
-	console.error(
-		`[DevFlow:ERROR] Fatal server error: ${error instanceof Error ? error.message : 'Unknown error'}`,
-	);
-	throw error;
-});
+(async () => {
+	await main().catch((error) => {
+		console.error(
+			`[DevFlow:ERROR] Fatal server error: ${error instanceof Error ? error.message : 'Unknown error'}`,
+		);
+		process.exit(1);
+	});
+})();
 
 export { memoryRepository };

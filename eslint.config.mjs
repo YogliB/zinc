@@ -71,6 +71,13 @@ export default [
 		},
 	},
 	{
+		files: ['src/index.ts'],
+		rules: {
+			'unicorn/prefer-top-level-await': 'off',
+			'unicorn/no-process-exit': 'off',
+		},
+	},
+	{
 		plugins: {
 			'no-disable-comments': noDisableCommentsPlugin,
 		},

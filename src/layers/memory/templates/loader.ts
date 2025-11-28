@@ -1,6 +1,8 @@
-import { readFileSync } from 'node:fs';
-import { fileURLToPath } from 'node:url';
-import path from 'node:path';
+import projectContextTemplate from './projectContext.md' with { type: 'file' };
+import activeContextTemplate from './activeContext.md' with { type: 'file' };
+import progressTemplate from './progress.md' with { type: 'file' };
+import decisionLogTemplate from './decisionLog.md' with { type: 'file' };
+import { file } from 'bun';
 
 export interface LoadedTemplate {
 	name: string;
@@ -8,49 +10,43 @@ export interface LoadedTemplate {
 	frontmatter: Record<string, string | string[]>;
 }
 
-const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
-
-function readProjectContextTemplate(): string {
-	return readFileSync(
-		path.join(currentDirectory, 'projectContext.md'),
-		'utf8',
-	);
+async function readProjectContextTemplate(): Promise<string> {
+	return await file(projectContextTemplate).text();
 }
 
-function readActiveContextTemplate(): string {
-	return readFileSync(
-		path.join(currentDirectory, 'activeContext.md'),
-		'utf8',
-	);
+async function readActiveContextTemplate(): Promise<string> {
+	return await file(activeContextTemplate).text();
 }
 
-function readProgressTemplate(): string {
-	return readFileSync(path.join(currentDirectory, 'progress.md'), 'utf8');
+async function readProgressTemplate(): Promise<string> {
+	return await file(progressTemplate).text();
 }
 
-function readDecisionLogTemplate(): string {
-	return readFileSync(path.join(currentDirectory, 'decisionLog.md'), 'utf8');
+async function readDecisionLogTemplate(): Promise<string> {
+	return await file(decisionLogTemplate).text();
 }
 
-function loadTemplate(templateName: string): LoadedTemplate {
+export async function loadTemplate(
+	templateName: string,
+): Promise<LoadedTemplate> {
 	let content: string;
 
 	try {
 		switch (templateName) {
 			case 'projectContext': {
-				content = readProjectContextTemplate();
+				content = await readProjectContextTemplate();
 				break;
 			}
 			case 'activeContext': {
-				content = readActiveContextTemplate();
+				content = await readActiveContextTemplate();
 				break;
 			}
 			case 'progress': {
-				content = readProgressTemplate();
+				content = await readProgressTemplate();
 				break;
 			}
 			case 'decisionLog': {
-				content = readDecisionLogTemplate();
+				content = await readDecisionLogTemplate();
 				break;
 			}
 			default: {
@@ -73,13 +69,13 @@ function loadTemplate(templateName: string): LoadedTemplate {
 	}
 }
 
-export function loadAllTemplates(): LoadedTemplate[] {
-	return [
+export async function loadAllTemplates(): Promise<LoadedTemplate[]> {
+	return await Promise.all([
 		loadTemplate('projectContext'),
 		loadTemplate('activeContext'),
 		loadTemplate('progress'),
 		loadTemplate('decisionLog'),
-	];
+	]);
 }
 
 function getCategoryForTemplate(templateName: string): string {
