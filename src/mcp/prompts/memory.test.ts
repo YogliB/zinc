@@ -1,5 +1,5 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
-import { createMemoryContextPrompt, createMemoryLoadPrompt } from './memory';
+import { createMemoryLoadPrompt } from './memory';
 import type { MemoryRepository } from '../../layers/memory/repository';
 import { FileNotFoundError, ValidationError } from '../../core/storage/errors';
 
@@ -13,116 +13,6 @@ describe('Memory Prompts', () => {
 			listMemories: vi.fn(),
 			deleteMemory: vi.fn(),
 		} as unknown as MemoryRepository;
-	});
-
-	describe('createMemoryContextPrompt', () => {
-		it('should return a prompt with correct metadata', () => {
-			const prompt = createMemoryContextPrompt(mockRepository);
-
-			expect(prompt.name).toBe('memory:context');
-			expect(prompt.description).toContain('Zed workaround');
-			expect(prompt.arguments).toEqual([]);
-			expect(prompt.load).toBeDefined();
-		});
-
-		it('should load both activeContext and progress when both exist', async () => {
-			(
-				mockRepository.getMemory as ReturnType<typeof vi.fn>
-			).mockImplementation(async (name: string) => {
-				if (name === 'activeContext') {
-					return {
-						frontmatter: {},
-						content: 'Active content',
-					};
-				}
-				if (name === 'progress') {
-					return {
-						frontmatter: {},
-						content: 'Progress content',
-					};
-				}
-				throw new FileNotFoundError(`File not found: ${name}`);
-			});
-
-			const prompt = createMemoryContextPrompt(mockRepository);
-			const result = await prompt.load?.({} as never);
-
-			expect(result).toBeDefined();
-			expect(result).toContain('# Active Context');
-			expect(result).toContain('Active content');
-			expect(result).toContain('# Progress');
-			expect(result).toContain('Progress content');
-		});
-
-		it('should handle missing activeContext gracefully', async () => {
-			(
-				mockRepository.getMemory as ReturnType<typeof vi.fn>
-			).mockImplementation(async (name: string) => {
-				if (name === 'activeContext') {
-					throw new FileNotFoundError('Not found');
-				}
-				if (name === 'progress') {
-					return {
-						frontmatter: {},
-						content: 'Progress only',
-					};
-				}
-				throw new FileNotFoundError(`File not found: ${name}`);
-			});
-
-			const prompt = createMemoryContextPrompt(mockRepository);
-			const result = await prompt.load?.({} as never);
-
-			expect(result).toBeDefined();
-			expect(result).toContain('# Progress');
-			expect(result).toContain('Progress only');
-			expect(result).not.toContain('# Active Context');
-		});
-
-		it('should handle missing progress gracefully', async () => {
-			(
-				mockRepository.getMemory as ReturnType<typeof vi.fn>
-			).mockImplementation(async (name: string) => {
-				if (name === 'activeContext') {
-					return {
-						frontmatter: {},
-						content: 'Active only',
-					};
-				}
-				throw new FileNotFoundError('Not found');
-			});
-
-			const prompt = createMemoryContextPrompt(mockRepository);
-			const result = await prompt.load?.({} as never);
-
-			expect(result).toBeDefined();
-			expect(result).toContain('# Active Context');
-			expect(result).toContain('Active only');
-		});
-
-		it('should handle both files missing gracefully', async () => {
-			(
-				mockRepository.getMemory as ReturnType<typeof vi.fn>
-			).mockRejectedValue(new FileNotFoundError('Not found'));
-
-			const prompt = createMemoryContextPrompt(mockRepository);
-			const result = await prompt.load?.({} as never);
-
-			expect(result).toBeDefined();
-			expect(result).toContain('No memory files found');
-		});
-
-		it('should handle unexpected errors gracefully', async () => {
-			(
-				mockRepository.getMemory as ReturnType<typeof vi.fn>
-			).mockRejectedValue(new Error('Unexpected error'));
-
-			const prompt = createMemoryContextPrompt(mockRepository);
-			const result = await prompt.load?.({} as never);
-
-			expect(result).toBeDefined();
-			expect(result).toContain('No memory files found');
-		});
 	});
 
 	describe('createMemoryLoadPrompt', () => {

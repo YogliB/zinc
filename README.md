@@ -58,13 +58,15 @@ devflow init
 
 ### Features
 
-- **memory:save** - Create/update memory files with metadata
-- **memory:get** - Retrieve specific memory by name
-- **memory:list** - List all memories in the bank
-- **memory:delete** - Remove memory files
+- **memory-save** - Create/update memory files with metadata
+- **memory-get** - Retrieve specific memory by name
+- **memory-list** - List all memories in the bank
+- **memory-delete** - Remove memory files
+- **memory-init** - Initialize memory bank with core template files
+- **memory-context** - Get combined activeContext + progress for session
+- **memory-update** - Review all memory files with guided update workflow
 - **devflow://context/memory** (Cursor) - Auto-loaded session context
-- **@memory:context** (Zed) - Manual context prompt
-- **@memory:load** (Zed) - Load specific memory via prompt
+- **@memory:load** (Cursor/Claude) - Load specific memory via prompt
 
 ### Setup
 
@@ -86,8 +88,9 @@ Create `mcp.json` in your project root:
 Then use in Cursor Composer or Chat:
 
 ```
-/memory:save name=activeContext content="Current work..."
-/memory:list
+/memory-save name=activeContext content="Current work..."
+/memory-list
+/memory-update
 ```
 
 #### Zed
@@ -107,9 +110,10 @@ Add to your `settings.json`:
 
 Then use in Zed Assistant:
 
-- Type `@memory:context` to get session context
-- Type `@memory:load name=<name>` to load specific memory
-- Use `/memory:save`, `/memory:get`, `/memory:list`, `/memory:delete` commands
+- Use `/memory-context` to get session context (activeContext + progress)
+- Use `/memory-update` to review all files with guided workflow
+- Use `/memory-save`, `/memory-get`, `/memory-list`, `/memory-delete` commands
+- Use `/memory-init` to create core memory files
 
 **See [Memory Configuration Guide](./docs/MEMORY.md) for details**
 
