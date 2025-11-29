@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'bun:test';
 import { createMemoryLoadPrompt } from './memory';
 import type { MemoryRepository } from '../../layers/memory/repository';
 import { FileNotFoundError, ValidationError } from '../../core/storage/errors';

@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'bun:test';
 import { mkdir, rm } from 'node:fs/promises';
 import { StorageEngine } from './engine';
 import { PathValidationError, FileNotFoundError } from './errors';

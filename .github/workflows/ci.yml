@@ -276,6 +276,7 @@ jobs:
                 test,
                 security-audit,
                 circular-deps,
+                knip,
             ]
         if: always()
         steps:
@@ -290,7 +291,8 @@ jobs:
                         "${{ needs.build.result }}" == "failure" || \
                         "${{ needs.test.result }}" == "failure" || \
                         "${{ needs.security-audit.result }}" == "failure" || \
-                        "${{ needs.circular-deps.result }}" == "failure" ]]; then
+                        "${{ needs.circular-deps.result }}" == "failure" || \
+                        "${{ needs.knip.result }}" == "failure" ]]; then
                     echo "❌ CI failed"
                     exit 1
                   fi

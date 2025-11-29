@@ -258,7 +258,7 @@ CI generates performance reports automatically. Check:
 
 1. **CI Artifacts** - `performance-report` contains `results.json`
 2. **Console Output** - Performance summary printed to logs
-3. **Git History** - Baseline tracked in `.vitest-performance.json`
+3. **Git History** - Baseline tracked in `.bun-performance.json`
 
 ## Configuration
 
@@ -387,7 +387,7 @@ Performance check:
 - [Bun Test Documentation](https://bun.sh/docs/cli/test)
 - [Bun Coverage](https://bun.sh/docs/cli/test#coverage)
 - [Bun Test API](https://bun.sh/docs/test/writing)
-- [Migrating from Jest/Vitest](https://bun.sh/guides/test/migrate-from-jest)
+- [Bun Test Runner Documentation](https://bun.sh/docs/cli/test)
 
 ## Scripts Reference
 

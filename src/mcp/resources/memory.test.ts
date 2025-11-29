@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'bun:test';
 import { createContextResource, createMemoryResourceTemplate } from './memory';
 import { MemoryRepository } from '../../layers/memory/repository';
 import { FileNotFoundError, ValidationError } from '../../core/storage/errors';

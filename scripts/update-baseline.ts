@@ -24,39 +24,56 @@ interface PerformanceBaseline {
 	history?: PerformanceMetrics[];
 }
 
-const RESULTS_FILE = '.vitest/results.json';
-const BASELINE_FILE = '.vitest-performance.json';
+const RESULTS_FILE = '.bun-test/results.xml';
+const BASELINE_FILE = '.bun-performance.json';
 
-function parseVitestResults(): PerformanceMetrics | undefined {
+function parseBunTestResults(): PerformanceMetrics | undefined {
 	if (!existsSync(RESULTS_FILE)) {
 		return undefined;
 	}
 
 	try {
 		const content = readFileSync(RESULTS_FILE, 'utf8');
-		const results = JSON.parse(content);
 
 		const files = new Map<string, TestFileMetrics>();
 		let totalDuration = 0;
 		let totalTests = 0;
 
-		if (results.testResults) {
-			for (const result of results.testResults) {
-				const filename = String(result.name);
-				const duration =
-					result.perfStats?.end - result.perfStats?.start || 0;
-				const testCount =
-					result.numPassingTests + (result.numFailingTests || 0);
+		const testcasePattern = /<testcase[^>]*>/g;
+		let match;
 
+		while ((match = testcasePattern.exec(content)) !== null) {
+			const testcaseTag = match[0];
+
+			const fileMatch = /file="([^"]+)"/.exec(testcaseTag);
+			const timeMatch = /time="([^"]+)"/.exec(testcaseTag);
+
+			if (!fileMatch || !timeMatch) continue;
+
+			const filename = fileMatch[1];
+			const time = Number.parseFloat(timeMatch[1]) * 1000;
+
+			if (
+				!filename.endsWith('.test.ts') &&
+				!filename.endsWith('.spec.ts')
+			) {
+				continue;
+			}
+
+			if (files.has(filename)) {
+				const existing = files.get(filename)!;
+				existing.duration += time;
+				existing.testCount += 1;
+			} else {
 				files.set(filename, {
 					name: filename,
-					duration,
-					testCount,
+					duration: time,
+					testCount: 1,
 				});
-
-				totalDuration += duration;
-				totalTests += testCount;
 			}
+
+			totalDuration += time;
+			totalTests += 1;
 		}
 
 		return {
@@ -68,15 +85,39 @@ function parseVitestResults(): PerformanceMetrics | undefined {
 			timestamp: new Date().toISOString(),
 		};
 	} catch (error) {
-		console.error('Failed to parse Vitest results:', error);
+		console.error('Failed to parse Bun test results:', error);
 		return undefined;
 	}
+}
+
+function convertFilesToMap(
+	files: unknown,
+): Map<string, TestFileMetrics> | unknown {
+	if (!files || files instanceof Map) {
+		return files;
+	}
+
+	const filesMap = new Map<string, TestFileMetrics>();
+	for (const [key, value] of Object.entries(files)) {
+		filesMap.set(key, value as TestFileMetrics);
+	}
+	return filesMap;
 }
 
 function loadBaseline(): PerformanceBaseline {
 	if (existsSync(BASELINE_FILE)) {
 		try {
-			return JSON.parse(readFileSync(BASELINE_FILE, 'utf8'));
+			const parsed = JSON.parse(readFileSync(BASELINE_FILE, 'utf8'));
+
+			parsed.baseline.files = convertFilesToMap(parsed.baseline.files);
+
+			if (parsed.history) {
+				for (const historyEntry of parsed.history) {
+					historyEntry.files = convertFilesToMap(historyEntry.files);
+				}
+			}
+
+			return parsed;
 		} catch (error) {
 			console.error('Failed to parse baseline file:', error);
 		}
@@ -88,7 +129,7 @@ function loadBaseline(): PerformanceBaseline {
 			testCount: 0,
 			fileCount: 0,
 			avgPerTest: 0,
-			files: {},
+			files: new Map<string, TestFileMetrics>(),
 			timestamp: new Date().toISOString(),
 		},
 		thresholds: {
@@ -99,8 +140,28 @@ function loadBaseline(): PerformanceBaseline {
 	};
 }
 
+function serializeBaseline(baseline: PerformanceBaseline): string {
+	const serializable = {
+		...baseline,
+		baseline: {
+			...baseline.baseline,
+			files: Object.fromEntries(baseline.baseline.files),
+		},
+		history: baseline.history?.map((entry) => ({
+			...entry,
+			files:
+				entry.files instanceof Map
+					? Object.fromEntries(entry.files)
+					: entry.files,
+		})),
+	};
+
+	return JSON.stringify(serializable, undefined, '\t');
+}
+
 function saveBaseline(baseline: PerformanceBaseline): void {
-	writeFileSync(BASELINE_FILE, JSON.stringify(baseline, undefined, '\t'));
+	const serialized = serializeBaseline(baseline);
+	writeFileSync(BASELINE_FILE, serialized);
 	console.log(`✅ Baseline updated: ${BASELINE_FILE}`);
 }
 
@@ -117,11 +178,13 @@ function main() {
 		throw new Error('Missing --update-baseline flag');
 	}
 
-	const current = parseVitestResults();
+	const current = parseBunTestResults();
 
 	if (!current) {
-		console.error('No Vitest results found. Run tests first with CI=1.');
-		throw new Error('Missing Vitest results');
+		console.error(
+			'No Bun test results found. Run tests first: bun run test:perf',
+		);
+		throw new Error('Missing Bun test results');
 	}
 
 	const currentBaseline = loadBaseline();
@@ -140,7 +203,7 @@ function main() {
 
 	console.log('\nBaseline Update Summary:');
 	console.log(
-		`Total Duration: ${oldBaseline.totalDuration}ms → ${current.totalDuration}ms`,
+		`Total Duration: ${oldBaseline.totalDuration.toFixed(2)}ms → ${current.totalDuration.toFixed(2)}ms`,
 	);
 	console.log(`Test Count: ${oldBaseline.testCount} → ${current.testCount}`);
 	console.log(`Files: ${oldBaseline.fileCount} → ${current.fileCount}`);

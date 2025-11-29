@@ -1,7 +1,10 @@
 import { z } from 'zod';
 import { MemoryRepository } from '../../layers/memory/repository';
 import { ValidationError } from '../../core/storage/errors';
-import { loadAllTemplates } from '../../layers/memory/templates/loader';
+import {
+	loadAllTemplates,
+	getTemplateHierarchy,
+} from '../../layers/memory/templates/loader';
 
 const MemoryInitInputSchema = z.object({}).optional();
 
@@ -37,8 +40,7 @@ export function createMemoryInitTool(repository: MemoryRepository) {
 				const existingFiles = await repository.listMemories();
 				const hasLegacyFiles = existingFiles.some(
 					(file) =>
-						file.name === 'projectContext' ||
-						file.name === 'decisionLog',
+						file === 'projectContext' || file === 'decisionLog',
 				);
 
 				if (hasLegacyFiles) {
@@ -74,17 +76,20 @@ export function createMemoryInitTool(repository: MemoryRepository) {
 				}
 
 				// Build hierarchy visualization
-				const hierarchyText = [
+				const hierarchy = getTemplateHierarchy();
+				const hierarchyLines = [
+					'6-file Cline structure:',
 					'',
-					'File Hierarchy:',
-					'projectBrief.md (foundation)',
-					'├── productContext.md (why/how)',
-					'├── systemPatterns.md (architecture + decisions)',
-					'└── techContext.md (tech stack)',
-					'    ├── activeContext.md (current work)',
-					'    └── progress.md (tracking)',
+					...hierarchy.map((template, index) => {
+						const isLast = index === hierarchy.length - 1;
+						const prefix = isLast ? '└──' : '├──';
+						const indent =
+							template.dependencies.length > 2 ? '    ' : '';
+						return `${indent}${prefix} ${template.name}.md (${template.description})`;
+					}),
 					'',
-				].join('\n');
+				];
+				const hierarchyText = hierarchyLines.join('\n');
 
 				const result: InitializationResult = {
 					success: true,

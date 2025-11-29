@@ -32,7 +32,7 @@ bun run dev
 | ----------------------- | ----------------------------------------- |
 | `bun run dev`           | Development mode                          |
 | `bun run build`         | Build standalone executable with bytecode |
-| `bun test`              | Run tests (Vitest)                        |
+| `bun test`              | Run tests (Bun test runner)               |
 | `bun run test:ui`       | Interactive test dashboard                |
 | `bun run test:coverage` | Coverage report                           |
 | `bun run lint`          | Check code with ESLint                    |
@@ -85,7 +85,7 @@ src/
 
 ### Testing
 
-- **Vitest** configured for Node environment
+- **Bun test runner** configured for Node environment
 - V8 coverage reporting
 - Global test APIs enabled
 - UI mode available: `bun run test:ui`
@@ -160,7 +160,7 @@ All code is validated by GitHub Actions CI before merge:
 - **Formatting** — Prettier consistency validation
 - **Type Checking** — TypeScript validation
 - **Build** — Executable compilation test
-- **Testing** — Vitest test suite with coverage
+- **Testing** — Bun test suite with coverage
 
 The CI workflow runs on every push to `main` and all pull requests. All checks must pass before code can be merged.
 

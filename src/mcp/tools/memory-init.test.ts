@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, vi } from 'vitest';
+import { describe, it, expect, beforeEach, vi } from 'bun:test';
 import { createMemoryInitTool } from './memory-init';
 import type { MemoryRepository } from '../../layers/memory/repository';
 import { ValidationError } from '../../core/storage/errors';
@@ -38,7 +38,7 @@ describe('Memory Init Tool', () => {
 
 			expect(result.type).toBe('text');
 
-			const parsed = JSON.parse(result.text.split('\n\n')[0]); // Get JSON before deprecation warning
+			const parsed = JSON.parse(result.text.split('\n\n')[0]!); // Get JSON before deprecation warning
 			expect(parsed.success).toBe(true);
 			expect(parsed.filesCreated).toHaveLength(6);
 			expect(parsed.filesCreated).toContain('projectBrief');
@@ -61,7 +61,7 @@ describe('Memory Init Tool', () => {
 			const tool = createMemoryInitTool(mockRepository);
 			const result = await tool.execute();
 
-			const parsed = JSON.parse(result.text.split('\n\n')[0]);
+			const parsed = JSON.parse(result.text.split('\n\n')[0]!);
 			expect(parsed.path).toBe('.devflow/memory');
 		});
 
@@ -76,7 +76,7 @@ describe('Memory Init Tool', () => {
 			const tool = createMemoryInitTool(mockRepository);
 			const result = await tool.execute();
 
-			const parsed = JSON.parse(result.text.split('\n\n')[0]);
+			const parsed = JSON.parse(result.text.split('\n\n')[0]!);
 			expect(parsed.timestamp).toBeDefined();
 
 			const timestamp = new Date(parsed.timestamp);
@@ -175,7 +175,7 @@ describe('Memory Init Tool', () => {
 
 			expect(result.type).toBe('text');
 
-			const parsed = JSON.parse(result.text.split('\n\n')[0]);
+			const parsed = JSON.parse(result.text.split('\n\n')[0]!);
 			expect(parsed.success).toBe(false);
 			expect(parsed.error).toBe('Validation failed');
 			expect(parsed.message).toContain('Invalid frontmatter');
@@ -194,7 +194,7 @@ describe('Memory Init Tool', () => {
 
 			expect(result.type).toBe('text');
 
-			const parsed = JSON.parse(result.text.split('\n\n')[0]);
+			const parsed = JSON.parse(result.text.split('\n\n')[0]!);
 			expect(parsed.success).toBe(false);
 			expect(parsed.error).toBe('Initialization failed');
 			expect(parsed.message).toContain('Write failed');
@@ -211,7 +211,7 @@ describe('Memory Init Tool', () => {
 			const tool = createMemoryInitTool(mockRepository);
 			const result = await tool.execute();
 
-			const parsed = JSON.parse(result.text.split('\n\n')[0]);
+			const parsed = JSON.parse(result.text.split('\n\n')[0]!);
 			expect(parsed.message).toContain('initialized successfully');
 			expect(parsed.message).toContain('6 core files');
 		});
@@ -248,12 +248,12 @@ describe('Memory Init Tool', () => {
 				mockRepository.saveMemory as ReturnType<typeof vi.fn>
 			).mock.calls;
 
-			expect(calls[0][0]).toBe('projectBrief');
-			expect(calls[1][0]).toBe('productContext');
-			expect(calls[2][0]).toBe('systemPatterns');
-			expect(calls[3][0]).toBe('techContext');
-			expect(calls[4][0]).toBe('activeContext');
-			expect(calls[5][0]).toBe('progress');
+			expect(calls[0]![0]).toBe('projectBrief');
+			expect(calls[1]![0]).toBe('productContext');
+			expect(calls[2]![0]).toBe('systemPatterns');
+			expect(calls[3]![0]).toBe('techContext');
+			expect(calls[4]![0]).toBe('activeContext');
+			expect(calls[5]![0]).toBe('progress');
 		});
 
 		it('should return proper JSON structure on success', async () => {
@@ -267,7 +267,7 @@ describe('Memory Init Tool', () => {
 			const tool = createMemoryInitTool(mockRepository);
 			const result = await tool.execute();
 
-			const parsed = JSON.parse(result.text.split('\n\n')[0]);
+			const parsed = JSON.parse(result.text.split('\n\n')[0]!);
 			expect(parsed).toHaveProperty('success');
 			expect(parsed).toHaveProperty('message');
 			expect(parsed).toHaveProperty('filesCreated');
