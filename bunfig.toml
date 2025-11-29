@@ -12,3 +12,32 @@ trust = true
 [packages]
 # Ensure all packages use exact versions
 # Override any packages that might have pre-release or range specs
+
+[test]
+# Enable coverage by default
+coverage = true
+
+# Coverage reporters (Bun supports: text, lcov)
+coverageReporter = ["text", "lcov"]
+
+# Coverage output directory
+coverageDir = "coverage"
+
+# Exclude test files from coverage
+coverageSkipTestFiles = true
+
+# Coverage exclusions
+coverageExclude = [
+  "node_modules/**",
+  "dist/**",
+  "scripts/**",
+  "**/*.spec.ts",
+  "**/*.test.ts",
+  "tests/**"
+]
+
+# Run tests concurrently for better performance
+concurrent = true
+
+# Maximum number of tests to run in parallel (default: 20)
+maxConcurrency = 20

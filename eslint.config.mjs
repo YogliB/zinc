@@ -46,14 +46,7 @@ const noDisableCommentsPlugin = {
 
 export default [
 	{
-		ignores: [
-			'dist/**',
-			'node_modules/**',
-			'coverage/**',
-			'**/*.d.ts.map',
-			'vitest.config.d.ts',
-			'vitest.config.js',
-		],
+		ignores: ['dist/**', 'node_modules/**', 'coverage/**', '**/*.d.ts.map'],
 	},
 	eslint.configs.recommended,
 	...tsConfigs.recommended,
@@ -66,8 +59,11 @@ export default [
 		settings: {
 			'import/resolver': {
 				typescript: true,
-				node: true,
+				node: {
+					extensions: ['.js', '.jsx', '.ts', '.tsx'],
+				},
 			},
+			'import/core-modules': ['bun:test'],
 		},
 	},
 	{

@@ -1,5 +1,5 @@
 /* eslint-disable security/detect-non-literal-fs-filename */
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'bun:test';
 import { detectProjectRoot } from '../../src/core/config';
 import { StorageEngine } from '../../src/core/storage/engine';
 import { MemoryRepository } from '../../src/layers/memory/repository';

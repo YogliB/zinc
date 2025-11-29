@@ -187,8 +187,7 @@ Current AI coding tools suffer from **context loss**:
 
 - **TypeScript 5.3+** - Type safety and developer experience
 - **MCP SDK** - Standard protocol implementation
-- **Bun 1.3.2** - Fast package management and runtime
-- **Vitest** - Modern testing framework
+- **Bun 1.3.2** - Fast runtime, package management, and testing
 - **Markdown/JSON** - Git-friendly storage
 - **Zod** - Schema validation
 
@@ -224,13 +223,19 @@ bun run format
 bun test
 
 # Watch mode
-bun test:watch
+bun test --watch
 
 # Coverage
-bun test:coverage
+bun test --coverage
 
-# Interactive UI
-bun test:ui
+# AI agent mode (quiet output, only failures)
+bun run test:ai
+
+# Unit tests only
+bun test tests/unit
+
+# Integration tests only
+bun test tests/integration
 ```
 
 **[Testing Guide](./docs/TESTING.md)** - Detailed testing documentation

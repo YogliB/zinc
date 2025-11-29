@@ -28,6 +28,6 @@ coverage/
 .test-storage/
 .test-memory-repo/
 
-# Vitest side-effect files
-.vitest/
-vitest.workspace.ts.timestamp-*
+# Bun test artifacts
+.bun-test/
+.bun-performance.json

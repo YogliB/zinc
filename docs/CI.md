@@ -77,12 +77,12 @@ The CI pipeline consists of 6 jobs that run in parallel (with a final status che
 
 ### 5. Test
 
-**Purpose:** Runs the test suite with Vitest and generates coverage reports, with performance monitoring.
+**Purpose:** Runs the test suite with Bun's native test runner and generates coverage reports, with performance monitoring.
 
 **Commands:**
 
-- `bun run test:ci` — Full test suite with coverage and JSON reporter for performance tracking
-- Performance check — Compares against baseline and alerts on regressions
+- `bun run test:coverage` — Full test suite with coverage
+- `bun run test:perf` — Performance tracking with JUnit reporter and baseline comparison
 
 **Fails if:**
 
@@ -92,7 +92,7 @@ The CI pipeline consists of 6 jobs that run in parallel (with a final status che
 
 **Performance Monitoring:**
 
-- Baseline tracked in `.vitest-performance.json`
+- Baseline tracked in `.bun-performance.json`
 - Alert if regression > 20% from baseline
 - Alert if total duration > 5000ms
 - Performance reports uploaded as artifacts
@@ -100,8 +100,8 @@ The CI pipeline consists of 6 jobs that run in parallel (with a final status che
 
 **Artifacts:**
 
-- Coverage reports (optional, non-blocking)
-- Performance JSON report (`.vitest/results.json`)
+- Coverage reports (lcov format)
+- Performance JUnit XML report (`.bun-test/results.xml`)
 
 **Duration:** ~60-120 seconds (includes performance analysis)
 
@@ -146,14 +146,17 @@ bun run format
 # Type check
 bun run type-check
 
-# Run tests
-bun run test
-
-# Run tests with UI
-bun run test:ui
+# Run all tests (with concurrent execution)
+bun test
 
 # Generate coverage report
 bun run test:coverage
+
+# Performance tracking with baseline
+bun run test:perf
+
+# AI agent mode (quiet output)
+bun run test:ai
 ```
 
 ## Troubleshooting
@@ -256,12 +259,24 @@ To enforce CI passing before merge, configure branch protection rules:
 
 ### Coverage Reports
 
-Coverage reports are uploaded as artifacts after test runs:
+Coverage reports are generated in lcov format:
 
 1. Go to Actions → specific workflow run
 2. Scroll to "Artifacts" section
 3. Download `coverage-report` artifact
-4. Open `index.html` in browser for interactive report
+4. View `lcov.info` with coverage tools
+
+## Test Execution
+
+Tests run concurrently within each file for optimal performance. Configuration in `bunfig.toml`:
+
+```toml
+[test]
+concurrent = true
+maxConcurrency = 20
+```
+
+This allows multiple tests to run simultaneously, significantly reducing test execution time.
 
 ## Performance Optimization
 
@@ -271,6 +286,7 @@ To maintain or improve performance:
 
 - Keep test suite focused and fast
 - Avoid heavy dependencies in dev tools
+- Use concurrent test execution (already enabled)
 - Use parallel job execution (already enabled)
 - Monitor cache hit rates in Actions analytics
 
@@ -280,7 +296,7 @@ To maintain or improve performance:
 - ESLint config: `.eslintrc.config.mjs`
 - Prettier config: `package.json` (prettier section)
 - TypeScript config: `tsconfig.json`
-- Test config: `vitest.config.ts`
+- Test config: `bunfig.toml` ([test] section)
 
 ## Questions?
 

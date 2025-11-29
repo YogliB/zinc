@@ -24,39 +24,63 @@ interface PerformanceBaseline {
 	history?: PerformanceMetrics[];
 }
 
-const RESULTS_FILE = '.vitest/results.json';
-const BASELINE_FILE = '.vitest-performance.json';
+const RESULTS_FILE = '.bun-test/results.xml';
+const BASELINE_FILE = '.bun-performance.json';
 
-function parseVitestResults(): PerformanceMetrics | undefined {
+function parseBunResults(): PerformanceMetrics | undefined {
 	if (!existsSync(RESULTS_FILE)) {
 		return undefined;
 	}
 
 	try {
 		const content = readFileSync(RESULTS_FILE, 'utf8');
-		const results = JSON.parse(content);
 
+		// Parse JUnit XML format from Bun test --reporter=junit
 		const files = new Map<string, TestFileMetrics>();
 		let totalDuration = 0;
 		let totalTests = 0;
 
-		if (results.testResults) {
-			for (const result of results.testResults) {
-				const filename = String(result.name);
-				const duration =
-					result.perfStats?.end - result.perfStats?.start || 0;
-				const testCount =
-					result.numPassingTests + (result.numFailingTests || 0);
+		// Parse testsuites to group by file
+		// Match testcase elements and extract file and time attributes
+		const testcasePattern = /<testcase[^>]*>/g;
 
+		let match;
+
+		// First pass: sum up all testcase times per file
+		while ((match = testcasePattern.exec(content)) !== null) {
+			const testcaseTag = match[0];
+
+			// Extract file attribute
+			const fileMatch = /file="([^"]+)"/.exec(testcaseTag);
+			const timeMatch = /time="([^"]+)"/.exec(testcaseTag);
+
+			if (!fileMatch || !timeMatch) continue;
+
+			const filename = fileMatch[1];
+			const time = Number.parseFloat(timeMatch[1]) * 1000; // Convert to ms
+
+			// Only track test files
+			if (
+				!filename.endsWith('.test.ts') &&
+				!filename.endsWith('.spec.ts')
+			) {
+				continue;
+			}
+
+			if (files.has(filename)) {
+				const existing = files.get(filename)!;
+				existing.duration += time;
+				existing.testCount += 1;
+			} else {
 				files.set(filename, {
 					name: filename,
-					duration,
-					testCount,
+					duration: time,
+					testCount: 1,
 				});
-
-				totalDuration += duration;
-				totalTests += testCount;
 			}
+
+			totalDuration += time;
+			totalTests += 1;
 		}
 
 		return {
@@ -68,7 +92,7 @@ function parseVitestResults(): PerformanceMetrics | undefined {
 			timestamp: new Date().toISOString(),
 		};
 	} catch (error) {
-		console.error('Failed to parse Vitest results:', error);
+		console.error('Failed to parse Bun test results:', error);
 		return undefined;
 	}
 }
@@ -76,7 +100,21 @@ function parseVitestResults(): PerformanceMetrics | undefined {
 function loadBaseline(): PerformanceBaseline {
 	if (existsSync(BASELINE_FILE)) {
 		try {
-			return JSON.parse(readFileSync(BASELINE_FILE, 'utf8'));
+			const parsed = JSON.parse(readFileSync(BASELINE_FILE, 'utf8'));
+			// Convert files object to Map if needed
+			if (
+				parsed.baseline.files &&
+				!(parsed.baseline.files instanceof Map)
+			) {
+				const filesMap = new Map<string, TestFileMetrics>();
+				for (const [key, value] of Object.entries(
+					parsed.baseline.files,
+				)) {
+					filesMap.set(key, value as TestFileMetrics);
+				}
+				parsed.baseline.files = filesMap;
+			}
+			return parsed;
 		} catch (error) {
 			console.error('Failed to parse baseline file:', error);
 		}
@@ -88,7 +126,7 @@ function loadBaseline(): PerformanceBaseline {
 			testCount: 0,
 			fileCount: 0,
 			avgPerTest: 0,
-			files: {},
+			files: new Map<string, TestFileMetrics>(),
 			timestamp: new Date().toISOString(),
 		},
 		thresholds: {
@@ -146,7 +184,10 @@ function generateReport(
 	report += '|------|----------|-------|--------|\n';
 
 	for (const [filename, file] of current.files.entries()) {
-		const baselineFile = baseline.files.get(filename);
+		const baselineFile =
+			baseline.files instanceof Map
+				? baseline.files.get(filename)
+				: undefined;
 		const fileRegression = baselineFile
 			? (file.duration - baselineFile.duration) / baselineFile.duration
 			: 0;
@@ -167,13 +208,13 @@ function generateReport(
 }
 
 function main() {
-	const current = parseVitestResults();
+	const current = parseBunResults();
 
 	if (!current) {
 		console.error(
-			'No Vitest results found. Make sure CI=1 is set when running tests.',
+			'No Bun test results found. Make sure to run: bun test --reporter=junit --reporter-outfile=.bun-test/results.xml',
 		);
-		throw new Error('Missing Vitest results');
+		throw new Error('Missing Bun test results');
 	}
 
 	const baseline = loadBaseline();

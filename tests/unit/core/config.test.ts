@@ -1,5 +1,5 @@
 /* eslint-disable security/detect-non-literal-fs-filename */
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach } from 'bun:test';
 import { detectProjectRoot } from '../../../src/core/config';
 import path from 'node:path';
 import { mkdir, writeFile, realpath } from 'node:fs/promises';

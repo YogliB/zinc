@@ -2,13 +2,16 @@
 
 ## Overview
 
-This project implements a comprehensive testing strategy with three optimization levels:
+This project uses Bun's native test runner for fast, reliable testing with built-in coverage support.
 
-1. **Option 1: Parallel Execution** - Tests run in parallel across CPU cores
-2. **Option 2: Smart Watch Mode** - Dev mode runs only changed tests for fast feedback
-3. **Option 3: Test Segmentation** - Tests organized by tier (unit/integration/e2e)
+Testing strategy includes:
 
-Plus **CI Performance Monitoring** to catch regressions early.
+1. **Concurrent Execution** - Tests run concurrently within files (configurable)
+2. **Test Segmentation** - Tests organized by tier (unit/integration/e2e)
+3. **CI Performance Monitoring** - Track regressions with baseline comparison
+4. **AI Agent Mode** - Quiet output optimized for AI coding assistants
+
+All powered by Bun's native test runner - no external test framework needed.
 
 ## Test Structure
 
@@ -28,7 +31,7 @@ Original tests remain in `src/` for backward compatibility during migration.
 ### Development
 
 ```bash
-# Run all tests
+# Run all tests (with concurrent execution)
 bun test
 
 # Watch mode (re-runs on file changes)
@@ -39,13 +42,16 @@ bun run test:unit
 
 # Integration tests only
 bun run test:integration
+
+# AI agent mode (quiet output, only failures shown)
+bun run test:ai
 ```
 
 ### CI / Performance Checking
 
 ```bash
-# Full test suite with coverage and performance tracking
-bun run test:ci
+# Run tests with coverage
+bun run test:coverage
 
 # Performance report with baseline comparison
 bun run test:perf
@@ -58,9 +64,9 @@ bun run test:perf
 **Goal:** Sub-10ms per test, fully mocked, isolated
 
 ```typescript
-import { describe, it, expect } from 'vitest';
+import { describe, it, expect } from 'bun:test';
 
-describe.concurrent('Fast Unit Tests', () => {
+describe('Fast Unit Tests', () => {
 	it('should calculate correctly', () => {
 		expect(1 + 1).toBe(2);
 	});
@@ -76,7 +82,7 @@ describe.concurrent('Fast Unit Tests', () => {
 - Mocked dependencies
 - No I/O operations
 - Deterministic
-- Use `describe.concurrent()` for parallel execution
+- Tests run in parallel by default with Bun
 - Fast feedback in watch mode
 
 ### Integration Tests (`tests/integration/`)
@@ -108,10 +114,25 @@ describe('Real System Integration', () => {
 
 ## Concurrent Tests
 
-Use `describe.concurrent()` to run tests within a suite in parallel:
+Bun supports concurrent test execution within each test file. This is configured in `bunfig.toml`:
+
+```toml
+[test]
+# Run tests concurrently for better performance
+concurrent = true
+
+# Maximum number of tests to run in parallel (default: 20)
+maxConcurrency = 20
+```
+
+### Concurrent Execution
+
+By default, tests in this project run concurrently within each file:
 
 ```typescript
-describe.concurrent('Math Operations', () => {
+import { describe, it, expect } from 'bun:test';
+
+describe('Math Operations', () => {
 	it('adds numbers', () => {
 		expect(2 + 2).toBe(4);
 	});
@@ -124,11 +145,83 @@ describe.concurrent('Math Operations', () => {
 });
 ```
 
+### Serial Tests
+
+If you need tests to run sequentially (e.g., they share state), use `test.serial`:
+
+```typescript
+import { test, expect } from 'bun:test';
+
+let sharedState = 0;
+
+test.serial('first test', () => {
+	sharedState = 1;
+	expect(sharedState).toBe(1);
+});
+
+test.serial('second test', () => {
+	// Depends on previous test
+	expect(sharedState).toBe(1);
+	sharedState = 2;
+});
+```
+
+### Explicit Concurrent Tests
+
+Mark specific tests to run concurrently even if not globally enabled:
+
+```typescript
+import { test, expect } from 'bun:test';
+
+test.concurrent('concurrent test 1', async () => {
+	await fetch('/api/endpoint1');
+	expect(true).toBe(true);
+});
+
+test.concurrent('concurrent test 2', async () => {
+	await fetch('/api/endpoint2');
+	expect(true).toBe(true);
+});
+```
+
+## AI Agent Mode
+
+When working with AI coding assistants (Claude, Cursor, Replit, etc.), use the `test:ai` script for quieter output:
+
+```bash
+bun run test:ai
+```
+
+**Features:**
+
+- Only test failures are displayed in detail
+- Passing test indicators are hidden
+- Summary statistics remain intact
+- Reduces context noise for AI agents
+
+**Environment Variables:**
+
+The script sets `AGENT=1`, which Bun recognizes. You can also use:
+
+- `CLAUDECODE=1` - For Claude Code
+- `REPL_ID=1` - For Replit
+- `AGENT=1` - Generic AI agent flag
+
+**Example output:**
+
+Instead of verbose `(pass)` indicators, you only see:
+
+- Test failures (if any)
+- Final summary with pass/fail counts
+- Coverage reports (if enabled)
+
+This improves readability and reduces token usage when AI agents analyze test output.
+
 ## Performance Monitoring
 
 ### Baseline
 
-Performance baseline is stored in `.vitest-performance.json`:
+Performance baseline is stored in `.bun-performance.json`:
 
 ```json
 {
@@ -169,29 +262,33 @@ CI generates performance reports automatically. Check:
 
 ## Configuration
 
-### `vitest.config.ts`
+### `bunfig.toml`
 
-Key settings for performance:
+Key settings for testing and coverage:
 
-```typescript
-export default defineConfig({
-	test: {
-		// Parallel execution
-		pool: 'forks', // Process isolation
-		fileParallelism: true, // Run test files in parallel
-		maxConcurrency: 10, // Max concurrent files
+```toml
+[test]
+# Enable coverage by default
+coverage = true
 
-		// Within-file concurrency
-		sequence: {
-			concurrent: true, // Default: run tests concurrently
-			shuffle: false,
-		},
+# Coverage reporters (text for console, lcov for tools)
+coverageReporter = ["text", "lcov"]
 
-		// Dev mode optimizations
-		watch: !process.env.CI, // Watch mode enabled locally
-		changed: !process.env.CI, // Only changed tests in dev
-	},
-});
+# Coverage output directory
+coverageDir = "coverage"
+
+# Exclude test files from coverage
+coverageSkipTestFiles = true
+
+# Coverage exclusions
+coverageExclude = [
+  "node_modules/**",
+  "dist/**",
+  "scripts/**",
+  "**/*.spec.ts",
+  "**/*.test.ts",
+  "tests/**"
+]
 ```
 
 ## Writing Performant Tests
@@ -200,12 +297,14 @@ export default defineConfig({
 
 - Isolate tests - no shared state
 - Mock external dependencies
-- Use concurrent tests for independent cases
 - Keep tests focused on one behavior
 - Use descriptive names
+- Import from `bun:test` for test utilities
 
 ```typescript
-describe.concurrent('User Validation', () => {
+import { describe, it, expect } from 'bun:test';
+
+describe('User Validation', () => {
 	it('should reject invalid email', () => {
 		expect(isValidEmail('invalid')).toBe(false);
 	});
@@ -214,7 +313,7 @@ describe.concurrent('User Validation', () => {
 		expect(isValidEmail('user@example.com')).toBe(true);
 	});
 
-	// Both run in parallel
+	// Tests run in parallel automatically
 });
 ```
 
@@ -236,7 +335,7 @@ describe('Counter', () => {
 });
 
 // Good: Isolated state
-describe.concurrent('Counter', () => {
+describe('Counter', () => {
 	it('increments', () => {
 		let counter = 0;
 		counter++; // ✅ Isolated
@@ -252,11 +351,7 @@ The CI workflow runs:
 1. **Lint** - ESLint
 2. **Format** - Prettier
 3. **Type Check** - TypeScript
-4. **Test** - Full suite with:
-    - Parallel execution
-    - Coverage reports
-    - Performance tracking
-    - JSON reporter for metrics
+4. **Test** - Full suite with coverage and performance tracking
 
 Performance check:
 
@@ -289,19 +384,20 @@ Performance check:
 
 ## Resources
 
-- [Vitest Documentation](https://vitest.dev/)
-- [Testing Best Practices](https://vitest.dev/guide/best-practices.html)
-- [Concurrent Tests](https://vitest.dev/api/#concurrent)
-- [Performance Tips](https://vitest.dev/guide/performance.html)
+- [Bun Test Documentation](https://bun.sh/docs/cli/test)
+- [Bun Coverage](https://bun.sh/docs/cli/test#coverage)
+- [Bun Test API](https://bun.sh/docs/test/writing)
+- [Migrating from Jest/Vitest](https://bun.sh/guides/test/migrate-from-jest)
 
 ## Scripts Reference
 
-| Script                     | Purpose                     |
-| -------------------------- | --------------------------- |
-| `bun test`                 | Run all tests               |
-| `bun run test:unit`        | Unit tests only             |
-| `bun run test:integration` | Integration tests only      |
-| `bun run test:watch`       | Watch mode                  |
-| `bun run test:ci`          | CI test suite with coverage |
-| `bun run test:perf`        | Performance tracking        |
-| `bun run update-baseline`  | Update performance baseline |
+| Script                     | Purpose                                     |
+| -------------------------- | ------------------------------------------- |
+| `bun test`                 | Run all tests (with concurrent execution)   |
+| `bun run test:unit`        | Unit tests only                             |
+| `bun run test:integration` | Integration tests only                      |
+| `bun run test:watch`       | Watch mode                                  |
+| `bun run test:coverage`    | Run tests with coverage                     |
+| `bun run test:ai`          | AI agent mode (quiet output, only failures) |
+| `bun run test:perf`        | Performance tracking with baseline          |
+| `bun run update-baseline`  | Update performance baseline                 |
