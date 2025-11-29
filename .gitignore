@@ -22,9 +22,6 @@ src/**/*.js
 # ESLint cache
 .eslintcache
 
-# DevFlow
-.devflow/
-
 # Test directories
 .test-storage/
 .test-memory-repo/
