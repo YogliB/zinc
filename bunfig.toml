@@ -16,5 +16,6 @@ coverageExclude = [
   "**/*.test.ts",
   "tests/**"
 ]
+coverageThreshold = { lines = 0.75, functions = 0.8, statements = 0.75 }
 concurrent = true
 maxConcurrency = 20
