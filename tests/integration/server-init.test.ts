@@ -1,7 +1,7 @@
 /* eslint-disable security/detect-non-literal-fs-filename */
 import { describe, it, expect, beforeEach, afterEach } from 'bun:test';
 import { detectProjectRoot } from '../../src/core/config';
-import { StorageEngine } from '../../src/core/storage/engine';
+import { createStorageEngine } from '../../src/core/storage/engine';
 import path from 'node:path';
 import { mkdir, writeFile, rm, realpath } from 'node:fs/promises';
 import { tmpdir } from 'node:os';
@@ -43,7 +43,7 @@ describe('Server Initialization Integration', () => {
 
 	it('should initialize StorageEngine successfully', async () => {
 		const projectRoot = await detectProjectRoot();
-		const storageEngine = new StorageEngine({
+		const storageEngine = createStorageEngine({
 			rootPath: projectRoot,
 			debug: false,
 		});
@@ -53,7 +53,7 @@ describe('Server Initialization Integration', () => {
 
 	it('should work with StorageEngine to read/write files', async () => {
 		const projectRoot = await detectProjectRoot();
-		const storageEngine = new StorageEngine({
+		const storageEngine = createStorageEngine({
 			rootPath: projectRoot,
 			debug: false,
 		});
@@ -71,7 +71,7 @@ describe('Server Initialization Integration', () => {
 		const projectRoot = await detectProjectRoot();
 		expect(projectRoot).toBe(testProjectRoot);
 
-		const storageEngine = new StorageEngine({
+		const storageEngine = createStorageEngine({
 			rootPath: projectRoot,
 			debug: false,
 		});
@@ -81,7 +81,7 @@ describe('Server Initialization Integration', () => {
 
 	it('should initialize without errors in valid project', async () => {
 		const projectRoot = await detectProjectRoot();
-		const storageEngine = new StorageEngine({
+		const storageEngine = createStorageEngine({
 			rootPath: projectRoot,
 			debug: false,
 		});
@@ -93,7 +93,7 @@ describe('Server Initialization Integration', () => {
 
 	it('should handle errors gracefully in StorageEngine', async () => {
 		const projectRoot = await detectProjectRoot();
-		const storageEngine = new StorageEngine({
+		const storageEngine = createStorageEngine({
 			rootPath: projectRoot,
 			debug: false,
 		});

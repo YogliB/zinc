@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from 'bun:test';
 import { mkdir, rm } from 'node:fs/promises';
-import { StorageEngine } from './engine';
+import { createStorageEngine, StorageEngine } from './engine';
 import { PathValidationError, FileNotFoundError } from './errors';
 
 const baseTestDirectory = '.test-storage';
@@ -11,7 +11,7 @@ describe('StorageEngine', () => {
 
 	beforeEach(async () => {
 		await mkdir(testStorageDirectory, { recursive: true });
-		engine = new StorageEngine({ rootPath: testStorageDirectory });
+		engine = createStorageEngine({ rootPath: testStorageDirectory });
 	});
 
 	afterEach(async () => {
@@ -19,30 +19,35 @@ describe('StorageEngine', () => {
 	});
 
 	describe('validatePath', () => {
-		it('should reject path traversal attempts', () => {
-			expect(() => engine['validatePath']('../etc/passwd')).toThrow(
+		it('should reject path traversal attempts', async () => {
+			await expect(engine.readFile('../etc/passwd')).rejects.toThrow(
 				PathValidationError,
 			);
 		});
 
-		it('should reject absolute paths', () => {
-			expect(() => engine['validatePath']('/etc/passwd')).toThrow(
+		it('should reject absolute paths', async () => {
+			await expect(engine.readFile('/etc/passwd')).rejects.toThrow(
 				PathValidationError,
 			);
 		});
 
-		it('should reject empty paths', () => {
-			expect(() => engine['validatePath']('')).toThrow(
+		it('should reject empty paths', async () => {
+			await expect(engine.readFile('')).rejects.toThrow(
 				PathValidationError,
 			);
 		});
 
-		it('should accept valid relative paths', () => {
-			expect(() => engine['validatePath']('file.txt')).not.toThrow();
-			expect(() => engine['validatePath']('dir/file.txt')).not.toThrow();
-			expect(() =>
-				engine['validatePath']('dir/subdir/file.txt'),
-			).not.toThrow();
+		it('should accept valid relative paths', async () => {
+			await engine.writeFile('file.txt', 'content');
+			await expect(engine.readFile('file.txt')).resolves.toBe('content');
+			await engine.writeFile('dir/file.txt', 'content');
+			await expect(engine.readFile('dir/file.txt')).resolves.toBe(
+				'content',
+			);
+			await engine.writeFile('dir/subdir/file.txt', 'content');
+			await expect(engine.readFile('dir/subdir/file.txt')).resolves.toBe(
+				'content',
+			);
 		});
 	});
 
@@ -133,7 +138,7 @@ describe('StorageEngine', () => {
 		});
 
 		it('should reject path traversal attempts', async () => {
-			expect(() => engine['validatePath']('../etc/passwd')).toThrow(
+			await expect(engine.exists('../etc/passwd')).rejects.toThrow(
 				PathValidationError,
 			);
 		});

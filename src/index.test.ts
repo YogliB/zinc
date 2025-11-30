@@ -10,8 +10,8 @@ describe('DevFlow MCP Server', () => {
 		expect(typeof detectProjectRoot).toBe('function');
 	});
 
-	it('should have StorageEngine available', async () => {
-		const { StorageEngine } = await import('./core/storage/engine');
-		expect(typeof StorageEngine).toBe('function');
+	it('should have createStorageEngine available', async () => {
+		const { createStorageEngine } = await import('./core/storage/engine');
+		expect(typeof createStorageEngine).toBe('function');
 	});
 });

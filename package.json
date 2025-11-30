@@ -13,8 +13,8 @@
 	},
 	"packageManager": "bun@1.3.2",
 	"scripts": {
-		"dev": "bun run src/index.ts",
-		"build": "bun build --compile --minify --bytecode ./src/index.ts --outfile ./dist/devflow --external effect --external @valibot/to-json-schema --external sury && rm -f ./.*.bun-build",
+		"dev": "bun run src/server.ts",
+		"build": "bun build --compile --minify --bytecode ./src/server.ts --outfile ./dist/devflow --external effect --external @valibot/to-json-schema --external sury && rm -f ./.*.bun-build",
 		"test": "bun test",
 		"test:unit": "bun test tests/unit",
 		"test:integration": "bun test tests/integration",
@@ -30,9 +30,9 @@
 		"format": "prettier --write .",
 		"format:check": "prettier --check .",
 		"type-check": "bun run tsc --noEmit",
-		"check:circular": "dpdm --no-warning --no-tree ./src/index.ts",
-		"check:circular:verbose": "dpdm ./src/index.ts",
-		"check:circular:ci": "dpdm --no-warning --no-tree --no-progress --exit-code circular:1 --tsconfig ./tsconfig.json ./src/index.ts",
+		"check:circular": "dpdm --no-warning --no-tree ./src/server.ts",
+		"check:circular:verbose": "dpdm ./src/server.ts",
+		"check:circular:ci": "dpdm --no-warning --no-tree --no-progress --exit-code circular:1 --tsconfig ./tsconfig.json ./src/server.ts",
 		"prepare": "husky",
 		"knip": "knip"
 	},
