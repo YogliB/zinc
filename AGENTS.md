@@ -16,6 +16,18 @@
 
 - **NEVER** edit config files unless specifically requested to.
 
+## Documentation Structure
+
+- **NEVER** create new documentation files in the project root or `docs/` folder.
+- The following documentation files are **sacred** and must be preserved:
+    - **Root**: `LICENCE.md`, `AGENTS.md`, `README.md`
+    - **docs/**: `ARCHITECTURE.md`, `CHANGELOG.md`, `CONTRIBUTING.md`, `README.md`, `ROADMAP.md`, `SECURITY.md`, `SETUP.md`, `TESTING.md`, `USAGE.md`
+- All documentation must be added to existing files only.
+- If you are 99% certain a new documentation file must be created:
+    - **STOP** and alert the user about the need
+    - **DO NOT** create the file unless explicitly approved by the user
+    - Explain why existing files cannot accommodate the content
+
 ## Testing
 
 - Run tests using the `test:ai` script: `bun run test:ai`
