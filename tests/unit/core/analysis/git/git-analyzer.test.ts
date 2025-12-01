@@ -1,12 +1,41 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { GitAnalyzer } from '../../../../../src/core/analysis/git/git-analyzer';
 import { createTestProject } from '../../../../setup/test-helpers';
+import path from 'node:path';
+import { mkdir, rm, realpath } from 'node:fs/promises';
+import { tmpdir } from 'node:os';
 
 describe('GitAnalyzer', () => {
 	let testProject: Awaited<ReturnType<typeof createTestProject>>;
+	let isolatedTestDirectory: string;
 
 	beforeEach(async () => {
-		testProject = await createTestProject({ withGit: true });
+		const temporaryBase = tmpdir();
+		isolatedTestDirectory = path.resolve(
+			temporaryBase,
+			`devflow-git-test-${Date.now()}`,
+		);
+		await mkdir(isolatedTestDirectory, { recursive: true });
+		const isolatedProjectRoot = path.resolve(
+			isolatedTestDirectory,
+			'project',
+		);
+		await mkdir(isolatedProjectRoot, { recursive: true });
+		const resolvedRoot = await realpath(isolatedProjectRoot);
+
+		testProject = {
+			root: resolvedRoot,
+			cleanup: async () => {
+				try {
+					await rm(isolatedTestDirectory, {
+						recursive: true,
+						force: true,
+					});
+				} catch {
+					// Cleanup might fail, ignore
+				}
+			},
+		};
 	});
 
 	afterEach(async () => {

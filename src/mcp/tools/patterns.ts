@@ -1,4 +1,3 @@
-import { readdir } from 'node:fs/promises';
 import path from 'node:path';
 import { z } from 'zod';
 import type { FastMCP } from 'fastmcp';
@@ -83,11 +82,15 @@ export function registerPatternTools(
 
 			async function searchDirectory(directory: string): Promise<void> {
 				try {
-					const entries = await readdir(directory, {
+					const resolvedDirectory = path.resolve(directory);
+					const entries = await readdir(resolvedDirectory, {
 						withFileTypes: true,
 					});
 					for (const entry of entries) {
-						const fullPath = path.join(directory, entry.name);
+						const fullPath = path.join(
+							resolvedDirectory,
+							entry.name,
+						);
 						if (entry.isDirectory()) {
 							if (
 								!entry.name.startsWith('.') &&
@@ -137,11 +140,15 @@ export function registerPatternTools(
 
 			async function searchDirectory(directory: string): Promise<void> {
 				try {
-					const entries = await readdir(directory, {
+					const resolvedDirectory = path.resolve(directory);
+					const entries = await readdir(resolvedDirectory, {
 						withFileTypes: true,
 					});
 					for (const entry of entries) {
-						const fullPath = path.join(directory, entry.name);
+						const fullPath = path.join(
+							resolvedDirectory,
+							entry.name,
+						);
 						if (entry.isDirectory()) {
 							if (
 								!entry.name.startsWith('.') &&

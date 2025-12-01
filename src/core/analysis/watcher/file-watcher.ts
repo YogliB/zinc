@@ -1,11 +1,15 @@
-import { watch } from 'node:fs';
+import fs from 'node:fs';
 import path from 'node:path';
 import type { GitAwareCache } from '../cache/git-aware';
 
 export type FileChangeCallback = (filePath: string) => void | Promise<void>;
 
+type FSWatcher = ReturnType<typeof fs.watch>;
+
+const boundWatch = fs.watch.bind(fs);
+
 export class FileWatcher {
-	private watchers: Map<string, ReturnType<typeof watch>> = new Map();
+	private watchers: Map<string, FSWatcher> = new Map();
 	private callbacks: Set<FileChangeCallback> = new Set();
 	private debounceTime: number;
 	private debounceTimers: Map<string, NodeJS.Timeout> = new Map();
@@ -21,15 +25,16 @@ export class FileWatcher {
 			return;
 		}
 
-		const watcher = watch(
-			directoryPath,
+		const resolvedDirectoryPath = path.resolve(directoryPath);
+		const watcher = boundWatch(
+			resolvedDirectoryPath,
 			{ recursive: true },
 			(eventType, filename) => {
 				if (!filename) {
 					return;
 				}
 
-				const filePath = path.join(directoryPath, filename);
+				const filePath = path.join(resolvedDirectoryPath, filename);
 
 				const existingTimer = this.debounceTimers.get(filePath);
 				if (existingTimer) {
@@ -45,7 +50,7 @@ export class FileWatcher {
 			},
 		);
 
-		this.watchers.set(directoryPath, watcher);
+		this.watchers.set(resolvedDirectoryPath, watcher);
 	}
 
 	onChange(callback: FileChangeCallback): void {

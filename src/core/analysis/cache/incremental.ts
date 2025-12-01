@@ -1,4 +1,4 @@
-import { stat } from 'node:fs/promises';
+import path from 'node:path';
 import type { AST } from '../types';
 
 interface FileMetadata {
@@ -16,7 +16,9 @@ export class IncrementalCache {
 
 	async updateFileMetadata(filePath: string, ast?: AST): Promise<void> {
 		try {
-			const stats = await stat(filePath);
+			const resolvedPath = path.resolve(filePath);
+			const { stat } = await import('node:fs/promises');
+			const stats = await stat(resolvedPath);
 			this.metadata.set(filePath, {
 				mtime: stats.mtimeMs,
 				size: stats.size,
@@ -34,7 +36,9 @@ export class IncrementalCache {
 		}
 
 		try {
-			const stats = await stat(filePath);
+			const resolvedPath = path.resolve(filePath);
+			const { stat } = await import('node:fs/promises');
+			const stats = await stat(resolvedPath);
 			return stats.mtimeMs !== cached.mtime || stats.size !== cached.size;
 		} catch {
 			return true;

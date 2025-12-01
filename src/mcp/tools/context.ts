@@ -1,5 +1,4 @@
 import path from 'node:path';
-import { readdir } from 'node:fs/promises';
 import { z } from 'zod';
 import type { FastMCP } from 'fastmcp';
 import type { AnalysisEngine } from '../../core/analysis/engine';
@@ -95,11 +94,16 @@ export function registerContextTools(
 
 			async function collectFiles(directory: string): Promise<void> {
 				try {
-					const entries = await readdir(directory, {
+					const resolvedDirectory = path.resolve(directory);
+					const { readdir } = await import('node:fs/promises');
+					const entries = await readdir(resolvedDirectory, {
 						withFileTypes: true,
 					});
 					for (const entry of entries) {
-						const fullPath = path.join(directory, entry.name);
+						const fullPath = path.join(
+							resolvedDirectory,
+							entry.name,
+						);
 						if (entry.isDirectory()) {
 							if (
 								!entry.name.startsWith('.') &&

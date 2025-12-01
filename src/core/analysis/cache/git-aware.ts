@@ -1,5 +1,5 @@
 import { createHash } from 'node:crypto';
-import { readFile } from 'node:fs/promises';
+import path from 'node:path';
 import type { FileAnalysis } from '../types';
 
 interface CacheEntry {
@@ -19,7 +19,9 @@ export class GitAwareCache {
 
 	private async getFileHash(filePath: string): Promise<string> {
 		try {
-			const content = await readFile(filePath, 'utf8');
+			const resolvedPath = path.resolve(filePath);
+			const { readFile } = await import('node:fs/promises');
+			const content = await readFile(resolvedPath, 'utf8');
 			return createHash('sha256').update(content).digest('hex');
 		} catch {
 			return '';

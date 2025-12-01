@@ -152,9 +152,16 @@ describe('detectProjectRoot', () => {
 	});
 
 	it('should fallback to cwd when no indicators found', async () => {
+		const temporaryDirectory = await import('node:os').then((os) =>
+			os.tmpdir(),
+		);
+		const isolatedTestDirectory = path.resolve(
+			temporaryDirectory,
+			`devflow-test-isolated-${Date.now()}`,
+		);
 		const emptyDirectoryName = 'empty-project';
 		const emptyDirectory = path.resolve(
-			temporaryDirectory,
+			isolatedTestDirectory,
 			emptyDirectoryName,
 		);
 		await mkdir(emptyDirectory, { recursive: true });
@@ -164,6 +171,12 @@ describe('detectProjectRoot', () => {
 		const result = await detectProjectRoot();
 
 		expect(result).toBe(resolvedEmpty);
+
+		try {
+			await rm(isolatedTestDirectory, { recursive: true, force: true });
+		} catch {
+			// Cleanup might fail, but that's okay
+		}
 	});
 
 	it('should traverse up multiple levels to find project root', async () => {

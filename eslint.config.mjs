@@ -99,6 +99,23 @@ export default [
 	importPlugin.flatConfigs.typescript,
 	unicorn.configs.recommended,
 	{
+		plugins: {
+			'no-disable-comments': noDisableCommentsPlugin,
+		},
+		rules: {
+			'no-disable-comments/no-eslint-disable-comments': 'error',
+		},
+	},
+	{
+		files: ['**/index.ts', '**/index.js'],
+		plugins: {
+			'index-exports': indexExportsOnlyPlugin,
+		},
+		rules: {
+			'index-exports/index-exports-only': 'error',
+		},
+	},
+	{
 		settings: {
 			'import/resolver': {
 				typescript: true,
@@ -114,23 +131,6 @@ export default [
 		rules: {
 			'unicorn/prefer-top-level-await': 'off',
 			'unicorn/no-process-exit': 'off',
-		},
-	},
-	{
-		plugins: {
-			'no-disable-comments': noDisableCommentsPlugin,
-		},
-		rules: {
-			'no-disable-comments/no-eslint-disable-comments': 'error',
-		},
-	},
-	{
-		files: ['**/index.ts', '**/index.js'],
-		plugins: {
-			'index-exports': indexExportsOnlyPlugin,
-		},
-		rules: {
-			'index-exports/index-exports-only': 'error',
 		},
 	},
 	{
