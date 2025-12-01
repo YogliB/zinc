@@ -37,7 +37,3 @@
     - **STOP** and alert the user about the need
     - **DO NOT** create the file unless explicitly approved by the user
     - Explain why existing files cannot accommodate the content
-
-## Testing
-
-- Run tests using the `test:ai` script: `bun run test:ai`
