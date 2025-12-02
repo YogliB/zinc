@@ -196,25 +196,21 @@ describe('Server Initialization Integration', () => {
 		process.env.DEVFLOW_ROOT = largeTestDirectory;
 
 		// Mock estimateDirectorySize to simulate threshold breach
-		const fileWatcherModule =
-			await import('../../src/core/analysis/watcher/file-watcher');
-		vi.spyOn(fileWatcherModule, 'estimateDirectorySize').mockResolvedValue(
-			100_000 + 1,
-		);
+		const mockEstimate = vi.fn().mockResolvedValue(100_000 + 1);
 
-		const { FileWatcher } = fileWatcherModule;
+		const { FileWatcher } =
+			await import('../../src/core/analysis/watcher/file-watcher');
 		const { GitAwareCache } =
 			await import('../../src/core/analysis/cache/git-aware');
 
 		const cache = new GitAwareCache();
-		const fileWatcher = new FileWatcher(100, cache);
+		const fileWatcher = new FileWatcher(100, cache, mockEstimate);
 
 		await expect(
 			fileWatcher.watchDirectory(largeTestDirectory),
 		).rejects.toThrow('Directory too large');
 
 		fileWatcher.stop();
-		vi.restoreAllMocks();
 		delete process.env.DEVFLOW_ROOT;
 
 		await rm(largeTestDirectory, { recursive: true, force: true });

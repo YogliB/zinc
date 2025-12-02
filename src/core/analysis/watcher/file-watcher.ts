@@ -105,11 +105,19 @@ export class FileWatcher {
 	private debounceTimers: Map<string, NodeJS.Timeout> = new Map();
 	private cache?: GitAwareCache;
 	private readonly exclusionPatterns: string[];
+	private readonly estimateSizeFn: (path: string) => Promise<number>;
 
-	constructor(debounceTime = 100, cache?: GitAwareCache) {
+	constructor(
+		debounceTime = 100,
+		cache?: GitAwareCache,
+		estimateSizeFunction: (
+			path: string,
+		) => Promise<number> = estimateDirectorySize,
+	) {
 		this.debounceTime = debounceTime;
 		this.cache = cache;
 		this.exclusionPatterns = [...EXCLUSION_PATTERNS];
+		this.estimateSizeFn = estimateSizeFunction;
 	}
 
 	private shouldExcludePath(filePath: string, rootPath: string): boolean {
@@ -167,7 +175,7 @@ export class FileWatcher {
 		resolvedDirectoryPath: string,
 	): Promise<number> {
 		try {
-			return await estimateDirectorySize(resolvedDirectoryPath);
+			return await this.estimateSizeFn(resolvedDirectoryPath);
 		} catch (error) {
 			const errorMessage = this.getErrorMessage(
 				error,

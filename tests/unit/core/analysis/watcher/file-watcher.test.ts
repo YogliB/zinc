@@ -238,18 +238,16 @@ describe('FileWatcher', () => {
 		await Promise.all(writePromises);
 
 		// Mock estimateDirectorySize to simulate threshold breach
-		vi.spyOn(
-			await import('../../../../../src/core/analysis/watcher/file-watcher'),
-			'estimateDirectorySize',
-		).mockResolvedValue(MAX_FILE_COUNT_THRESHOLD + 1);
+		const mockEstimate = vi
+			.fn()
+			.mockResolvedValue(MAX_FILE_COUNT_THRESHOLD + 1);
 
-		const watcher = new FileWatcher();
+		const watcher = new FileWatcher(100, undefined, mockEstimate);
 		await expect(watcher.watchDirectory(testDirectory)).rejects.toThrow(
 			'Directory too large',
 		);
 
 		watcher.stop();
-		vi.restoreAllMocks();
 		await rm(testDirectory, { recursive: true, force: true });
 	}, 10_000);
 });
