@@ -224,17 +224,43 @@ describe('FileWatcher', () => {
 		);
 		await mkdir(testDirectory, { recursive: true });
 
-		for (let index = 0; index < 2000; index++) {
+		const fileCount = 100_000;
+		const filesPerDirectory = 5000;
+		const directoryCount = Math.ceil(fileCount / filesPerDirectory);
+		const writePromises: Promise<void>[] = [];
+
+		for (
+			let directoryIndex = 0;
+			directoryIndex < directoryCount;
+			directoryIndex++
+		) {
 			const subDirectory = path.join(
 				testDirectory,
-				`dir-${Math.floor(index / 100)}`,
+				`dir-${directoryIndex}`,
 			);
 			await mkdir(subDirectory, { recursive: true });
-			await writeFile(
-				path.join(subDirectory, `file-${index}.txt`),
-				`Content ${index}`,
+
+			const startFileIndex = directoryIndex * filesPerDirectory;
+			const endFileIndex = Math.min(
+				startFileIndex + filesPerDirectory,
+				fileCount,
 			);
+
+			for (
+				let fileIndex = startFileIndex;
+				fileIndex < endFileIndex;
+				fileIndex++
+			) {
+				writePromises.push(
+					writeFile(
+						path.join(subDirectory, `file-${fileIndex}.txt`),
+						`Content ${fileIndex}`,
+					),
+				);
+			}
 		}
+
+		await Promise.all(writePromises);
 
 		const watcher = new FileWatcher();
 		await expect(watcher.watchDirectory(testDirectory)).rejects.toThrow(

@@ -115,34 +115,81 @@ export class FileWatcher {
 		return false;
 	}
 
+	private getErrorMessage(error: unknown, directoryPath: string): string {
+		if (error === undefined || error === null) {
+			return 'Unknown error (undefined or null)';
+		}
+		if (error instanceof Error) {
+			if ('code' in error) {
+				if (error.code === 'ENOENT') {
+					return `Directory not found: ${directoryPath}`;
+				}
+				if (error.code === 'EACCES') {
+					return `Permission denied: ${directoryPath}`;
+				}
+			}
+			return error.message || 'Unknown error';
+		}
+		if (typeof error === 'string') {
+			return error;
+		}
+		return `Unknown error: ${String(error)}`;
+	}
+
 	async watchDirectory(directoryPath: string): Promise<void> {
-		if (this.watchers.has(directoryPath)) {
-			return;
-		}
+		try {
+			const resolvedDirectoryPath = path.resolve(directoryPath);
 
-		const resolvedDirectoryPath = path.resolve(directoryPath);
-		const estimatedSize = await estimateDirectorySize(
-			resolvedDirectoryPath,
-		);
+			if (this.watchers.has(resolvedDirectoryPath)) {
+				return;
+			}
 
-		if (estimatedSize >= MAX_FILE_COUNT_THRESHOLD) {
-			throw new Error(
-				`Directory too large to watch (estimated ${estimatedSize} files). ` +
-					`Please set DEVFLOW_ROOT environment variable to a smaller project directory.`,
-			);
-		}
+			const { access } = await import('node:fs/promises');
+			try {
+				await access(resolvedDirectoryPath);
+			} catch (error) {
+				const errorMessage = this.getErrorMessage(
+					error,
+					resolvedDirectoryPath,
+				);
+				throw new Error(
+					`Cannot watch directory ${resolvedDirectoryPath}: ${errorMessage}`,
+				);
+			}
 
-		if (estimatedSize > 10_000) {
-			console.error(
-				`[FileWatcher:WARN] Large directory detected (estimated ${estimatedSize} files). ` +
-					`Watching may impact performance.`,
-			);
-		}
+			let estimatedSize: number;
+			try {
+				estimatedSize = await estimateDirectorySize(
+					resolvedDirectoryPath,
+				);
+			} catch (error) {
+				const errorMessage = this.getErrorMessage(
+					error,
+					resolvedDirectoryPath,
+				);
+				throw new Error(
+					`Failed to estimate directory size for ${resolvedDirectoryPath}: ${errorMessage}`,
+				);
+			}
 
-		const watcher = boundWatch(
-			resolvedDirectoryPath,
-			{ recursive: true },
-			(eventType, filename) => {
+			if (estimatedSize >= MAX_FILE_COUNT_THRESHOLD) {
+				throw new Error(
+					`Directory too large to watch (estimated ${estimatedSize} files). ` +
+						`Please set DEVFLOW_ROOT environment variable to a smaller project directory.`,
+				);
+			}
+
+			if (estimatedSize > 10_000) {
+				console.error(
+					`[FileWatcher:WARN] Large directory detected (estimated ${estimatedSize} files). ` +
+						`Watching may impact performance.`,
+				);
+			}
+
+			const watchCallback = (
+				eventType: string,
+				filename: string | null,
+			) => {
 				if (!filename) {
 					return;
 				}
@@ -164,10 +211,50 @@ export class FileWatcher {
 				}, this.debounceTime);
 
 				this.debounceTimers.set(filePath, timer);
-			},
-		);
+			};
 
-		this.watchers.set(resolvedDirectoryPath, watcher);
+			let watcher: FSWatcher | undefined;
+			try {
+				watcher = boundWatch(
+					resolvedDirectoryPath,
+					{ recursive: true },
+					watchCallback,
+				);
+			} catch (error) {
+				if (error === undefined || error === null) {
+					throw new Error(
+						`Failed to watch directory ${resolvedDirectoryPath}: fs.watch() threw undefined/null. Recursive watching may not be supported.`,
+					);
+				}
+				const errorMessage = this.getErrorMessage(
+					error,
+					resolvedDirectoryPath,
+				);
+				throw new Error(
+					`Failed to watch directory ${resolvedDirectoryPath}: ${errorMessage}`,
+				);
+			}
+
+			if (watcher === undefined || watcher === null) {
+				throw new Error(
+					`Failed to watch directory ${resolvedDirectoryPath}: fs.watch() returned null or undefined`,
+				);
+			}
+
+			this.watchers.set(resolvedDirectoryPath, watcher);
+		} catch (error) {
+			if (error === undefined || error === null) {
+				throw new Error(
+					`Failed to watch directory ${directoryPath}: unexpected undefined/null error`,
+				);
+			}
+			if (error instanceof Error) {
+				throw error;
+			}
+			throw new Error(
+				`Failed to watch directory ${directoryPath}: ${String(error)}`,
+			);
+		}
 	}
 
 	onChange(callback: FileChangeCallback): void {

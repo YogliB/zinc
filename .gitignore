@@ -25,6 +25,12 @@ src/**/*.js
 # Test directories
 .test-storage/
 .test-memory-repo/
+.test-integration/
+.test-config/
+.test-helpers/
+
+# Runtime directories
+.devflow/
 
 # Bun test artifacts
 .bun-test/

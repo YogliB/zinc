@@ -93,6 +93,98 @@ async function handleFoundIndicator(
 	return undefined;
 }
 
+async function buildSearchPaths(
+	startFrom: string | undefined,
+	cwd: string,
+): Promise<Array<{ path: string; isPrimary: boolean }>> {
+	const searchPaths: Array<{ path: string; isPrimary: boolean }> = [];
+	if (startFrom) {
+		const { realpath: fsRealpath } = await import('node:fs/promises');
+		const resolvedStartFrom = await fsRealpath(startFrom);
+		searchPaths.push({ path: resolvedStartFrom, isPrimary: true });
+		return searchPaths;
+	}
+
+	searchPaths.push({ path: cwd, isPrimary: true });
+	const serverScriptDirectory = getServerScriptDirectory();
+	if (serverScriptDirectory !== cwd) {
+		searchPaths.push({ path: serverScriptDirectory, isPrimary: false });
+	}
+	return searchPaths;
+}
+
+async function processSearchResults(
+	searchPaths: Array<{ path: string; isPrimary: boolean }>,
+	indicators: string[],
+): Promise<{
+	validatedDevflowProjectFromPrimary: string | undefined;
+	validatedDevflowProjectFromSecondary: string | undefined;
+	primarySearchResult: string | undefined;
+}> {
+	let validatedDevflowProjectFromPrimary: string | undefined;
+	let validatedDevflowProjectFromSecondary: string | undefined;
+	let primarySearchResult: string | undefined;
+
+	for (const { path: searchPath, isPrimary } of searchPaths) {
+		const found = await findProjectRootInDirectory(
+			searchPath,
+			indicators,
+			isPrimary,
+		);
+		if (!found) {
+			continue;
+		}
+
+		const isValid = await isValidDevelopmentFlowProjectRoot(found);
+		if (isValid) {
+			if (isPrimary) {
+				validatedDevflowProjectFromPrimary = found;
+			} else {
+				validatedDevflowProjectFromSecondary = found;
+			}
+			continue;
+		}
+
+		if (isPrimary && !primarySearchResult) {
+			primarySearchResult = found;
+		}
+	}
+
+	return {
+		validatedDevflowProjectFromPrimary,
+		validatedDevflowProjectFromSecondary,
+		primarySearchResult,
+	};
+}
+
+function selectBestResult(
+	validatedDevflowProjectFromPrimary: string | undefined,
+	validatedDevflowProjectFromSecondary: string | undefined,
+	primarySearchResult: string | undefined,
+	cwd: string,
+): string {
+	if (validatedDevflowProjectFromPrimary) {
+		return validatedDevflowProjectFromPrimary;
+	}
+
+	if (validatedDevflowProjectFromSecondary && !primarySearchResult) {
+		return validatedDevflowProjectFromSecondary;
+	}
+
+	if (primarySearchResult) {
+		return primarySearchResult;
+	}
+
+	if (validatedDevflowProjectFromSecondary) {
+		return validatedDevflowProjectFromSecondary;
+	}
+
+	console.error(
+		`[DevFlow:DEBUG] No project indicator found, falling back to cwd: ${cwd}`,
+	);
+	return cwd;
+}
+
 export async function detectProjectRoot(startFrom?: string): Promise<string> {
 	const devflowRoot = process.env.DEVFLOW_ROOT;
 	if (devflowRoot) {
@@ -103,34 +195,14 @@ export async function detectProjectRoot(startFrom?: string): Promise<string> {
 	}
 
 	const indicators = ['.git', 'package.json', 'pyproject.toml'];
-	const serverScriptDirectory = getServerScriptDirectory();
 	const cwd = await realpath('.');
+	const searchPaths = await buildSearchPaths(startFrom, cwd);
+	const results = await processSearchResults(searchPaths, indicators);
 
-	const searchPaths: Array<{ path: string; isPrimary: boolean }> = [];
-	if (startFrom) {
-		const { realpath: fsRealpath } = await import('node:fs/promises');
-		const resolvedStartFrom = await fsRealpath(startFrom);
-		searchPaths.push({ path: resolvedStartFrom, isPrimary: true });
-	} else {
-		searchPaths.push({ path: cwd, isPrimary: true });
-		if (serverScriptDirectory !== cwd) {
-			searchPaths.push({ path: serverScriptDirectory, isPrimary: false });
-		}
-	}
-
-	for (const { path: searchPath, isPrimary } of searchPaths) {
-		const found = await findProjectRootInDirectory(
-			searchPath,
-			indicators,
-			isPrimary,
-		);
-		if (found) {
-			return found;
-		}
-	}
-
-	console.error(
-		`[DevFlow:DEBUG] No project indicator found, falling back to cwd: ${cwd}`,
+	return selectBestResult(
+		results.validatedDevflowProjectFromPrimary,
+		results.validatedDevflowProjectFromSecondary,
+		results.primarySearchResult,
+		cwd,
 	);
-	return cwd;
 }
