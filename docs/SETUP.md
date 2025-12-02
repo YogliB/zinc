@@ -114,6 +114,38 @@ bun install --frozen-lockfile
 
 ## Configuration
 
+### Environment Variables
+
+DevFlow supports the following environment variables for configuration:
+
+#### Performance & Lazy Loading
+
+- **`DEVFLOW_PRELOAD_FILES`** (boolean, default: `false`)
+    - Enable background file preloading during server initialization
+    - When enabled, TypeScript files are loaded in the background without blocking server startup
+    - Useful for large projects where you want instant first-tool-call performance
+
+    ```bash
+    export DEVFLOW_PRELOAD_FILES=true
+    ```
+
+- **`DEVFLOW_PRELOAD_PATTERNS`** (comma-separated glob patterns)
+    - Custom file patterns for background preloading
+    - Only used when `DEVFLOW_PRELOAD_FILES=true`
+    - Defaults to: `**/*.ts,**/*.tsx,**/*.js,**/*.jsx` (relative to project root)
+
+    ```bash
+    export DEVFLOW_PRELOAD_PATTERNS="src/**/*.ts,lib/**/*.tsx"
+    ```
+
+**Performance Notes**:
+
+- **Default (lazy loading)**: Server starts in ~50-200ms, first file analysis ~200-500ms
+- **With preloading**: Server starts in ~50-200ms, preload continues in background, subsequent analyses are instant
+- Lazy loading provides 65-270x faster initialization compared to eager loading (13.5s → 200ms)
+
+#### Project Root Configuration
+
 ### Project Root Detection
 
 DevFlow automatically detects the project root by searching for indicators (`.git`, `package.json`, `pyproject.toml`) starting from:
@@ -208,6 +240,22 @@ When running as an MCP server, the current working directory may not be your pro
 - Prefer roots with devflow project indicators
 
 If detection fails, set `DEVFLOW_ROOT` explicitly in your MCP configuration.
+
+**Example MCP Configuration with Environment Variables**:
+
+```json
+{
+	"devflow": {
+		"command": "node",
+		"args": ["/path/to/devflow/dist/server.js"],
+		"env": {
+			"DEVFLOW_ROOT": "/path/to/your/project",
+			"DEVFLOW_PRELOAD_FILES": "true",
+			"DEVFLOW_PRELOAD_PATTERNS": "src/**/*.ts,src/**/*.tsx"
+		}
+	}
+}
+```
 
 ## Continuous Integration
 

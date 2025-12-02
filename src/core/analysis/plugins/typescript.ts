@@ -19,24 +19,39 @@ export class TypeScriptPlugin implements LanguagePlugin {
 	readonly languages = ['typescript', 'javascript'];
 
 	private project: Project;
+	private projectRoot: string;
+	private loadedFiles: Set<string>;
 
 	constructor(projectRoot: string) {
+		this.projectRoot = projectRoot;
+		this.loadedFiles = new Set();
 		this.project = new Project({
 			tsConfigFilePath: undefined,
 			skipAddingFilesFromTsConfig: true,
 			skipFileDependencyResolution: true,
 			skipLoadingLibFiles: true,
 		});
-		this.project.addSourceFilesAtPaths([
-			`${projectRoot}/**/*.ts`,
-			`${projectRoot}/**/*.tsx`,
-			`${projectRoot}/**/*.js`,
-			`${projectRoot}/**/*.jsx`,
-		]);
+	}
+
+	private getOrLoadSourceFile(
+		path: string,
+	): ReturnType<Project['getSourceFile']> {
+		let sourceFile = this.project.getSourceFile(path);
+		if (!sourceFile && !this.loadedFiles.has(path)) {
+			try {
+				sourceFile = this.project.addSourceFileAtPath(path);
+				this.loadedFiles.add(path);
+			} catch (error) {
+				const errorMessage =
+					error instanceof Error ? error.message : 'Unknown error';
+				throw new Error(`Failed to load file ${path}: ${errorMessage}`);
+			}
+		}
+		return sourceFile;
 	}
 
 	async parse(path: string): Promise<AST> {
-		const sourceFile = this.project.getSourceFile(path);
+		const sourceFile = this.getOrLoadSourceFile(path);
 		if (!sourceFile) {
 			throw new Error(`File not found: ${path}`);
 		}
@@ -44,6 +59,35 @@ export class TypeScriptPlugin implements LanguagePlugin {
 			kind: 'SourceFile',
 			sourceFile,
 		} as AST;
+	}
+
+	async preloadFiles(
+		patterns?: string[],
+	): Promise<{ count: number; errors: string[] }> {
+		const defaultPatterns = [
+			`${this.projectRoot}/**/*.ts`,
+			`${this.projectRoot}/**/*.tsx`,
+			`${this.projectRoot}/**/*.js`,
+			`${this.projectRoot}/**/*.jsx`,
+		];
+		const patternsToUse = patterns || defaultPatterns;
+		const errors: string[] = [];
+		let count = 0;
+
+		try {
+			const sourceFiles =
+				this.project.addSourceFilesAtPaths(patternsToUse);
+			count = sourceFiles.length;
+			for (const sourceFile of sourceFiles) {
+				this.loadedFiles.add(sourceFile.getFilePath());
+			}
+		} catch (error) {
+			const errorMessage =
+				error instanceof Error ? error.message : 'Unknown error';
+			errors.push(`Preload failed: ${errorMessage}`);
+		}
+
+		return { count, errors };
 	}
 
 	async extractSymbols(ast: AST, filePath: string): Promise<Symbol[]> {

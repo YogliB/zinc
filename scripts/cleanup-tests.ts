@@ -10,6 +10,9 @@ const TEST_DIRECTORIES = [
 	'.test-integration',
 	'.test-config',
 	'.test-helpers',
+	'.test-typescript-plugin',
+	'.test-analysis-engine-integration',
+	'.bench-project',
 	'.bun-test',
 ];
 

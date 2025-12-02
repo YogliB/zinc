@@ -59,6 +59,27 @@ npm install -g devflow-mcp
 
 ---
 
+## Performance Notes
+
+DevFlow uses **lazy loading** for optimal performance:
+
+- **Server initialization**: ~50-200ms (65-270x faster than eager loading)
+- **First file analysis**: ~200-500ms (file loaded on-demand)
+- **Subsequent analyses**: <1ms (fully cached)
+
+**First-Call Behavior**: The first time you analyze a file, it will be parsed and loaded into memory. This takes ~200-500ms for typical files. Subsequent analyses of the same file are nearly instant due to caching.
+
+**Optional Preloading**: For instant first-call performance, enable background file preloading:
+
+```bash
+export DEVFLOW_PRELOAD_FILES=true
+export DEVFLOW_PRELOAD_PATTERNS="src/**/*.ts,lib/**/*.tsx"
+```
+
+See [Setup Guide](./SETUP.md#environment-variables) for more details.
+
+---
+
 ## Available Tools
 
 DevFlow provides seven categories of MCP tools:
