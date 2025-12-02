@@ -11,10 +11,10 @@ CHANGED_FILES=$(git diff --name-only --diff-filter=d origin/main...HEAD)
 # Run tests for changed files using Vitest's 'related' command
 if [ -n "$CHANGED_FILES" ]; then
   echo "Running tests related to changed files..."
-  AGENT=1 bunx vitest related $CHANGED_FILES || exit 1
+  bunx vitest related $CHANGED_FILES || exit 1
 else
   echo "No changed files detected, running all tests..."
-  AGENT=1 bunx vitest run || exit 1
+  bunx vitest run || exit 1
 fi
 
 echo "✓ Pre-push checks passed"

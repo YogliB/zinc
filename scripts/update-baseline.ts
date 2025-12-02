@@ -45,7 +45,8 @@ function parseBunTestResults(): PerformanceMetrics | undefined {
 		while ((match = testcasePattern.exec(content)) !== null) {
 			const testcaseTag = match[0];
 
-			const fileMatch = /file="([^"]+)"/.exec(testcaseTag);
+			// Extract classname attribute (Vitest uses classname for file path)
+			const fileMatch = /classname="([^"]+)"/.exec(testcaseTag);
 			const timeMatch = /time="([^"]+)"/.exec(testcaseTag);
 
 			if (!fileMatch || !timeMatch) continue;
