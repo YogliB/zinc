@@ -31,31 +31,194 @@ async function isValidDevelopmentFlowProjectRoot(
 	}
 }
 
+async function checkDirectoryForIndicators(
+	directory: string,
+	indicators: string[],
+): Promise<string | undefined> {
+	try {
+		const { readdir } = await import('node:fs/promises');
+		const entries = await readdir(directory);
+
+		for (const indicator of indicators) {
+			if (entries.includes(indicator)) {
+				return indicator;
+			}
+		}
+	} catch {
+		// Directory not accessible
+	}
+	return undefined;
+}
+
+async function isWithinDepthLimit(
+	currentDirectory: string,
+	startDirectory: string,
+	nonValidatedResult: string | undefined,
+): Promise<boolean> {
+	const startPathParts = startDirectory.split(path.sep).filter(Boolean);
+	const currentPathParts = currentDirectory.split(path.sep).filter(Boolean);
+	const pathDepthDiff = Math.abs(
+		currentPathParts.length - startPathParts.length,
+	);
+	return pathDepthDiff <= 2 || !nonValidatedResult;
+}
+
+async function handleValidatedRoot(
+	currentDirectory: string,
+	indicator: string,
+	startDirectory: string,
+	nonValidatedResult: string | undefined,
+): Promise<string | undefined> {
+	const withinDepth = await isWithinDepthLimit(
+		currentDirectory,
+		startDirectory,
+		nonValidatedResult,
+	);
+	if (withinDepth) {
+		console.error(
+			`[DevFlow:DEBUG] Found validated project indicator (${indicator}) at: ${currentDirectory}`,
+		);
+		return currentDirectory;
+	}
+	return undefined;
+}
+
+async function handleNonValidatedRoot(
+	currentDirectory: string,
+	indicator: string,
+): Promise<{ result: string; parent: string }> {
+	console.error(
+		`[DevFlow:DEBUG] Found project indicator (${indicator}) at: ${currentDirectory}`,
+	);
+	console.error(
+		`[DevFlow:WARN] Detected root may not be a devflow project. Consider setting DEVFLOW_ROOT environment variable.`,
+	);
+	return {
+		result: currentDirectory,
+		parent: path.dirname(currentDirectory),
+	};
+}
+
+async function searchCurrentDirectory(
+	currentDirectory: string,
+	indicators: string[],
+	isPrimarySearch: boolean,
+	startDirectory: string,
+	nonValidatedResult: string | undefined,
+): Promise<{
+	validatedRoot?: string;
+	nonValidatedRoot?: string;
+	nonValidatedParent?: string;
+}> {
+	const foundIndicator = await checkDirectoryForIndicators(
+		currentDirectory,
+		indicators,
+	);
+
+	if (!foundIndicator) {
+		return {};
+	}
+
+	const isValid = await isValidDevelopmentFlowProjectRoot(currentDirectory);
+
+	if (isValid) {
+		const validatedRoot = await handleValidatedRoot(
+			currentDirectory,
+			foundIndicator,
+			startDirectory,
+			nonValidatedResult,
+		);
+		if (validatedRoot) {
+			return { validatedRoot };
+		}
+	}
+
+	if (isPrimarySearch && !nonValidatedResult) {
+		const { result, parent } = await handleNonValidatedRoot(
+			currentDirectory,
+			foundIndicator,
+		);
+		return { nonValidatedRoot: result, nonValidatedParent: parent };
+	}
+
+	return {};
+}
+
+async function searchSiblingsForValidatedRoot(
+	nonValidatedResultParent: string,
+	nonValidatedResult: string,
+	indicators: string[],
+): Promise<string | undefined> {
+	try {
+		const { readdir, stat } = await import('node:fs/promises');
+		const parentEntries = await readdir(nonValidatedResultParent);
+
+		for (const entry of parentEntries) {
+			const siblingPath = path.join(nonValidatedResultParent, entry);
+
+			try {
+				const statResult = await stat(siblingPath);
+				if (
+					!statResult.isDirectory() ||
+					siblingPath === nonValidatedResult
+				) {
+					continue;
+				}
+
+				const foundIndicator = await checkDirectoryForIndicators(
+					siblingPath,
+					indicators,
+				);
+
+				if (foundIndicator) {
+					const isValid =
+						await isValidDevelopmentFlowProjectRoot(siblingPath);
+					if (isValid) {
+						console.error(
+							`[DevFlow:DEBUG] Found validated project indicator (${foundIndicator}) at: ${siblingPath}`,
+						);
+						return siblingPath;
+					}
+				}
+			} catch {
+				// Continue checking other siblings
+			}
+		}
+	} catch {
+		// If we can't read parent directory, return undefined
+	}
+	return undefined;
+}
+
 async function findProjectRootInDirectory(
 	startDirectory: string,
 	indicators: string[],
 	isPrimarySearch: boolean,
 ): Promise<string | undefined> {
 	let currentDirectory = startDirectory;
+	let nonValidatedResult: string | undefined;
+	let nonValidatedResultParent: string | undefined;
 
 	while (true) {
-		for (const indicator of indicators) {
-			try {
-				const { readdir } = await import('node:fs/promises');
-				const entries = await readdir(currentDirectory);
-				if (entries.includes(indicator)) {
-					const result = await handleFoundIndicator(
-						currentDirectory,
-						indicator,
-						isPrimarySearch,
-					);
-					if (result) {
-						return result;
-					}
-				}
-			} catch {
-				// Continue checking other indicators
-			}
+		const searchResult = await searchCurrentDirectory(
+			currentDirectory,
+			indicators,
+			isPrimarySearch,
+			startDirectory,
+			nonValidatedResult,
+		);
+
+		if (searchResult.validatedRoot) {
+			return searchResult.validatedRoot;
+		}
+
+		if (searchResult.nonValidatedRoot) {
+			nonValidatedResult = searchResult.nonValidatedRoot;
+			nonValidatedResultParent = searchResult.nonValidatedParent;
+		}
+
+		if (nonValidatedResult && isPrimarySearch) {
+			break;
 		}
 
 		const parentDirectory = path.dirname(currentDirectory);
@@ -66,31 +229,18 @@ async function findProjectRootInDirectory(
 		currentDirectory = parentDirectory;
 	}
 
-	return undefined;
-}
+	if (nonValidatedResult && nonValidatedResultParent && isPrimarySearch) {
+		const siblingResult = await searchSiblingsForValidatedRoot(
+			nonValidatedResultParent,
+			nonValidatedResult,
+			indicators,
+		);
+		if (siblingResult) {
+			return siblingResult;
+		}
+	}
 
-async function handleFoundIndicator(
-	currentDirectory: string,
-	indicator: string,
-	isPrimarySearch: boolean,
-): Promise<string | undefined> {
-	const isValid = await isValidDevelopmentFlowProjectRoot(currentDirectory);
-	if (isValid) {
-		console.error(
-			`[DevFlow:DEBUG] Found validated project indicator (${indicator}) at: ${currentDirectory}`,
-		);
-		return currentDirectory;
-	}
-	if (isPrimarySearch) {
-		console.error(
-			`[DevFlow:DEBUG] Found project indicator (${indicator}) at: ${currentDirectory}`,
-		);
-		console.error(
-			`[DevFlow:WARN] Detected root may not be a devflow project. Consider setting DEVFLOW_ROOT environment variable.`,
-		);
-		return currentDirectory;
-	}
-	return undefined;
+	return nonValidatedResult;
 }
 
 async function buildSearchPaths(
@@ -113,6 +263,49 @@ async function buildSearchPaths(
 	return searchPaths;
 }
 
+async function processPrimarySearchPath(
+	searchPath: string,
+	indicators: string[],
+): Promise<{
+	validatedProject?: string;
+	nonValidatedProject?: string;
+}> {
+	const found = await findProjectRootInDirectory(
+		searchPath,
+		indicators,
+		true,
+	);
+
+	if (!found) {
+		return {};
+	}
+
+	const isValid = await isValidDevelopmentFlowProjectRoot(found);
+	if (isValid) {
+		return { validatedProject: found };
+	}
+
+	return { nonValidatedProject: found };
+}
+
+async function processSecondarySearchPath(
+	searchPath: string,
+	indicators: string[],
+): Promise<string | undefined> {
+	const found = await findProjectRootInDirectory(
+		searchPath,
+		indicators,
+		false,
+	);
+
+	if (!found) {
+		return undefined;
+	}
+
+	const isValid = await isValidDevelopmentFlowProjectRoot(found);
+	return isValid ? found : undefined;
+}
+
 async function processSearchResults(
 	searchPaths: Array<{ path: string; isPrimary: boolean }>,
 	indicators: string[],
@@ -126,27 +319,16 @@ async function processSearchResults(
 	let primarySearchResult: string | undefined;
 
 	for (const { path: searchPath, isPrimary } of searchPaths) {
-		const found = await findProjectRootInDirectory(
-			searchPath,
-			indicators,
-			isPrimary,
-		);
-		if (!found) {
-			continue;
-		}
-
-		const isValid = await isValidDevelopmentFlowProjectRoot(found);
-		if (isValid) {
-			if (isPrimary) {
-				validatedDevflowProjectFromPrimary = found;
-			} else {
-				validatedDevflowProjectFromSecondary = found;
-			}
-			continue;
-		}
-
-		if (isPrimary && !primarySearchResult) {
-			primarySearchResult = found;
+		if (isPrimary) {
+			const result = await processPrimarySearchPath(
+				searchPath,
+				indicators,
+			);
+			validatedDevflowProjectFromPrimary = result.validatedProject;
+			primarySearchResult = result.nonValidatedProject;
+		} else if (primarySearchResult || validatedDevflowProjectFromPrimary) {
+			validatedDevflowProjectFromSecondary =
+				await processSecondarySearchPath(searchPath, indicators);
 		}
 	}
 
@@ -165,10 +347,6 @@ function selectBestResult(
 ): string {
 	if (validatedDevflowProjectFromPrimary) {
 		return validatedDevflowProjectFromPrimary;
-	}
-
-	if (validatedDevflowProjectFromSecondary && !primarySearchResult) {
-		return validatedDevflowProjectFromSecondary;
 	}
 
 	if (primarySearchResult) {
