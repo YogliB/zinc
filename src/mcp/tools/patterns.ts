@@ -1,5 +1,5 @@
 import path from 'node:path';
-import { readdir, stat } from 'node:fs/promises';
+import { readdir } from 'node:fs/promises';
 import { z } from 'zod';
 import type { FastMCP } from 'fastmcp';
 import type { AnalysisEngine } from '../../core/analysis/engine';
@@ -55,39 +55,12 @@ async function analyzeFileForAntiPatterns(
 		path: string;
 		line: number;
 	}>,
-	fileCount: { current: number; total: number },
 ): Promise<void> {
 	try {
-		// Check file size before analyzing
-		const stats = await stat(filePath);
-		if (stats.size > MAX_FILE_SIZE_BYTES) {
-			console.error(
-				`[detectAntiPatterns] Skipping large file (${(stats.size / 1024).toFixed(1)}KB): ${filePath}`,
-			);
-			return;
-		}
-
-		console.error(
-			`[detectAntiPatterns] [${fileCount.current}/${fileCount.total}] Analyzing: ${filePath}`,
-		);
-
-		const analysisPromise = engine.analyzeFile(filePath);
-		const analysis = await analyzeFileWithTimeout(
-			analysisPromise,
-			ANALYSIS_TIMEOUT_MS,
-			filePath,
-		);
-
+		const analysis = await engine.analyzeFile(filePath);
 		checkSymbolForAntiPatterns(analysis.symbols, antiPatterns);
-		console.error(
-			`[detectAntiPatterns] [${fileCount.current}/${fileCount.total}] ✓ Found ${analysis.symbols.length} symbols`,
-		);
-	} catch (error) {
-		const errorMessage =
-			error instanceof Error ? error.message : 'Unknown error';
-		console.error(
-			`[detectAntiPatterns] [${fileCount.current}/${fileCount.total}] ✗ Error: ${errorMessage}`,
-		);
+	} catch {
+		// Ignore errors when analyzing files
 	}
 }
 
@@ -200,7 +173,10 @@ export function registerPatternTools(
 				for (const entry of entries) {
 					const fullPath = path.join(safeDirectory, entry.name);
 					if (entry.isDirectory()) {
-						if (!shouldExcludeDirectory(entry.name)) {
+						if (
+							!entry.name.startsWith('.') &&
+							entry.name !== 'node_modules'
+						) {
 							await searchDirectory(fullPath);
 						}
 					} else if (
@@ -290,10 +266,6 @@ export function registerPatternTools(
 				? path.join(resolvedProjectRoot, scope)
 				: resolvedProjectRoot;
 
-			console.error(
-				`[detectAntiPatterns] Starting scan at: ${targetPath}`,
-			);
-
 			const antiPatterns: Array<{
 				type: string;
 				description: string;
@@ -323,37 +295,26 @@ export function registerPatternTools(
 				for (const entry of entries) {
 					const fullPath = path.join(safeDirectory, entry.name);
 					if (entry.isDirectory()) {
-						if (!shouldExcludeDirectory(entry.name)) {
+						if (
+							!entry.name.startsWith('.') &&
+							entry.name !== 'node_modules'
+						) {
 							await searchDirectory(fullPath);
 						}
 					} else if (
 						entry.isFile() &&
 						isSupportedLanguage(fullPath)
 					) {
-						fileCount.current++;
 						await analyzeFileForAntiPatterns(
 							fullPath,
 							engines.analysis,
 							antiPatterns,
-							fileCount,
 						);
 					}
 				}
 			}
 
-			// Count files first
-			console.error('[detectAntiPatterns] Counting files...');
-			await countFiles(targetPath);
-			console.error(
-				`[detectAntiPatterns] Found ${fileCount.total} files to analyze`,
-			);
-
-			// Then analyze them
 			await searchDirectory(targetPath);
-
-			console.error(
-				`[detectAntiPatterns] Complete: Found ${antiPatterns.length} anti-patterns in ${fileCount.current} files`,
-			);
 
 			return JSON.stringify(antiPatterns);
 		},
