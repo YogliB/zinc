@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from 'bun:test';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { detectProjectRoot } from '../../../src/core/config';
 import path from 'node:path';
 import { mkdir, writeFile, realpath, rm } from 'node:fs/promises';

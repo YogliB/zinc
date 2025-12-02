@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from 'bun:test';
+import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { detectProjectRoot } from '../../src/core/config';
 import { createStorageEngine } from '../../src/core/storage/engine';
 import path from 'node:path';

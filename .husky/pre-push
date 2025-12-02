@@ -1,1 +1,20 @@
-bun test
+#!/usr/bin/env sh
+. "$(dirname -- "$0")/_/husky.sh"
+
+# Run typecheck
+echo "Running type check..."
+bun run type-check || exit 1
+
+# Get changed files (staged + modified)
+CHANGED_FILES=$(git diff --name-only --cached --diff-filter=d HEAD)
+
+# If there are changed files, run related tests
+if [ -n "$CHANGED_FILES" ]; then
+  echo "Running tests related to changed files..."
+  AGENT=1 bun test --related $CHANGED_FILES || exit 1
+else
+  echo "No changed files detected, running all tests..."
+  bun test || exit 1
+fi
+
+echo "✓ Pre-push checks passed"

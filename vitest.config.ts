@@ -1,18 +1,18 @@
 import { defineConfig } from 'vitest/config';
-import { fileURLToPath } from 'node:url';
-import path from 'node:path';
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
 export default defineConfig({
-	resolve: {
-		alias: {
-			'bun:test': path.resolve(__dirname, 'tests/setup/vitest-compat.ts'),
-		},
-	},
 	test: {
 		globals: true,
 		bail: 0,
+		pool: 'threads',
+		poolOptions: {
+			threads: {
+				singleThread: false,
+			},
+		},
+		isolate: true,
+		fileParallelism: true,
+		dir: '.',
 		coverage: {
 			provider: 'v8',
 			reporter: ['text', 'lcov'],

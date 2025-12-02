@@ -2,10 +2,7 @@
 
 ## Overview
 
-This project uses a hybrid testing approach:
-
-- **Bun's native test runner** for fast, reliable test execution during development
-- **Vitest** for code coverage checks (CI and coverage reporting)
+This project uses **Vitest** as the sole test framework for all testing needs.
 
 Testing strategy includes:
 
@@ -13,9 +10,9 @@ Testing strategy includes:
 2. **Test Segmentation** - Tests organized by tier (unit/integration/e2e)
 3. **CI Performance Monitoring** - Track regressions with baseline comparison
 4. **AI Agent Mode** - Quiet output optimized for AI coding assistants
-5. **Hybrid Coverage** - Vitest handles coverage reporting while Bun handles test execution
+5. **Unified Testing** - Vitest handles both test execution and coverage reporting
 
-Regular test runs use Bun's native test runner for optimal performance. Coverage checks use Vitest to generate detailed coverage reports.
+All tests use Vitest directly, ensuring consistent test execution across both Bun and Node.js environments.
 
 ## Test Structure
 
@@ -61,7 +58,7 @@ bun run test:coverage
 bun run test:perf
 ```
 
-**Note:** The `test:coverage` script uses Vitest to generate coverage reports. Regular test runs (`bun test`) continue to use Bun's native test runner for faster execution.
+**Note:** All test scripts use Vitest for both test execution and coverage reporting, ensuring consistency across environments.
 
 ## Performance Tiers
 
@@ -70,7 +67,7 @@ bun run test:perf
 **Goal:** Sub-10ms per test, fully mocked, isolated
 
 ```typescript
-import { describe, it, expect } from 'bun:test';
+import { describe, it, expect } from 'vitest';
 
 describe('Fast Unit Tests', () => {
 	it('should calculate correctly', () => {
@@ -88,7 +85,7 @@ describe('Fast Unit Tests', () => {
 - Mocked dependencies
 - No I/O operations
 - Deterministic
-- Tests run in parallel by default with Bun
+- Tests run in parallel by default with Vitest
 - Fast feedback in watch mode
 
 ### Integration Tests (`tests/integration/`)
@@ -120,23 +117,14 @@ describe('Real System Integration', () => {
 
 ## Concurrent Tests
 
-Bun supports concurrent test execution within each test file. This is configured in `bunfig.toml`:
-
-```toml
-[test]
-# Run tests concurrently for better performance
-concurrent = true
-
-# Maximum number of tests to run in parallel (default: 20)
-maxConcurrency = 20
-```
+Vitest supports concurrent test execution within each test file.
 
 ### Concurrent Execution
 
 By default, tests in this project run concurrently within each file:
 
 ```typescript
-import { describe, it, expect } from 'bun:test';
+import { describe, it, expect } from 'vitest';
 
 describe('Math Operations', () => {
 	it('adds numbers', () => {
@@ -207,7 +195,7 @@ bun run test:ai
 
 **Environment Variables:**
 
-The script sets `AGENT=1`, which Bun recognizes. You can also use:
+The script sets `AGENT=1` for AI agent detection. You can also use:
 
 - `CLAUDECODE=1` - For Claude Code
 - `REPL_ID=1` - For Replit
@@ -268,49 +256,13 @@ CI generates performance reports automatically. Check:
 
 ## Configuration
 
-### Hybrid Testing Setup
+### Vitest Configuration
 
-This project uses both Bun and Vitest:
-
-- **Bun** (`bunfig.toml`) - Test execution configuration
-- **Vitest** (`vitest.config.ts`) - Coverage reporting configuration
-
-### `bunfig.toml`
-
-Key settings for Bun test execution:
-
-```toml
-[test]
-# Enable coverage by default (for Bun's built-in coverage)
-coverage = true
-
-# Coverage reporters (text for console, lcov for tools)
-coverageReporter = ["text", "lcov"]
-
-# Coverage output directory
-coverageDir = "coverage"
-
-# Exclude test files from coverage
-coverageSkipTestFiles = true
-
-# Coverage exclusions
-coverageExclude = [
-  "node_modules/**",
-  "dist/**",
-  "scripts/**",
-  "**/*.spec.ts",
-  "**/*.test.ts",
-  "tests/**"
-]
-
-# Concurrent execution
-concurrent = true
-maxConcurrency = 20
-```
+This project uses Vitest for all testing needs.
 
 ### `vitest.config.ts`
 
-Vitest configuration for coverage checks:
+Vitest configuration for test execution and coverage:
 
 ```typescript
 import { defineConfig } from 'vitest/config';
@@ -340,20 +292,17 @@ export default defineConfig({
 });
 ```
 
-**Compatibility Layer:** Tests written with `bun:test` imports work with both Bun and Vitest through a compatibility layer (`tests/setup/vitest-compat.ts`) that maps Bun's test API to Vitest's API.
+### Test Execution
 
-### When to Use Which Tool
+All tests use Vitest directly:
 
-- **Use Bun** (`bun test`) for:
+- **Use `bun test`** for:
     - Regular test runs during development
-    - Fast test execution
+    - Fast test execution with Bun runtime
     - Watch mode
     - Unit/integration/e2e test execution
-
-- **Use Vitest** (`bun run test:coverage`) for:
-    - Generating coverage reports
-    - CI coverage checks
-    - Detailed coverage analysis
+    - Coverage reports
+    - All testing scenarios
 
 ## Writing Performant Tests
 
@@ -363,10 +312,10 @@ export default defineConfig({
 - Mock external dependencies
 - Keep tests focused on one behavior
 - Use descriptive names
-- Import from `bun:test` for test utilities
+- Import from `vitest` for test utilities
 
 ```typescript
-import { describe, it, expect } from 'bun:test';
+import { describe, it, expect } from 'vitest';
 
 describe('User Validation', () => {
 	it('should reject invalid email', () => {
@@ -448,11 +397,10 @@ Performance check:
 
 ## Resources
 
-- [Bun Test Documentation](https://bun.sh/docs/cli/test)
-- [Bun Coverage](https://bun.sh/docs/cli/test#coverage)
-- [Bun Test API](https://bun.sh/docs/test/writing)
 - [Vitest Documentation](https://vitest.dev/)
+- [Vitest API Reference](https://vitest.dev/api/)
 - [Vitest Coverage Guide](https://vitest.dev/guide/coverage.html)
+- [Bun Runtime with Vitest](https://bun.sh/docs/test-runner/vitest)
 
 ## Scripts Reference
 
