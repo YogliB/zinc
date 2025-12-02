@@ -88,6 +88,7 @@
 		"simple-git": "3.30.0"
 	},
 	"overrides": {
-		"esbuild": "^0.27.0"
+		"esbuild": "^0.27.0",
+		"express": ">=5.2.0"
 	}
 }
