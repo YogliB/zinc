@@ -133,7 +133,6 @@ export function registerPatternTools(
 				const safeDirectory = validatedPath as string;
 				let entries;
 				try {
-					// eslint-disable-next-line security/detect-non-literal-fs-filename
 					entries = await readdir(safeDirectory, {
 						withFileTypes: true,
 					});
@@ -221,7 +220,6 @@ export function registerPatternTools(
 				const safeDirectory = validatedPath as string;
 				let entries;
 				try {
-					// eslint-disable-next-line security/detect-non-literal-fs-filename
 					entries = await readdir(safeDirectory, {
 						withFileTypes: true,
 					});
