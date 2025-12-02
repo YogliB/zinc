@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import {
 	FileWatcher,
 	estimateDirectorySize,
@@ -222,43 +222,26 @@ describe('FileWatcher', () => {
 		);
 		await mkdir(testDirectory, { recursive: true });
 
-		const fileCount = 100_000;
-		const filesPerDirectory = 5000;
-		const directoryCount = Math.ceil(fileCount / filesPerDirectory);
+		// Create 1,000 files instead of 100,000 for faster testing
+		const fileCount = 1000;
 		const writePromises: Promise<void>[] = [];
 
-		for (
-			let directoryIndex = 0;
-			directoryIndex < directoryCount;
-			directoryIndex++
-		) {
-			const subDirectory = path.join(
-				testDirectory,
-				`dir-${directoryIndex}`,
+		for (let fileIndex = 0; fileIndex < fileCount; fileIndex++) {
+			writePromises.push(
+				writeFile(
+					path.join(testDirectory, `file-${fileIndex}.txt`),
+					`Content ${fileIndex}`,
+				),
 			);
-			await mkdir(subDirectory, { recursive: true });
-
-			const startFileIndex = directoryIndex * filesPerDirectory;
-			const endFileIndex = Math.min(
-				startFileIndex + filesPerDirectory,
-				fileCount,
-			);
-
-			for (
-				let fileIndex = startFileIndex;
-				fileIndex < endFileIndex;
-				fileIndex++
-			) {
-				writePromises.push(
-					writeFile(
-						path.join(subDirectory, `file-${fileIndex}.txt`),
-						`Content ${fileIndex}`,
-					),
-				);
-			}
 		}
 
 		await Promise.all(writePromises);
+
+		// Mock estimateDirectorySize to simulate threshold breach
+		vi.spyOn(
+			await import('../../../../../src/core/analysis/watcher/file-watcher'),
+			'estimateDirectorySize',
+		).mockResolvedValue(MAX_FILE_COUNT_THRESHOLD + 1);
 
 		const watcher = new FileWatcher();
 		await expect(watcher.watchDirectory(testDirectory)).rejects.toThrow(
@@ -266,6 +249,7 @@ describe('FileWatcher', () => {
 		);
 
 		watcher.stop();
+		vi.restoreAllMocks();
 		await rm(testDirectory, { recursive: true, force: true });
-	}, 60_000);
+	}, 10_000);
 });

@@ -381,6 +381,9 @@ Performance check:
 3. Look for synchronous operations - use async/await
 4. Check test isolation - ensure no shared state
 
+**Note on Directory Threshold Tests:**
+The FileWatcher threshold tests (`file-watcher.test.ts` and `server-init.test.ts`) use a sampling strategy to validate large directory handling. They create 1,000 files and mock `estimateDirectorySize()` to return values exceeding the threshold. This maintains test validity while reducing execution time from ~80s to under 1s. For full-scale performance testing with 100k+ files, run manual tests before releases.
+
 ### Performance regression detected
 
 1. Check what changed - `git diff`

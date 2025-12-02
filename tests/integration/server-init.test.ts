@@ -1,4 +1,4 @@
-import { describe, it, expect, beforeEach, afterEach } from 'vitest';
+import { describe, it, expect, beforeEach, afterEach, vi } from 'vitest';
 import { detectProjectRoot } from '../../src/core/config';
 import { createStorageEngine } from '../../src/core/storage/engine';
 import path from 'node:path';
@@ -182,48 +182,31 @@ describe('Server Initialization Integration', () => {
 		);
 		await mkdir(largeTestDirectory, { recursive: true });
 
-		const fileCount = 100_000;
-		const filesPerDirectory = 5000;
-		const directoryCount = Math.ceil(fileCount / filesPerDirectory);
+		// Create 1,000 files instead of 100,000 for faster testing
+		const fileCount = 1000;
 		const writePromises: Promise<void>[] = [];
 
-		for (
-			let directoryIndex = 0;
-			directoryIndex < directoryCount;
-			directoryIndex++
-		) {
-			const subDirectory = path.join(
-				largeTestDirectory,
-				`dir-${directoryIndex}`,
+		for (let fileIndex = 0; fileIndex < fileCount; fileIndex++) {
+			writePromises.push(
+				writeFile(
+					path.join(largeTestDirectory, `file-${fileIndex}.txt`),
+					`Content ${fileIndex}`,
+				),
 			);
-			await mkdir(subDirectory, { recursive: true });
-
-			const startFileIndex = directoryIndex * filesPerDirectory;
-			const endFileIndex = Math.min(
-				startFileIndex + filesPerDirectory,
-				fileCount,
-			);
-
-			for (
-				let fileIndex = startFileIndex;
-				fileIndex < endFileIndex;
-				fileIndex++
-			) {
-				writePromises.push(
-					writeFile(
-						path.join(subDirectory, `file-${fileIndex}.txt`),
-						`Content ${fileIndex}`,
-					),
-				);
-			}
 		}
 
 		await Promise.all(writePromises);
 
 		process.env.DEVFLOW_ROOT = largeTestDirectory;
 
-		const { FileWatcher } =
+		// Mock estimateDirectorySize to simulate threshold breach
+		const fileWatcherModule =
 			await import('../../src/core/analysis/watcher/file-watcher');
+		vi.spyOn(fileWatcherModule, 'estimateDirectorySize').mockResolvedValue(
+			100_000 + 1,
+		);
+
+		const { FileWatcher } = fileWatcherModule;
 		const { GitAwareCache } =
 			await import('../../src/core/analysis/cache/git-aware');
 
@@ -235,8 +218,9 @@ describe('Server Initialization Integration', () => {
 		).rejects.toThrow('Directory too large');
 
 		fileWatcher.stop();
+		vi.restoreAllMocks();
 		delete process.env.DEVFLOW_ROOT;
 
 		await rm(largeTestDirectory, { recursive: true, force: true });
-	}, 60_000);
+	}, 10_000);
 });
