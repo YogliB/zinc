@@ -49,9 +49,11 @@ export class GitAnalyzer {
 		workspace?: string,
 	): Promise<GitDecision[]> {
 		try {
-			const log = workspace
-				? await this.git.log({ since, '--': workspace })
-				: await this.git.log({ since });
+			const arguments_ = [`--since=${since}`];
+			if (workspace) {
+				arguments_.push('--', workspace);
+			}
+			const log = await this.git.log(arguments_);
 
 			return log.all.map((commit) => ({
 				commitSHA: commit.hash,
@@ -72,10 +74,11 @@ export class GitAnalyzer {
 		since: string,
 	): Promise<ChangeVelocity> {
 		try {
-			const log = await this.git.log({
-				since,
-				file: filePath,
-			});
+			const log = await this.git.log([
+				`--since=${since}`,
+				'--',
+				filePath,
+			]);
 
 			const authors = new Set<string>();
 			let lastModified = '';
@@ -105,7 +108,7 @@ export class GitAnalyzer {
 
 	async getCommitMessages(since: string): Promise<string[]> {
 		try {
-			const log = await this.git.log({ since });
+			const log = await this.git.log([`--since=${since}`]);
 			return log.all.map((commit) => commit.message);
 		} catch {
 			return [];
