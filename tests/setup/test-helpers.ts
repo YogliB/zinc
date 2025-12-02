@@ -91,13 +91,8 @@ export async function writeTestFile(
 ): Promise<string> {
 	const fullPath = path.resolve(projectRoot, filePath);
 	const directory = path.dirname(fullPath);
-	if (
-		directory !== projectRoot &&
-		directory !== '.' &&
-		directory !== fullPath
-	) {
-		await mkdir(directory, { recursive: true });
-	}
+
+	await mkdir(directory, { recursive: true });
 	await writeFile(fullPath, content);
 	return fullPath;
 }
