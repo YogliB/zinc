@@ -7,11 +7,11 @@ export default defineConfig({
 		pool: 'threads',
 		poolOptions: {
 			threads: {
-				singleThread: false,
+				singleThread: true,
 			},
 		},
 		isolate: true,
-		fileParallelism: true,
+		fileParallelism: false,
 		dir: '.',
 		coverage: {
 			provider: 'v8',
