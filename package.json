@@ -43,10 +43,38 @@
 		"context",
 		"persistent",
 		"session",
-		"ai-agent"
+		"ai-agent",
+		"code-analysis",
+		"ast",
+		"modelcontextprotocol",
+		"bun",
+		"typescript",
+		"static-analysis",
+		"developer-tools",
+		"cli",
+		"pattern-detection",
+		"dependency-graph",
+		"symbol-analysis"
 	],
-	"author": "",
+	"author": "YogliB <https://github.com/YogliB>",
 	"license": "MIT",
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/YogliB/dev-toolkit-mcp.git"
+	},
+	"bugs": {
+		"url": "https://github.com/YogliB/dev-toolkit-mcp/issues"
+	},
+	"homepage": "https://github.com/YogliB/dev-toolkit-mcp#readme",
+	"funding": {
+		"type": "github",
+		"url": "https://github.com/sponsors/YogliB"
+	},
+	"files": [
+		"dist",
+		"README.md",
+		"LICENSE.md"
+	],
 	"directories": {
 		"doc": "docs"
 	},

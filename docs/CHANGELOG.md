@@ -9,6 +9,15 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Package Metadata**: Enhanced package.json with comprehensive metadata for improved npm discoverability
+    - Added repository, bugs, and homepage URLs
+    - Added author information with GitHub profile
+    - Added GitHub Sponsors funding information
+    - Expanded keywords from 6 to 17 terms (code-analysis, ast, modelcontextprotocol, pattern-detection, etc.)
+    - Added files field to control published package contents
+
 ### Added
 
 - **Monorepo Support**: All MCP tools now accept an optional `projectRoot` parameter that overrides `DEVFLOW_ROOT` for dynamic workspace switching
