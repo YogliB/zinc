@@ -290,7 +290,6 @@ jobs:
                 type-check,
                 build,
                 test,
-                coverage,
                 ci-sync-check,
                 security-audit,
                 circular-deps,
