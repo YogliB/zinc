@@ -60,6 +60,80 @@ bun run test:perf
 
 **Note:** All test scripts use Vitest for both test execution and coverage reporting, ensuring consistency across environments.
 
+## Performance Test Standards
+
+### Baseline-Driven Testing
+
+**All performance assertions MUST use the baseline system** to account for CI environment variability.
+
+#### Why Baselines?
+
+- CI runners are 2-3x slower than local development machines
+- Hardcoded thresholds (e.g., `expect(duration).toBeLessThan(500)`) cause false failures
+- Baselines provide environment-aware regression detection
+
+#### Usage
+
+```typescript
+import { expectDurationWithinBaseline } from '../helpers/performance-baseline';
+
+it('should complete operation efficiently', async () => {
+	const startTime = performance.now();
+	await performOperation();
+	const duration = performance.now() - startTime;
+
+	// Use baseline system instead of hardcoded threshold
+	expectDurationWithinBaseline(
+		duration,
+		'my-test.operation-name', // Unique test identifier
+		0.5, // 50% max regression tolerance
+	);
+});
+```
+
+#### Setting Up Baselines
+
+1. **Add fallback threshold** in `tests/helpers/performance-baseline.ts`:
+
+    ```typescript
+    const ABSOLUTE_FALLBACKS: Record<string, number> = {
+    	'my-test.operation-name': 1000, // Conservative fallback (ms)
+    };
+    ```
+
+2. **Run tests in CI** to capture actual performance
+
+3. **Update `.bun-performance.json`** with CI-validated values:
+
+    ```json
+    "testSpecificBaselines": {
+        "my-test.operation-name": {
+            "name": "my-test.operation-name",
+            "duration": 850,  // Actual CI value
+            "timestamp": "2025-12-03T09:00:00.000Z"
+        }
+    }
+    ```
+
+4. **Verify** tests pass in CI using real baselines (no fallback warnings)
+
+#### Best Practices
+
+- ✅ Always use `expectDurationWithinBaseline()` for performance assertions
+- ✅ Set fallback thresholds 50-100% higher than expected local values
+- ✅ Validate baselines in CI before merging
+- ✅ Use descriptive test identifiers (format: `file-name.test-description`)
+- ✅ Allow 50% regression tolerance for CI variance
+- ❌ Never use hardcoded `toBeLessThan()` for duration checks
+- ❌ Don't set baselines based on local performance only
+
+#### CI Environment Notes
+
+- GitHub Actions runners exhibit 2-3x slower performance than local machines
+- File I/O and CPU-bound operations are most affected
+- Baseline system automatically accounts for this variance
+- Global suite performance tracked separately in `.bun-performance.json` baseline section
+
 ## Performance Tiers
 
 ### Unit Tests (`tests/unit/`)
