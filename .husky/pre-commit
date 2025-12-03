@@ -2,3 +2,6 @@ bun run generate:ci-sh
 git add scripts/ci.sh 2>/dev/null || true
 
 bunx lint-staged
+
+# Check for console.* calls in staged files
+bash scripts/check-console.sh

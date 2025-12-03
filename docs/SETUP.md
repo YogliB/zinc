@@ -368,6 +368,7 @@ Pre-commit hooks automatically:
 - Run ESLint on staged files
 - Format code with Prettier
 - Prevent commits with linting errors
+- Check for `console.*` calls in source code (use logger instead)
 
 To skip hooks (not recommended):
 

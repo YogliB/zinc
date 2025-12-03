@@ -93,6 +93,53 @@ git commit -m "feat: Add new CI check"
 # ci.sh is automatically regenerated and staged
 ```
 
+### Console.log Prevention
+
+The pre-commit hook automatically checks for `console.*` calls to ensure all logging uses the centralized logger utility.
+
+**What's Checked:**
+
+- All staged TypeScript/JavaScript files in `src/`
+- Excludes `scripts/`, `tests/`, and test files (`.test.ts`, `.spec.ts`)
+- Excludes commented-out console statements
+
+**If Violations Found:**
+
+```bash
+❌ Found console.* call(s) in src/example.ts:
+   42:  console.log('debug message');
+
+🚫 Pre-commit check FAILED: console.* calls detected
+
+Please use the logger utility instead of console.*
+```
+
+**Use Logger Instead:**
+
+```typescript
+import { createLogger } from './core/utils/logger.js';
+
+const logger = createLogger('ModuleName');
+
+logger.debug('Debug message');
+logger.info('Information');
+logger.warn('Warning');
+logger.error('Error occurred');
+```
+
+**When --no-verify is Acceptable:**
+
+- Emergency hotfixes (rare)
+- Legitimate console usage in scripts/ or tests/
+- Temporary debugging (remove before merging)
+
+```bash
+# Bypass pre-commit checks (not recommended)
+git commit --no-verify -m "fix: emergency hotfix"
+```
+
+**Note:** CI linting serves as a backup check, so bypassed violations will still be caught in CI.
+
 ### CI Validation
 
 The CI pipeline includes a `ci-sync-check` job that ensures the files stay in sync. If they drift, the CI will fail with a clear error message.

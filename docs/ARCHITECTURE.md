@@ -377,6 +377,8 @@ export function createStorageEngine(
 
 The logger utility provides centralized, consistent logging across the entire codebase with namespace-based organization and configurable log levels.
 
+**Console.log Prevention**: A pre-commit hook automatically prevents `console.*` calls from being committed to `src/` files, ensuring all logging uses this utility. See `scripts/check-console.sh` and [CONTRIBUTING.md](./CONTRIBUTING.md#consolelog-prevention) for details.
+
 **Features**:
 
 - Namespace-based logging for component identification
