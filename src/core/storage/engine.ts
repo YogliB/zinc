@@ -1,4 +1,12 @@
 import path from 'node:path';
+import {
+	readFile as fsReadFile,
+	writeFile as fsWriteFile,
+	mkdir,
+	access,
+	unlink,
+	readdir,
+} from 'node:fs/promises';
 import { PathValidationError, FileNotFoundError, WriteError } from './errors';
 import { createLogger } from '../utils/logger';
 
@@ -59,7 +67,6 @@ export function createStorageEngine(
 			const validatedPath = validatePath(filePath);
 			logger.debug(`Reading file: ${filePath}`);
 
-			const { readFile: fsReadFile } = await import('node:fs/promises');
 			const content = await fsReadFile(validatedPath, 'utf8');
 			logger.debug(
 				`Successfully read file: ${filePath} (${content.length} bytes)`,
@@ -93,7 +100,6 @@ export function createStorageEngine(
 			const directory = path.dirname(validatedPath);
 
 			try {
-				const { mkdir } = await import('node:fs/promises');
 				await mkdir(directory, { recursive: true });
 			} catch (mkdirError) {
 				throw new WriteError(
@@ -102,7 +108,6 @@ export function createStorageEngine(
 				);
 			}
 
-			const { writeFile: fsWriteFile } = await import('node:fs/promises');
 			await fsWriteFile(validatedPath, content, 'utf8');
 			logger.debug(
 				`Successfully wrote file: ${filePath} (${content.length} bytes)`,
@@ -125,7 +130,6 @@ export function createStorageEngine(
 	const exists = async (filePath: string): Promise<boolean> => {
 		try {
 			const validatedPath = validatePath(filePath);
-			const { access } = await import('node:fs/promises');
 			await access(validatedPath);
 			return true;
 		} catch (error) {
@@ -140,7 +144,6 @@ export function createStorageEngine(
 		try {
 			const validatedPath = validatePath(filePath);
 			logger.debug(`Deleting file: ${filePath}`);
-			const { unlink } = await import('node:fs/promises');
 			await unlink(validatedPath);
 			logger.debug(`Successfully deleted file: ${filePath}`);
 		} catch (error) {
@@ -175,7 +178,6 @@ export function createStorageEngine(
 				currentValidatedPath: string,
 			): Promise<void> => {
 				try {
-					const { readdir } = await import('node:fs/promises');
 					const entries = await readdir(currentValidatedPath, {
 						withFileTypes: true,
 					});
