@@ -25,7 +25,7 @@
 		"test:unit": "bun run --filter devflow-mcp test:unit",
 		"test:integration": "bun run --filter devflow-mcp test:integration",
 		"type-check": "bun run --filter devflow-mcp type-check",
-		"build": "bun run --filter devflow-mcp build && bun run --filter dashboard build",
+		"build": "bun run --filter dashboard build && test -f packages/dashboard/build/index.html && bun run --filter devflow-mcp build",
 		"dev:core": "bun run --filter devflow-mcp dev",
 		"dev:dashboard": "bun run --filter dashboard dev",
 		"ci": "bun run lint && bun run test && bun run build",

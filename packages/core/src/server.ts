@@ -13,6 +13,8 @@ import {
 } from './core/analysis/watcher/file-watcher';
 import { registerAllTools } from './mcp/tools';
 import { createLogger } from './core/utils/logger';
+import { startDashboardServer } from './dashboard/server';
+import path from 'node:path';
 
 const logger = createLogger('DevFlow');
 
@@ -30,6 +32,18 @@ function parsePatterns(value: string | undefined): string[] | undefined {
 		.split(',')
 		.map((p) => p.trim())
 		.filter(Boolean);
+}
+
+function parsePort(value: string | undefined, defaultPort: number): number {
+	if (!value) return defaultPort;
+	const port = Number.parseInt(value, 10);
+	if (Number.isNaN(port) || port < 1 || port > 65_535) {
+		logger.warn(
+			`Invalid port number "${value}", using default ${defaultPort}`,
+		);
+		return defaultPort;
+	}
+	return port;
 }
 
 let storageEngine: StorageEngine;
@@ -159,7 +173,47 @@ async function initializeServer(): Promise<void> {
 	}
 }
 
+async function startDashboard(
+	projectRoot: string,
+): Promise<ReturnType<typeof startDashboardServer> | undefined> {
+	const dashboardEnabled = parseBoolean(
+		process.env.DEVFLOW_DASHBOARD_ENABLED,
+		true,
+	);
+
+	if (!dashboardEnabled) {
+		logger.info('Dashboard server disabled via DEVFLOW_DASHBOARD_ENABLED');
+		return undefined;
+	}
+
+	const dashboardPort = parsePort(process.env.DEVFLOW_DASHBOARD_PORT, 3000);
+	const dashboardBuildDirectory = path.join(
+		projectRoot,
+		'packages/dashboard/build',
+	);
+
+	const dashboardStart = performance.now();
+
+	try {
+		const dashboardServer = startDashboardServer(
+			dashboardPort,
+			dashboardBuildDirectory,
+		);
+		logger.info(
+			`Dashboard server initialization complete (${(performance.now() - dashboardStart).toFixed(2)}ms)`,
+		);
+		return dashboardServer;
+	} catch (error) {
+		logger.error(
+			`Failed to start dashboard server: ${error instanceof Error ? error.message : 'Unknown error'}`,
+		);
+		logger.warn('Continuing with MCP server only...');
+		return undefined;
+	}
+}
+
 async function main(): Promise<void> {
+	const projectRoot = await detectProjectRoot();
 	await initializeServer();
 
 	const server = new FastMCP({
@@ -177,6 +231,8 @@ async function main(): Promise<void> {
 		transportType: 'stdio',
 	});
 	logger.info('DevFlow MCP Server ready on stdio');
+
+	void startDashboard(projectRoot);
 }
 
 try {

@@ -31,6 +31,8 @@ npm install -g devflow-mcp
 # - detectPatterns
 ```
 
+**🌐 Dashboard:** When the MCP server runs, access the web dashboard at `http://localhost:3000`
+
 **📚 [Documentation Index](./docs/README.md)** - Complete documentation
 
 ## Analysis Tools

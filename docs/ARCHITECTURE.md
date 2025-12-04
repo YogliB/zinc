@@ -197,6 +197,47 @@ Package-scoped scripts use `--filter`:
 
 DevFlow is a Model Context Protocol (MCP) server designed to maintain persistent context across AI agent sessions. It provides code analysis capabilities, project understanding, and context management through a modular, plugin-based architecture.
 
+### Dashboard Server Integration
+
+**Production Deployment Pattern:**
+
+DevFlow embeds a web dashboard that automatically starts when the MCP server runs in production. The dashboard uses Bun's native HTTP server to serve static files built with SvelteKit's `adapter-static`.
+
+**Key Components:**
+
+- **Dashboard Server Module** (`packages/core/src/dashboard/server.ts`)
+  - Implements `startDashboardServer()` using `Bun.serve()`
+  - Serves static files from `packages/dashboard/build/`
+  - Handles SPA routing with `index.html` fallback
+  - Automatic MIME type detection for assets
+  - Configurable port via `DEVFLOW_DASHBOARD_PORT` (default: 3000)
+
+- **Static Build** (`packages/dashboard/`)
+  - SvelteKit app configured with `@sveltejs/adapter-static`
+  - Builds to static HTML/JS/CSS files
+  - No SSR or server-side routes (client-side only)
+  - Backend logic handled by MCP tools, not SvelteKit API routes
+
+**Architecture Decision:**
+
+The dashboard uses static build + native Bun HTTP server (not `adapter-node`) because:
+1. Follows project principle: "Prefer native Bun tools"
+2. Dashboard is purely visualization (all backend logic in MCP tools)
+3. Simpler deployment, smaller bundle size, better performance
+4. Static files can be served from any platform
+
+**Startup Sequence:**
+
+1. MCP server initializes (stdio transport for Model Context Protocol)
+2. Dashboard server starts asynchronously on separate HTTP port
+3. Both run in same process, non-blocking
+4. Dashboard accessible at http://localhost:3000 (configurable)
+
+**Environment Variables:**
+
+- `DEVFLOW_DASHBOARD_ENABLED` - Enable/disable dashboard (default: true)
+- `DEVFLOW_DASHBOARD_PORT` - HTTP port for dashboard (default: 3000)
+
 ### Architecture Style
 
 - **Modular**: Clear separation of concerns across core, analysis, and MCP layers

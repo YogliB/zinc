@@ -118,6 +118,55 @@ bun install --frozen-lockfile
 
 DevFlow supports the following environment variables for configuration:
 
+#### Dashboard Server
+
+- **`DEVFLOW_DASHBOARD_ENABLED`** (boolean, default: `true`)
+    - Enable or disable the embedded dashboard web server
+    - When enabled, the dashboard starts automatically with the MCP server
+    - Access the dashboard at http://localhost:3000 (or configured port)
+
+    ```bash
+    export DEVFLOW_DASHBOARD_ENABLED=true
+    ```
+
+- **`DEVFLOW_DASHBOARD_PORT`** (number, default: `3000`)
+    - Set the port for the dashboard HTTP server
+    - Valid range: 1-65535
+    - Useful when port 3000 is already in use
+
+    ```bash
+    export DEVFLOW_DASHBOARD_PORT=8080
+    ```
+
+**Example: Accessing the Dashboard**
+
+When the MCP server starts, the dashboard is automatically available:
+
+```bash
+# Start MCP server (dashboard starts on port 3000 by default)
+bun run dev:core
+
+# In another terminal, open the dashboard
+open http://localhost:3000
+```
+
+**Example: Custom Port**
+
+```bash
+# Use a different port
+DEVFLOW_DASHBOARD_PORT=8080 bun run dev:core
+
+# Access dashboard on custom port
+open http://localhost:8080
+```
+
+**Example: Disable Dashboard**
+
+```bash
+# Run MCP server without dashboard
+DEVFLOW_DASHBOARD_ENABLED=false bun run dev:core
+```
+
 #### Performance & Lazy Loading
 
 - **`DEVFLOW_PRELOAD_FILES`** (boolean, default: `false`)
