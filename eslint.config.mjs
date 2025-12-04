@@ -1,5 +1,5 @@
 // For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
-import storybook from "eslint-plugin-storybook";
+import { configs as storybookConfigs } from 'eslint-plugin-storybook';
 
 // @ts-check
 
@@ -54,39 +54,61 @@ const indexExportsOnlyPlugin = {
 	},
 };
 
-export default [{
-    ignores: ['dist/**', 'node_modules/**', 'coverage/**', '**/*.d.ts.map'],
-}, eslint.configs.recommended, ...tsConfigs.recommended, sonarjs.configs.recommended, security.configs.recommended, importPlugin.flatConfigs.recommended, importPlugin.flatConfigs.typescript, unicorn.configs.recommended, {
-    files: ['**/index.ts', '**/index.js'],
-    plugins: {
-        'index-exports': indexExportsOnlyPlugin,
-    },
-    rules: {
-        'index-exports/index-exports-only': 'error',
-    },
-}, {
-    settings: {
-        'import/resolver': {
-            typescript: true,
-            node: {
-                extensions: ['.js', '.jsx', '.ts', '.tsx'],
-            },
-        },
-        'import/core-modules': ['bun:test'],
-    },
-}, {
-    files: ['src/server.ts'],
-    rules: {
-        'unicorn/prefer-top-level-await': 'off',
-        'unicorn/no-process-exit': 'off',
-    },
-}, {
-    files: ['tests/**/*.ts', '**/*.test.ts'],
-    rules: {
-        'security/detect-non-literal-fs-filename': 'off',
-    },
-}, {
-    rules: {
-        'security/detect-non-literal-fs-filename': 'off',
-    },
-}, prettier, ...storybook.configs["flat/recommended"]];
+export default [
+	{
+		ignores: [
+			'dist/**',
+			'node_modules/**',
+			'coverage/**',
+			'**/*.d.ts.map',
+			'dashboard/**',
+		],
+	},
+	eslint.configs.recommended,
+	...tsConfigs.recommended,
+	sonarjs.configs.recommended,
+	security.configs.recommended,
+	importPlugin.flatConfigs.recommended,
+	importPlugin.flatConfigs.typescript,
+	unicorn.configs.recommended,
+	{
+		files: ['**/index.ts', '**/index.js'],
+		plugins: {
+			'index-exports': indexExportsOnlyPlugin,
+		},
+		rules: {
+			'index-exports/index-exports-only': 'error',
+		},
+	},
+	{
+		settings: {
+			'import/resolver': {
+				typescript: true,
+				node: {
+					extensions: ['.js', '.jsx', '.ts', '.tsx'],
+				},
+			},
+			'import/core-modules': ['bun:test'],
+		},
+	},
+	{
+		files: ['src/server.ts'],
+		rules: {
+			'unicorn/prefer-top-level-await': 'off',
+			'unicorn/no-process-exit': 'off',
+		},
+	},
+	{
+		files: ['tests/**/*.ts', '**/*.test.ts'],
+		rules: {
+			'security/detect-non-literal-fs-filename': 'off',
+		},
+	},
+	{
+		rules: {
+			'security/detect-non-literal-fs-filename': 'off',
+		},
+	},
+	prettier,
+	...storybookConfigs['flat/recommended'],
+];

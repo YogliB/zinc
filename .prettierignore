@@ -1,0 +1,6 @@
+dashboard/
+coverage/
+dist/
+node_modules/
+.bun-test/
+.eslintcache
