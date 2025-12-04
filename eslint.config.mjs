@@ -225,6 +225,18 @@ export default [
 				],
 	})),
 	{
+		// Configure Storybook addon validation for monorepo structure
+		files: ['packages/dashboard/.storybook/**/*.ts'],
+		rules: {
+			'storybook/no-uninstalled-addons': [
+				'error',
+				{
+					packageJsonLocation: 'packages/dashboard/package.json',
+				},
+			],
+		},
+	},
+	{
 		// Browser and Node.js globals for dashboard package
 		files: [
 			'packages/dashboard/**/*.js',
