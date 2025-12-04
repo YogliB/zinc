@@ -1,6 +1,3 @@
-// For more info, see https://github.com/storybookjs/eslint-plugin-storybook#configuration-flat-config-format
-import { configs as storybookConfigs } from 'eslint-plugin-storybook';
-
 // @ts-check
 
 import eslint from '@eslint/js';
@@ -57,11 +54,17 @@ const indexExportsOnlyPlugin = {
 export default [
 	{
 		ignores: [
+			'packages/**/node_modules/**',
+			'packages/**/dist/**',
+			'packages/**/.svelte-kit/**',
+			'packages/**/build/**',
+			'packages/**/coverage/**',
+			'packages/**/*.d.ts.map',
+			'packages/**/eslint.config.*',
 			'dist/**',
 			'node_modules/**',
 			'coverage/**',
 			'**/*.d.ts.map',
-			'dashboard/**',
 		],
 	},
 	eslint.configs.recommended,
@@ -92,23 +95,10 @@ export default [
 		},
 	},
 	{
-		files: ['src/server.ts'],
-		rules: {
-			'unicorn/prefer-top-level-await': 'off',
-			'unicorn/no-process-exit': 'off',
-		},
-	},
-	{
 		files: ['tests/**/*.ts', '**/*.test.ts'],
 		rules: {
 			'security/detect-non-literal-fs-filename': 'off',
 		},
 	},
-	{
-		rules: {
-			'security/detect-non-literal-fs-filename': 'off',
-		},
-	},
 	prettier,
-	...storybookConfigs['flat/recommended'],
 ];

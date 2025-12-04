@@ -20,13 +20,6 @@
 		"noPropertyAccessFromIndexSignature": false,
 		"forceConsistentCasingInFileNames": true,
 		"esModuleInterop": true,
-		"resolveJsonModule": true,
-		"baseUrl": ".",
-		"paths": {
-			"@/*": ["src/*"]
-		},
-		"types": ["bun"]
-	},
-	"include": ["src"],
-	"exclude": ["node_modules", "dist"]
+		"resolveJsonModule": true
+	}
 }
