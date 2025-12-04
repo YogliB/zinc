@@ -26,6 +26,12 @@
     - `tsconfig.json`
 - **NEVER** disable eslint rules unless given a direct and clear instruction to do so
 
+## Git Operations
+
+- **NEVER** use `--no-verify` flag when committing or pushing to git
+- Pre-commit and pre-push hooks exist for a reason and must not be bypassed
+- If hooks fail, fix the underlying issues rather than skipping validation
+
 ## Documentation Structure
 
 - **NEVER** create new documentation files in the project root or `docs/` folder.
