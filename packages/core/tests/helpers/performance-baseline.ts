@@ -24,7 +24,7 @@ interface PerformanceBaseline {
 	history?: unknown[];
 }
 
-const BASELINE_FILE = '.bun-performance.json';
+const BASELINE_FILE = '.performance-baseline.json';
 const THIRTY_DAYS_MS = 30 * 24 * 60 * 60 * 1000;
 
 const ABSOLUTE_FALLBACKS: Record<string, number> = {

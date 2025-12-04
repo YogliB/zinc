@@ -56,10 +56,10 @@ describe('performance-baseline utilities', () => {
 
 			expect(result).toEqual(mockBaseline);
 			expect(mockExistsSync).toHaveBeenCalledWith(
-				'.bun-performance.json',
+				'.performance-baseline.json',
 			);
 			expect(mockReadFileSync).toHaveBeenCalledWith(
-				'.bun-performance.json',
+				'.performance-baseline.json',
 				'utf8',
 			);
 		});
@@ -71,7 +71,7 @@ describe('performance-baseline utilities', () => {
 
 			expect(result).toBeUndefined();
 			expect(console.warn).toHaveBeenCalledWith(
-				'⚠️  Performance baseline file not found: .bun-performance.json',
+				'⚠️  Performance baseline file not found: .performance-baseline.json',
 			);
 		});
 

@@ -25,7 +25,7 @@ interface PerformanceBaseline {
 }
 
 const RESULTS_FILE = '.bun-test/results.xml';
-const BASELINE_FILE = '.bun-performance.json';
+const BASELINE_FILE = '.performance-baseline.json';
 
 function parseBunResults(): PerformanceMetrics | undefined {
 	if (!existsSync(RESULTS_FILE)) {

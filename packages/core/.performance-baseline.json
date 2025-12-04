@@ -1,0 +1,63 @@
+{
+	"baseline": {
+		"totalDuration": 2500,
+		"testCount": 10,
+		"fileCount": 1,
+		"avgPerTest": 250,
+		"files": {
+			"tests/integration/performance-benchmarks.test.ts": {
+				"name": "tests/integration/performance-benchmarks.test.ts",
+				"duration": 2500,
+				"testCount": 10
+			}
+		},
+		"timestamp": "2025-12-04T14:30:00.000Z"
+	},
+	"thresholds": {
+		"maxRegression": 0.5,
+		"maxDuration": 15000
+	},
+	"testSpecificBaselines": {
+		"performance-benchmarks.plugin-init-100": {
+			"name": "performance-benchmarks.plugin-init-100",
+			"duration": 10,
+			"timestamp": "2025-12-04T14:30:00.000Z"
+		},
+		"performance-benchmarks.plugin-init-500": {
+			"name": "performance-benchmarks.plugin-init-500",
+			"duration": 5,
+			"timestamp": "2025-12-04T14:30:00.000Z"
+		},
+		"performance-benchmarks.first-file-analysis": {
+			"name": "performance-benchmarks.first-file-analysis",
+			"duration": 600,
+			"timestamp": "2025-12-04T14:30:00.000Z"
+		},
+		"performance-benchmarks.batch-analysis": {
+			"name": "performance-benchmarks.batch-analysis",
+			"duration": 450,
+			"timestamp": "2025-12-04T14:30:00.000Z"
+		},
+		"performance-benchmarks.preload-100": {
+			"name": "performance-benchmarks.preload-100",
+			"duration": 100,
+			"timestamp": "2025-12-04T14:30:00.000Z"
+		},
+		"performance-benchmarks.preloaded-analysis": {
+			"name": "performance-benchmarks.preloaded-analysis",
+			"duration": 400,
+			"timestamp": "2025-12-04T14:30:00.000Z"
+		},
+		"performance-benchmarks.large-file": {
+			"name": "performance-benchmarks.large-file",
+			"duration": 450,
+			"timestamp": "2025-12-04T14:30:00.000Z"
+		},
+		"analysis-engine-lazy-loading.preloaded-file-analysis": {
+			"name": "analysis-engine-lazy-loading.preloaded-file-analysis",
+			"duration": 400,
+			"timestamp": "2025-12-04T14:30:00.000Z"
+		}
+	},
+	"history": []
+}

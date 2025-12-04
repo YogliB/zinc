@@ -103,7 +103,7 @@ it('should complete operation efficiently', async () => {
 
 2. **Run tests in CI** to capture actual performance
 
-3. **Update `.bun-performance.json`** with CI-validated values:
+3. **Update `.performance-baseline.json`** with CI-validated values:
 
     ```json
     "testSpecificBaselines": {
@@ -132,7 +132,7 @@ it('should complete operation efficiently', async () => {
 - GitHub Actions runners exhibit 2-3x slower performance than local machines
 - File I/O and CPU-bound operations are most affected
 - Baseline system automatically accounts for this variance
-- Global suite performance tracked separately in `.bun-performance.json` baseline section
+- Global suite performance tracked separately in `.performance-baseline.json` baseline section
 
 ## Performance Tiers
 
@@ -343,7 +343,7 @@ This ensures tests don't fail during initial development.
 
 #### Baseline Storage
 
-Performance baseline is stored in `.bun-performance.json`:
+Performance baseline is stored in `.performance-baseline.json`:
 
 ```json
 {
@@ -379,7 +379,7 @@ bun run scripts/update-baseline.ts
 
 # Update baseline (commit the changes)
 bun run scripts/update-baseline.ts --update-baseline
-git add .bun-performance.json
+git add .performance-baseline.json
 git commit -m "chore: update performance baseline after optimization"
 ```
 
@@ -388,7 +388,7 @@ git commit -m "chore: update performance baseline after optimization"
 To add a baseline for a new performance test:
 
 1. **Run the test multiple times locally** to get average duration
-2. **Edit `.bun-performance.json`** manually
+2. **Edit `.performance-baseline.json`** manually
 3. **Add entry** to `testSpecificBaselines`:
 
 ```json
@@ -414,7 +414,7 @@ CI generates performance reports automatically. Check:
 
 1. **CI Artifacts** - `performance-report` contains `results.xml`
 2. **Console Output** - Performance summary printed to logs
-3. **Git History** - Baseline tracked in `.bun-performance.json`
+3. **Git History** - Baseline tracked in `.performance-baseline.json`
 
 #### Interpreting Failures
 

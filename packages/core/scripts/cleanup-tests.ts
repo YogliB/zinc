@@ -16,7 +16,7 @@ const TEST_DIRECTORIES = [
 	'.bun-test',
 ];
 
-const TEST_FILES = ['.bun-performance.json'];
+const TEST_FILES = ['.performance-baseline.json'];
 
 console.log('🧹 Cleaning up test artifacts...\n');
 
