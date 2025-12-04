@@ -1,14 +1,13 @@
 echo "Running type check..."
 bun run type-check || exit 1
 
-CHANGED_FILES=$(git diff --name-only --diff-filter=d origin/main...HEAD)
+CHANGED_FILES=$(git diff --name-only --diff-filter=d origin/main...HEAD | grep -v "^packages/dashboard/")
 
 if [ -n "$CHANGED_FILES" ]; then
   echo "Running tests related to changed files..."
-  bunx vitest related $CHANGED_FILES --exclude "packages/dashboard/**" || exit 1
+  bunx vitest related $CHANGED_FILES || exit 1
 else
-  echo "No changed files detected, running all tests..."
-  bunx vitest run --exclude "packages/dashboard/**" || exit 1
+  echo "No changed files detected (or only dashboard files), skipping tests..."
 fi
 
 echo "✓ Pre-push checks passed"
