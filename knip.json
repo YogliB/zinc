@@ -5,6 +5,22 @@
 		"type": true,
 		"function": true
 	},
-	"ignore": ["tests/setup/vitest-compat.ts", "dashboard/**"],
-	"tags": ["-lintignore"]
+	"ignore": ["tests/setup/vitest-compat.ts"],
+	"tags": ["-lintignore"],
+	"workspaces": {
+		"packages/core": {
+			"entry": ["src/server.ts"],
+			"project": ["src/**/*.ts", "tests/**/*.ts", "scripts/**/*.ts"]
+		},
+		"packages/dashboard": {
+			"entry": [
+				"src/routes/**/*.svelte",
+				"src/routes/**/*.ts",
+				".storybook/main.ts",
+				"vite.config.ts",
+				"svelte.config.js"
+			],
+			"project": ["src/**/*.{ts,svelte}", ".storybook/**/*.ts"]
+		}
+	}
 }

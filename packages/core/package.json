@@ -112,11 +112,6 @@
 			"prettier --write --ignore-unknown"
 		]
 	},
-	"prettier": {
-		"singleQuote": true,
-		"useTabs": true,
-		"tabWidth": 4
-	},
 	"dependencies": {
 		"simple-git": "3.30.0",
 		"ts-morph": "27.0.2"

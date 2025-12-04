@@ -4,5 +4,20 @@
 		"interface": true,
 		"type": true,
 		"function": true
-	}
+	},
+	"entry": [
+		"src/routes/**/*.svelte",
+		"src/routes/**/*.ts",
+		".storybook/main.ts",
+		"vite.config.ts",
+		"svelte.config.js"
+	],
+	"project": ["src/**/*.{ts,svelte}", ".storybook/**/*.ts"],
+	"ignore": [
+		".svelte-kit/**",
+		"build/**",
+		"storybook-static/**",
+		"playwright-report/**",
+		"test-results/**"
+	]
 }

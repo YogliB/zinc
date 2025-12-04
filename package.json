@@ -15,6 +15,7 @@
 	"scripts": {
 		"format:check": "prettier --check .",
 		"format": "prettier --write .",
+		"knip": "bun run --filter devflow-mcp knip",
 		"lint:clean": "rm -f packages/core/.eslintcache packages/dashboard/.eslintcache",
 		"lint:fix": "eslint --fix packages/core packages/dashboard --max-warnings=0 --cache",
 		"lint": "eslint packages/core packages/dashboard --max-warnings=0 --cache",

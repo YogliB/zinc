@@ -170,6 +170,110 @@ bun run format
 bun run type-check
 ```
 
+### Configuration Inheritance
+
+DevFlow uses a hierarchical configuration system where packages extend root configs. See [Configuration Architecture](./ARCHITECTURE.md#configuration-architecture) for details.
+
+#### Adding Linting Rules
+
+**Decision Tree:**
+
+1. Does this rule apply to **all** TypeScript/JavaScript files?
+    - ✅ Yes → Add to **root** `eslint.config.mjs`
+    - ❌ No → Continue to step 2
+
+2. Is this rule specific to Node.js/MCP server code?
+    - ✅ Yes → Add to **root** `eslint.config.mjs` under `packages/core/**` file patterns
+    - ❌ No → Continue to step 3
+
+3. Is this rule specific to Svelte/frontend code?
+    - ✅ Yes → Add to **packages/dashboard/eslint.config.js**
+
+**Examples:**
+
+- ✅ Root: `no-console`, `@typescript-eslint/no-unused-vars` (universal)
+- ✅ Root (core patterns): `unicorn/no-process-exit`, `security/detect-object-injection` (Node.js)
+- ✅ Dashboard: `svelte/no-at-html-tags`, `svelte/valid-compile` (Svelte-specific)
+
+#### Adding TypeScript Compiler Options
+
+**Decision Tree:**
+
+1. Does this option affect how TypeScript compiles for **all** packages?
+    - ✅ Yes → Add to **root** `tsconfig.json`
+    - ❌ No → Continue to step 2
+
+2. Is this option runtime-specific (browser vs Node.js)?
+    - ✅ Yes → Add to **package-specific** `tsconfig.json`
+
+**Examples:**
+
+- ✅ Root: `strict`, `target`, `module`, `esModuleInterop` (universal)
+- ✅ Package: `lib: ["DOM"]` (dashboard), `lib: ["ES2022"]` (core)
+
+#### Modifying Prettier Config
+
+**Decision Tree:**
+
+1. Does this change affect formatting for **all** file types?
+    - ✅ Yes → Update **root** `package.json` prettier config
+    - ❌ No → Reconsider - Prettier should be consistent across packages
+
+**Examples:**
+
+- ✅ Root: `singleQuote`, `useTabs`, `tabWidth` (consistent across all files)
+- ❌ Package: Don't add package-specific prettier configs
+
+#### Adding Ignore Patterns
+
+**Decision Tree:**
+
+1. Should this pattern be ignored in **all** packages?
+    - ✅ Yes → Add to **root** `.prettierignore` with `**/` prefix
+    - ❌ No → Add to **package-specific** `.prettierignore`
+
+**Examples:**
+
+- ✅ Root: `**/dist/`, `**/node_modules/`, `**/coverage/` (workspace-wide)
+- ✅ Package: `static/` (dashboard-specific static assets)
+
+#### Troubleshooting Config Issues
+
+**Linting not working:**
+
+```bash
+# Check if config is valid
+bun run lint --debug
+
+# Clear cache and retry
+bun run lint:clean
+bun run lint
+
+# Verify package extends root correctly
+cat packages/core/eslint.config.mjs | grep rootConfig
+```
+
+**Type errors in IDE but not CLI:**
+
+```bash
+# Restart TypeScript server in your editor
+# For VSCode: Cmd+Shift+P → "TypeScript: Restart TS Server"
+
+# Verify extends path is correct
+cat packages/core/tsconfig.json | grep extends
+```
+
+**Formatting inconsistent:**
+
+```bash
+# Always format from root, not package directory
+cd /path/to/devflow
+bun run format
+
+# Check if package has conflicting prettier config
+grep -r "prettier" packages/*/package.json
+```
+
 ### Project Structure
 
 ```

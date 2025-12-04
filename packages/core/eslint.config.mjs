@@ -7,7 +7,7 @@
  * eslint.config.mjs using file-based overrides (packages/core/**).
  *
  * This file only contains:
- * - Local ignore patterns (gitignore integration)
+ * - Local ignore patterns
  * - Node.js globals for the runtime environment
  * - Extension of root config for consistency
  *
@@ -16,20 +16,21 @@
  * This is the correct ESLint flat config pattern for monorepos.
  */
 
-import { fileURLToPath } from 'node:url';
-import { includeIgnoreFile } from '@eslint/compat';
 import globals from 'globals';
 import rootConfig from '../../eslint.config.mjs';
-
-const gitignorePath = fileURLToPath(new URL('.gitignore', import.meta.url));
 
 export default [
 	{
 		// Local ignore patterns for core package
-		ignores: ['dist/**', 'node_modules/**', 'coverage/**', '**/*.d.ts.map'],
+		ignores: [
+			'dist/**',
+			'node_modules/**',
+			'coverage/**',
+			'**/*.d.ts.map',
+			'.bun-test/**',
+			'.test-*/**',
+		],
 	},
-	// Integrate .gitignore patterns
-	includeIgnoreFile(gitignorePath),
 	// Inherit all rules from root (includes universal + core-specific via file patterns)
 	...rootConfig,
 	{

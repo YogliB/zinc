@@ -7,12 +7,189 @@
 ## Table of Contents
 
 1. [System Overview](#system-overview)
-2. [Core Components](#core-components)
-3. [Analysis System](#analysis-system)
-4. [MCP Layer](#mcp-layer)
-5. [Data Flow](#data-flow)
-6. [Design Patterns](#design-patterns)
-7. [Extension Points](#extension-points)
+2. [Configuration Architecture](#configuration-architecture)
+3. [Core Components](#core-components)
+4. [Analysis System](#analysis-system)
+5. [MCP Layer](#mcp-layer)
+6. [Data Flow](#data-flow)
+7. [Design Patterns](#design-patterns)
+8. [Extension Points](#extension-points)
+
+---
+
+## Configuration Architecture
+
+**Hierarchical configuration system for the DevFlow monorepo.**
+
+### Overview
+
+DevFlow uses a **workspace-based hierarchical configuration architecture** where the root defines minimal universal rules, and each package extends with specific customizations. This eliminates configuration duplication while maintaining package independence.
+
+### Configuration Hierarchy
+
+```
+root/
+├── knip.json           # Workspace-aware analysis config
+├── .prettierignore     # Workspace-wide formatting ignores
+├── package.json        # Shared prettier config, workspace scripts
+├── eslint.config.mjs   # Universal linting rules
+└── tsconfig.json       # Shared TypeScript compiler options
+
+packages/core/
+├── knip.json           # MCP server entry points
+├── eslint.config.mjs   # Extends root + Node.js rules
+└── tsconfig.json       # Extends root + Node.js config
+
+packages/dashboard/
+├── knip.json           # SvelteKit/Storybook entry points
+├── .prettierignore     # Dashboard-specific ignores
+├── eslint.config.js    # Extends root + Svelte rules
+└── tsconfig.json       # Extends root + SvelteKit config
+```
+
+### Configuration Guidelines
+
+#### When to Add Config at Root
+
+Add configuration to the **root** when it applies to **all packages**:
+
+- Base ESLint rules (recommended, prettier integration)
+- TypeScript compiler options (strict mode, target, module)
+- Prettier formatting rules (quotes, tabs, spacing)
+- Workspace-wide ignore patterns
+
+#### When to Add Config at Package Level
+
+Add configuration to a **package** when it's **package-specific**:
+
+- Language-specific linting rules (Svelte, Node.js)
+- Runtime-specific TypeScript options (browser vs Node.js)
+- Package entry points (Knip configuration)
+- Build tool configuration (Vite, SvelteKit)
+
+### Knip Workspace Detection
+
+Knip analyzes both packages using workspace configuration:
+
+**Root knip.json** defines workspace entry points:
+
+```json
+{
+	"workspaces": {
+		"packages/core": {
+			"entry": ["src/server.ts"],
+			"project": ["src/**/*.ts", "tests/**/*.ts", "scripts/**/*.ts"]
+		},
+		"packages/dashboard": {
+			"entry": [
+				"src/routes/**/*.svelte",
+				".storybook/main.ts",
+				"vite.config.ts"
+			],
+			"project": ["src/**/*.{ts,svelte}", ".storybook/**/*.ts"]
+		}
+	}
+}
+```
+
+**Package knip.json** files define package-specific ignore patterns and can override entry points if needed.
+
+### Prettier Consistency
+
+**Root package.json** contains the shared Prettier configuration:
+
+```json
+{
+	"prettier": {
+		"singleQuote": true,
+		"useTabs": true,
+		"tabWidth": 4
+	}
+}
+```
+
+**Root .prettierignore** uses workspace-aware patterns:
+
+```
+**/dist/
+**/node_modules/
+**/coverage/
+**/.svelte-kit/
+```
+
+All packages inherit the root Prettier config automatically. Package-specific `.prettierignore` files can supplement the root ignore patterns for package-specific build artifacts.
+
+### ESLint Inheritance
+
+**Root eslint.config.mjs** contains universal rules that apply to all TypeScript/JavaScript files.
+
+**Package eslint configs** extend the root using flat config composition:
+
+```javascript
+import rootConfig from '../../eslint.config.mjs';
+
+export default [
+	...rootConfig,
+	{
+		// Package-specific rules
+	},
+];
+```
+
+### TypeScript Inheritance
+
+**Root tsconfig.json** contains shared compiler options.
+
+**Package tsconfig.json** files extend the root:
+
+```json
+{
+	"extends": "../../tsconfig.json",
+	"compilerOptions": {
+		// Package-specific overrides
+	}
+}
+```
+
+### Troubleshooting Config Issues
+
+**ESLint not working in package:**
+
+1. Verify package eslint.config extends root correctly
+2. Check that root config is valid JavaScript
+3. Ensure `...rootConfig` spread is before package-specific rules
+
+**TypeScript errors in package:**
+
+1. Verify `"extends": "../../tsconfig.json"` is first property
+2. Check that root tsconfig.json is valid JSON
+3. Run `bun run type-check` from root to see all errors
+
+**Prettier not formatting:**
+
+1. Verify root package.json has prettier config
+2. Check .prettierignore isn't excluding files
+3. Run `bun run format:check` from root, not package directory
+
+**Knip not detecting package:**
+
+1. Verify workspace is defined in root knip.json
+2. Check entry points match actual file structure
+3. Ensure package knip.json doesn't conflict with root config
+
+### Workspace Scripts
+
+Root package.json provides workspace-wide scripts:
+
+- `bun run lint` - Lint all packages
+- `bun run type-check` - Type-check core package
+- `bun run format:check` - Check formatting in all packages
+- `bun run knip` - Analyze workspace for unused code
+
+Package-scoped scripts use `--filter`:
+
+- `bun run --filter devflow-mcp lint` - Lint core only
+- `bun run --filter dashboard lint` - Lint dashboard only
 
 ---
 

@@ -1,0 +1,11 @@
+{
+	"$schema": "https://unpkg.com/knip@5/schema.json",
+	"ignoreExportsUsedInFile": {
+		"interface": true,
+		"type": true,
+		"function": true
+	},
+	"entry": ["src/server.ts"],
+	"project": ["src/**/*.ts", "tests/**/*.ts", "scripts/**/*.ts"],
+	"ignore": ["dist/**", "coverage/**", ".bun-test/**", ".test-*/**"]
+}
