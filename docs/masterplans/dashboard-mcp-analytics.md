@@ -58,7 +58,7 @@ Status: 🟢 done · 🟡 in‑progress · 🟠 review · ⏸️ not‑started �
 3. **Configure Drizzle migrations** — File: `packages/core/drizzle.config.ts` (NEW)
     - Set schema path to `./src/analytics/schema.ts`
     - Set output directory to `./src/analytics/migrations`
-    - Configure SQLite dialect with database path `<project-root>/.devflow/analytics.db`
+    - Configure SQLite dialect with database path `~/.devflow/analytics.db`
 
 4. **Create database initialization module** — File: `packages/core/src/analytics/db.ts` (NEW)
     - Export `createAnalyticsDb(rootPath)` function
@@ -79,7 +79,7 @@ Status: 🟢 done · 🟡 in‑progress · 🟠 review · ⏸️ not‑started �
 
 - [ ] Drizzle ORM installed (`drizzle-orm`, `drizzle-kit`)
 - [ ] Schema defined with proper TypeScript types
-- [ ] Database created at `.devflow/analytics.db`
+- [ ] Database created at `~/.devflow/analytics.db`
 - [ ] WAL mode enabled for better write concurrency
 - [ ] Migrations run automatically on initialization
 - [ ] All unit tests pass (≥90% coverage)
@@ -481,7 +481,7 @@ Status: 🟢 done · 🟡 in‑progress · 🟠 review · ⏸️ not‑started �
     - Show dashboard access URL
     - List metrics tracked
     - Explain privacy (no code/PII stored)
-    - Show data location (`.devflow/analytics.db`)
+    - Show data location (`~/.devflow/analytics.db`)
     - How to disable analytics
     - Include example configuration
 
@@ -535,9 +535,9 @@ Status: 🟢 done · 🟡 in‑progress · 🟠 review · ⏸️ not‑started �
 
 **Stage 1:** PRs 1-2 (Infrastructure)
 
-1. Merge PR1 → Deploy → Run migrations → Verify `.devflow/analytics.db` created
+1. Merge PR1 → Deploy → Run migrations → Verify `~/.devflow/analytics.db` created
 2. Merge PR2 → Deploy → Verify telemetry service initializes without errors
-3. Rollback: Delete `.devflow/analytics.db`, revert commits
+3. Rollback: Delete `~/.devflow/analytics.db`, revert commits
 
 **Stage 2:** PRs 3-4 (Integration)
 
@@ -606,7 +606,7 @@ Status: 🟢 done · 🟡 in‑progress · 🟠 review · ⏸️ not‑started �
 2. If PR6 fails → Revert commit → Cache metrics missing but core analytics works
 3. If PR5 fails → Revert commit → API works but no UI, can test with curl
 4. If PR4 fails → Revert commit → Telemetry collects but no way to view
-5. If PR3 fails → Revert commit → Database exists but not recording, delete `.devflow/analytics.db`
+5. If PR3 fails → Revert commit → Database exists but not recording, delete `~/.devflow/analytics.db`
 6. If PR2 fails → Revert commit → Schema exists but unused
 7. If PR1 fails → Revert commit → Clean state, start over
 
@@ -619,7 +619,7 @@ Status: 🟢 done · 🟡 in‑progress · 🟠 review · ⏸️ not‑started �
 
 **Artifacts safe to keep:**
 
-- `.devflow/analytics.db` (can be deleted anytime)
+- `~/.devflow/analytics.db` (can be deleted anytime)
 - Migration files (versionable, safe to keep)
 - Dashboard build artifacts (regenerated on next build)
 
@@ -677,7 +677,7 @@ Status: 🟢 done · 🟡 in‑progress · 🟠 review · ⏸️ not‑started �
 **Multi-Project Support:**
 
 - Each DevFlow instance has its own analytics database
-- Database path: `<project-root>/.devflow/analytics.db`
+- Database path: `~/.devflow/analytics.db`
 - No cross-project aggregation in MVP
 - Future: Could add project identifier and aggregate across multiple projects
 
