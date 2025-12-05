@@ -33,7 +33,10 @@
 		"validate:ci-sync": "bun run scripts/validate-ci-sync.ts"
 	},
 	"resolutions": {
-		"cookie": "^0.7.0"
+		"cookie": "^0.7.0",
+		"esbuild": ">=0.25.0",
+		"express": ">=5.2.0",
+		"@modelcontextprotocol/sdk": ">=1.24.0"
 	},
 	"prettier": {
 		"singleQuote": true,
