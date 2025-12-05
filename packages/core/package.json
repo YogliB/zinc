@@ -30,6 +30,8 @@
 		"test:cleanup": "bun run scripts/cleanup-tests.ts",
 		"test:coverage": "vitest run --coverage",
 		"test:perf": "vitest run --reporter=junit --outputFile=../.bun-test/results.xml && bun run scripts/test-performance.ts",
+		"test:performance": "vitest run tests/performance",
+		"test:integration:perf": "bun test tests/integration/database-performance.test.ts",
 		"test:unit": "vitest run tests/unit",
 		"test:integration": "vitest run tests/integration",
 		"test:e2e": "bun test tests/e2e",

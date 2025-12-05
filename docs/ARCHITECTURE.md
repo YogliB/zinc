@@ -812,12 +812,37 @@ The analytics database provides persistent storage for MCP tool call metrics and
 
 #### Database Initialization
 
-```typescript
-import { createAnalyticsDatabase } from './analytics/database.js';
+The database uses a **lazy initialization pattern** with a singleton to eliminate overhead in code paths that don't require analytics:
 
-const database = createAnalyticsDatabase();
+```typescript
+import { getAnalyticsDatabase } from './analytics/database.js';
+
+// Database is NOT created on module import
+// Database is created lazily on first access
+const database = getAnalyticsDatabase();
 // Database is created at ~/.devflow/analytics.db with WAL mode enabled
-// Migrations run automatically on initialization
+// Migrations run automatically on first initialization
+```
+
+**Key Design Decisions**:
+
+- **Lazy Loading**: Database is created only when `getAnalyticsDatabase()` is first called, not on module import
+- **Singleton Pattern**: Multiple calls to `getAnalyticsDatabase()` return the same instance
+- **Zero Overhead**: Performance tests and non-analytics code paths have no database initialization cost
+- **Thread Safety**: Bun is single-threaded, so no locking is required
+
+**Testing Support**:
+
+```typescript
+import { 
+  getAnalyticsDatabase, 
+  closeAnalyticsDatabase 
+} from './analytics/database.js';
+
+afterEach(() => {
+  // Reset singleton state between tests
+  closeAnalyticsDatabase();
+});
 ```
 
 #### Type Safety
@@ -839,11 +864,12 @@ Migrations are stored in `src/analytics/migrations/` and run automatically when 
 #### Usage Pattern
 
 ```typescript
-import { createAnalyticsDatabase } from './analytics/database.js';
+import { getAnalyticsDatabase } from './analytics/database.js';
 import { sessions, toolCalls } from './analytics/schema.js';
 import { eq } from 'drizzle-orm';
 
-const database = createAnalyticsDatabase();
+const database = getAnalyticsDatabase();
+```
 
 // Insert session
 const session = database

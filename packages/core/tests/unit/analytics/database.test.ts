@@ -3,7 +3,10 @@ import { afterEach, beforeEach, describe, expect, test } from 'vitest';
 import { mkdirSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
-import { createAnalyticsDatabase } from '../../../src/analytics/database.js';
+import {
+	getAnalyticsDatabase,
+	closeAnalyticsDatabase,
+} from '../../../src/analytics/database.js';
 import { sessions, toolCalls } from '../../../src/analytics/schema.js';
 import { eq } from 'drizzle-orm';
 
@@ -18,15 +21,61 @@ describe('Analytics Database', () => {
 	});
 
 	afterEach(() => {
+		closeAnalyticsDatabase();
 		process.env.HOME = originalHome;
 		if (temporaryDirectory) {
 			rmSync(temporaryDirectory, { recursive: true, force: true });
 		}
 	});
 
+	describe('Lazy Initialization', () => {
+		test('does not create database on module import', () => {
+			const databasePath = path.join(
+				temporaryDirectory,
+				'.devflow',
+				'analytics.db',
+			);
+			const databaseFile = Bun.file(databasePath);
+			expect(databaseFile.size).toBe(0);
+		});
+
+		test('creates database on first getAnalyticsDatabase call', () => {
+			const databasePath = path.join(
+				temporaryDirectory,
+				'.devflow',
+				'analytics.db',
+			);
+
+			const databaseBefore = Bun.file(databasePath);
+			expect(databaseBefore.size).toBe(0);
+
+			const database = getAnalyticsDatabase();
+			expect(database).toBeDefined();
+
+			const databaseAfter = Bun.file(databasePath);
+			expect(databaseAfter.size).toBeGreaterThan(0);
+		});
+
+		test('returns same instance on multiple calls', () => {
+			const database1 = getAnalyticsDatabase();
+			const database2 = getAnalyticsDatabase();
+			expect(database1).toBeDefined();
+			expect(database2).toBeDefined();
+			expect(database1).toBe(database2);
+		});
+
+		test('creates new instance after closeAnalyticsDatabase', () => {
+			const database1 = getAnalyticsDatabase();
+			expect(database1).toBeDefined();
+			closeAnalyticsDatabase();
+			const database2 = getAnalyticsDatabase();
+			expect(database2).toBeDefined();
+		});
+	});
+
 	describe('Database Creation', () => {
 		test('creates database file in home directory', () => {
-			const database = createAnalyticsDatabase();
+			const database = getAnalyticsDatabase();
 			expect(database).toBeDefined();
 
 			const databasePath = path.join(
@@ -39,7 +88,7 @@ describe('Analytics Database', () => {
 		});
 
 		test("creates .devflow directory if it doesn't exist", () => {
-			createAnalyticsDatabase();
+			getAnalyticsDatabase();
 
 			const devflowDirectory = path.join(temporaryDirectory, '.devflow');
 			const directoryExists =
@@ -51,7 +100,7 @@ describe('Analytics Database', () => {
 			const devflowDirectory = path.join(temporaryDirectory, '.devflow');
 			mkdirSync(devflowDirectory, { recursive: true });
 
-			const database = createAnalyticsDatabase();
+			const database = getAnalyticsDatabase();
 			expect(database).toBeDefined();
 
 			const databasePath = path.join(devflowDirectory, 'analytics.db');
@@ -62,7 +111,7 @@ describe('Analytics Database', () => {
 
 	describe('WAL Mode', () => {
 		test('enables WAL journal mode', () => {
-			createAnalyticsDatabase();
+			getAnalyticsDatabase();
 
 			const databasePath = path.join(
 				temporaryDirectory,
@@ -82,12 +131,12 @@ describe('Analytics Database', () => {
 
 	describe('Migrations', () => {
 		test('runs migrations successfully', () => {
-			const database = createAnalyticsDatabase();
+			const database = getAnalyticsDatabase();
 			expect(database).toBeDefined();
 		});
 
 		test('creates migration metadata table', () => {
-			createAnalyticsDatabase();
+			getAnalyticsDatabase();
 
 			const databasePath = path.join(
 				temporaryDirectory,
@@ -110,7 +159,7 @@ describe('Analytics Database', () => {
 
 	describe('Schema Validation', () => {
 		test('creates sessions table with correct columns', () => {
-			createAnalyticsDatabase();
+			getAnalyticsDatabase();
 
 			const databasePath = path.join(
 				temporaryDirectory,
@@ -143,7 +192,7 @@ describe('Analytics Database', () => {
 		});
 
 		test('creates tool_calls table with correct columns', () => {
-			createAnalyticsDatabase();
+			getAnalyticsDatabase();
 
 			const databasePath = path.join(
 				temporaryDirectory,
@@ -175,7 +224,7 @@ describe('Analytics Database', () => {
 		});
 
 		test('creates indexes on tool_calls table', () => {
-			createAnalyticsDatabase();
+			getAnalyticsDatabase();
 
 			const databasePath = path.join(
 				temporaryDirectory,
@@ -199,7 +248,7 @@ describe('Analytics Database', () => {
 		});
 
 		test('enforces foreign key constraint on sessionId', () => {
-			createAnalyticsDatabase();
+			getAnalyticsDatabase();
 
 			const databasePath = path.join(
 				temporaryDirectory,
@@ -223,7 +272,7 @@ describe('Analytics Database', () => {
 
 	describe('CRUD Operations', () => {
 		test('inserts and selects session record', () => {
-			const database = createAnalyticsDatabase();
+			const database = getAnalyticsDatabase();
 
 			const newSession = {
 				startedAt: new Date(),
@@ -252,7 +301,7 @@ describe('Analytics Database', () => {
 		});
 
 		test('inserts toolCall with foreign key reference', () => {
-			const database = createAnalyticsDatabase();
+			const database = getAnalyticsDatabase();
 
 			const newSession = {
 				startedAt: new Date(),
@@ -285,7 +334,7 @@ describe('Analytics Database', () => {
 		});
 
 		test('updates session endedAt timestamp', () => {
-			const database = createAnalyticsDatabase();
+			const database = getAnalyticsDatabase();
 
 			const newSession = {
 				startedAt: new Date(),
@@ -318,7 +367,7 @@ describe('Analytics Database', () => {
 		});
 
 		test('deletes session and related tool calls', () => {
-			const database = createAnalyticsDatabase();
+			const database = getAnalyticsDatabase();
 
 			const newSession = {
 				startedAt: new Date(),
@@ -353,7 +402,7 @@ describe('Analytics Database', () => {
 		});
 
 		test('inserts multiple tool calls for same session', () => {
-			const database = createAnalyticsDatabase();
+			const database = getAnalyticsDatabase();
 
 			const newSession = {
 				startedAt: new Date(),
@@ -409,7 +458,7 @@ describe('Analytics Database', () => {
 		});
 
 		test('queries tool calls by timestamp index', () => {
-			const database = createAnalyticsDatabase();
+			const database = getAnalyticsDatabase();
 
 			const newSession = {
 				startedAt: new Date(),
@@ -456,7 +505,7 @@ describe('Analytics Database', () => {
 		});
 
 		test('handles error status and error type correctly', () => {
-			const database = createAnalyticsDatabase();
+			const database = getAnalyticsDatabase();
 
 			const newSession = {
 				startedAt: new Date(),

@@ -19,9 +19,13 @@ All tests use Vitest directly, ensuring consistent test execution across both Bu
 ```
 tests/
 ├── unit/              # Fast, mocked tests (<10ms each)
+│   ├── analytics/     # Analytics database tests (Bun test runner)
 │   └── examples.test.ts
 ├── integration/       # Real dependencies (<100ms each)
+│   ├── database-performance.test.ts  # Database performance benchmarks
 │   └── examples.test.ts
+├── performance/       # Performance benchmarks (database-free)
+│   └── analysis-engine.test.ts
 └── e2e/              # Full system tests (CI-only)
 ```
 
@@ -46,6 +50,12 @@ bun run test:integration
 
 # Analytics tests only (uses Bun's native SQLite)
 bun run test:analytics
+
+# Performance tests only (database-free analysis benchmarks)
+bun run test:performance
+
+# Database performance tests
+bun run test:integration:perf
 
 # AI agent mode (quiet output, only failures shown)
 bun run test:ai
@@ -567,7 +577,9 @@ describe('Counter', () => {
 
 ### Overview
 
-The analytics database uses Bun's native SQLite (`bun:sqlite`) which is not compatible with Node.js-based test runners like Vitest. Therefore, analytics tests must be run with Bun's test runner.
+The analytics database uses **lazy initialization** with a singleton pattern to eliminate overhead in code paths that don't require analytics. This design allows performance tests to run without any database initialization cost.
+
+The database uses Bun's native SQLite (`bun:sqlite`) which is not compatible with Node.js-based test runners like Vitest. Therefore, analytics and database performance tests must be run with Bun's test runner.
 
 ### Running Analytics Tests
 
@@ -575,13 +587,17 @@ The analytics database uses Bun's native SQLite (`bun:sqlite`) which is not comp
 # Run analytics tests in isolation
 bun run test:analytics
 
+# Run database performance tests
+bun run test:integration:perf
+
 # Or directly with Bun
 bun test tests/unit/analytics
+bun test tests/integration/database-performance.test.ts
 ```
 
-### Test Isolation
+### Test Isolation and Lazy Initialization
 
-Analytics tests use temporary directories to ensure complete isolation:
+Analytics tests use temporary directories and the lazy initialization cleanup function to ensure complete isolation:
 
 ```typescript
 import { mkdtempSync, rmSync } from 'node:fs';
@@ -600,6 +616,8 @@ describe('Analytics Database', () => {
 	});
 
 	afterEach(() => {
+		// Reset singleton state
+		closeAnalyticsDatabase();
 		// Restore and cleanup
 		process.env.HOME = originalHome;
 		if (tempDir) {
@@ -608,7 +626,7 @@ describe('Analytics Database', () => {
 	});
 
 	test('creates database in home directory', () => {
-		const database = createAnalyticsDatabase();
+		const database = getAnalyticsDatabase();
 		// Database will be created at temporaryDirectory/.devflow/analytics.db
 		expect(database).toBeDefined();
 	});
@@ -617,12 +635,14 @@ describe('Analytics Database', () => {
 
 ### Key Testing Principles
 
-1. **Mock Home Directory**: Always override `process.env.HOME` to point to a temporary directory
-2. **Complete Cleanup**: Use `afterEach` to remove test databases and directories
-3. **Verify WAL Mode**: Test that Write-Ahead Logging is enabled via `PRAGMA journal_mode`
-4. **Schema Validation**: Query `sqlite_master` and `PRAGMA` statements to verify schema structure
-5. **Foreign Key Testing**: Ensure constraints are properly enforced between tables
-6. **Index Verification**: Confirm indexes exist and are used for queries
+1. **Lazy Initialization**: Use `getAnalyticsDatabase()` instead of `createAnalyticsDatabase()`
+2. **Singleton Cleanup**: Always call `closeAnalyticsDatabase()` in `afterEach` to reset state
+3. **Mock Home Directory**: Always override `process.env.HOME` to point to a temporary directory
+4. **Complete Cleanup**: Use `afterEach` to remove test databases and directories
+5. **Verify WAL Mode**: Test that Write-Ahead Logging is enabled via `PRAGMA journal_mode`
+6. **Schema Validation**: Query `sqlite_master` and `PRAGMA` statements to verify schema structure
+7. **Foreign Key Testing**: Ensure constraints are properly enforced between tables
+8. **Index Verification**: Confirm indexes exist and are used for queries
 
 ### Coverage Expectations
 
@@ -635,9 +655,15 @@ Analytics module tests should achieve ≥90% code coverage:
 - CRUD operations with type safety
 - Error handling for filesystem and database operations
 
-### CI Integration
+### Test Suite Organization
 
-Analytics tests are excluded from the main Vitest test suite (see `vitest.config.ts`):
+The project separates tests into three categories for optimal CI performance:
+
+1. **Unit & Integration Tests** (Vitest): Fast tests without database dependencies
+2. **Performance Tests** (Vitest): Database-free analysis engine benchmarks
+3. **Analytics & Database Performance Tests** (Bun): Tests requiring `bun:sqlite`
+
+Analytics and database performance tests are excluded from the main Vitest test suite (see `vitest.config.ts`):
 
 ```typescript
 export default defineConfig({
@@ -647,10 +673,44 @@ export default defineConfig({
 });
 ```
 
-Run analytics tests separately in CI:
+### CI Integration
+
+Run test suites separately in CI for better isolation and performance:
 
 ```bash
+# Main test suite (unit + integration)
+bun run test:unit
+bun run test:integration
+
+# Performance benchmarks (database-free, fast, blocking)
+bun run test:performance
+
+# Database performance tests (with database, informational)
+bun run test:integration:perf
+
+# Analytics tests
 bun run test:analytics
+```
+
+### Performance Test Guidelines
+
+**When to add to `tests/performance/analysis-engine.test.ts`**:
+- Testing TypeScript plugin initialization
+- Testing file analysis performance
+- Testing cache efficiency
+- Testing memory usage
+- **NO database imports allowed** - must be completely database-free
+
+**When to add to `tests/integration/database-performance.test.ts`**:
+- Testing database write performance
+- Testing query performance with indexes
+- Testing migration speed
+- Testing concurrent database operations
+
+This separation ensures:
+- Performance tests run in < 5 seconds without database overhead
+- Database tests measure real SQLite performance
+- CI can run suites independently with appropriate timeouts
 ```
 
 ## Worker Thread Compatibility
