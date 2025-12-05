@@ -104,15 +104,15 @@ The build is configured in [`svelte.config.js`](./svelte.config.js):
 import adapter from '@sveltejs/adapter-static';
 
 const config = {
-  kit: {
-    adapter: adapter({
-      pages: 'build',           // Output directory
-      assets: 'build',          // Assets directory
-      fallback: 'index.html',   // SPA fallback for routing
-      precompress: false,       // No gzip/brotli compression
-      strict: true,             // Fail on missing pages
-    }),
-  },
+	kit: {
+		adapter: adapter({
+			pages: 'build', // Output directory
+			assets: 'build', // Assets directory
+			fallback: 'index.html', // SPA fallback for routing
+			precompress: false, // No gzip/brotli compression
+			strict: true, // Fail on missing pages
+		}),
+	},
 };
 ```
 

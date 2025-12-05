@@ -206,34 +206,35 @@ DevFlow embeds a web dashboard that automatically starts when the MCP server run
 **Key Components:**
 
 - **Dashboard Server Module** (`packages/core/src/dashboard/server.ts`)
-  - Implements `startDashboardServer()` using `Bun.serve()`
-  - Serves static files from `packages/dashboard/build/`
-  - Handles SPA routing with `index.html` fallback
-  - Automatic MIME type detection for assets
-  - Automatic port detection when port not specified (range: 3000-3100)
-  - Optional browser auto-launch on startup
+    - Implements `startDashboardServer()` using `Bun.serve()`
+    - Serves static files from `packages/dashboard/build/`
+    - Handles SPA routing with `index.html` fallback
+    - Automatic MIME type detection for assets
+    - Automatic port detection when port not specified (range: 3000-3100)
+    - Optional browser auto-launch on startup
 
 - **Port Finder Module** (`packages/core/src/dashboard/port-finder.ts`)
-  - Implements `findAvailablePort()` for automatic port detection
-  - Tests port availability using Bun's TCP socket check
-  - Retry logic with configurable range (default: 3000-3100)
-  - Returns port number and auto-detection status
+    - Implements `findAvailablePort()` for automatic port detection
+    - Tests port availability using Bun's TCP socket check
+    - Retry logic with configurable range (default: 3000-3100)
+    - Returns port number and auto-detection status
 
 - **Browser Launcher Module** (`packages/core/src/dashboard/browser-launcher.ts`)
-  - Implements `openBrowser()` for cross-platform browser launch
-  - Platform-specific commands (macOS: `open`, Linux: `xdg-open`, Windows: `start`)
-  - Graceful error handling (logs warning, doesn't crash server)
-  - 1-second delay after server start before launching
+    - Implements `openBrowser()` for cross-platform browser launch
+    - Platform-specific commands (macOS: `open`, Linux: `xdg-open`, Windows: `start`)
+    - Graceful error handling (logs warning, doesn't crash server)
+    - 1-second delay after server start before launching
 
 - **Static Build** (`packages/dashboard/`)
-  - SvelteKit app configured with `@sveltejs/adapter-static`
-  - Builds to static HTML/JS/CSS files
-  - No SSR or server-side routes (client-side only)
-  - Backend logic handled by MCP tools, not SvelteKit API routes
+    - SvelteKit app configured with `@sveltejs/adapter-static`
+    - Builds to static HTML/JS/CSS files
+    - No SSR or server-side routes (client-side only)
+    - Backend logic handled by MCP tools, not SvelteKit API routes
 
 **Architecture Decision:**
 
 The dashboard uses static build + native Bun HTTP server (not `adapter-node`) because:
+
 1. Follows project principle: "Prefer native Bun tools"
 2. Dashboard is purely visualization (all backend logic in MCP tools)
 3. Simpler deployment, smaller bundle size, better performance
@@ -243,8 +244,8 @@ The dashboard uses static build + native Bun HTTP server (not `adapter-node`) be
 
 1. MCP server initializes (stdio transport for Model Context Protocol)
 2. Dashboard port is determined:
-   - If `DEVFLOW_DASHBOARD_PORT` is set, use that port
-   - Otherwise, auto-detect available port (range: 3000-3100)
+    - If `DEVFLOW_DASHBOARD_PORT` is set, use that port
+    - Otherwise, auto-detect available port (range: 3000-3100)
 3. Dashboard server starts asynchronously on determined port
 4. If `DEVFLOW_DASHBOARD_AUTO_OPEN` is true, browser launches automatically
 5. Both MCP and dashboard run in same process, non-blocking
@@ -254,10 +255,10 @@ The dashboard uses static build + native Bun HTTP server (not `adapter-node`) be
 1. Check if `DEVFLOW_DASHBOARD_PORT` environment variable is set
 2. If set and valid, attempt to use that port
 3. If not set, call `findAvailablePort()`:
-   - Start at port 3000
-   - Test port availability using Bun.serve() socket check
-   - If busy, try next port in range (3001, 3002, etc.)
-   - Continue until port 3100 or available port found
+    - Start at port 3000
+    - Test port availability using Bun.serve() socket check
+    - If busy, try next port in range (3001, 3002, etc.)
+    - Continue until port 3100 or available port found
 4. If all ports busy, throw error with clear message
 5. Log whether port was explicit or auto-detected
 
@@ -787,12 +788,14 @@ The analytics database provides persistent storage for MCP tool call metrics and
 #### Schema Design
 
 **Sessions Table** (`sessions`):
+
 - `id` (text, primary key, auto-generated UUID)
 - `startedAt` (timestamp, not null)
 - `endedAt` (timestamp, nullable)
 - `toolCount` (integer, default 0)
 
 **Tool Calls Table** (`tool_calls`):
+
 - `id` (text, primary key, auto-generated UUID)
 - `toolName` (text, not null, indexed)
 - `durationMs` (integer, not null)
@@ -802,6 +805,7 @@ The analytics database provides persistent storage for MCP tool call metrics and
 - `sessionId` (text, foreign key to sessions.id)
 
 **Indexes**:
+
 - `tool_name_idx` on `toolName` for fast tool-specific queries
 - `timestamp_idx` on `timestamp` for time-based filtering
 - `timestamp_tool_name_idx` composite index for combined queries
@@ -819,6 +823,7 @@ const database = createAnalyticsDatabase();
 #### Type Safety
 
 Drizzle ORM provides full TypeScript type inference:
+
 - `Session` and `NewSession` types for select/insert operations
 - `ToolCall` and `NewToolCall` types for select/insert operations
 - Compile-time validation of queries and schema changes
@@ -826,6 +831,7 @@ Drizzle ORM provides full TypeScript type inference:
 #### Migration Management
 
 Migrations are stored in `src/analytics/migrations/` and run automatically when `createAnalyticsDatabase()` is called. The migration system:
+
 - Tracks applied migrations in `__drizzle_migrations` table
 - Ensures migrations run only once
 - Maintains schema version consistency
@@ -840,25 +846,33 @@ import { eq } from 'drizzle-orm';
 const database = createAnalyticsDatabase();
 
 // Insert session
-const session = database.insert(sessions).values({
-  startedAt: new Date(),
-  toolCount: 0,
-}).returning().get();
+const session = database
+	.insert(sessions)
+	.values({
+		startedAt: new Date(),
+		toolCount: 0,
+	})
+	.returning()
+	.get();
 
 // Insert tool call
-database.insert(toolCalls).values({
-  toolName: 'grep',
-  durationMs: 123,
-  status: 'success',
-  timestamp: new Date(),
-  sessionId: session.id,
-}).run();
+database
+	.insert(toolCalls)
+	.values({
+		toolName: 'grep',
+		durationMs: 123,
+		status: 'success',
+		timestamp: new Date(),
+		sessionId: session.id,
+	})
+	.run();
 
 // Query tool calls
-const calls = database.select()
-  .from(toolCalls)
-  .where(eq(toolCalls.sessionId, session.id))
-  .all();
+const calls = database
+	.select()
+	.from(toolCalls)
+	.where(eq(toolCalls.sessionId, session.id))
+	.all();
 ```
 
 ---

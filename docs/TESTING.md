@@ -589,29 +589,29 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 describe('Analytics Database', () => {
-  let tempDir: string;
-  let originalHome: string | undefined;
+	let tempDir: string;
+	let originalHome: string | undefined;
 
-  beforeEach(() => {
-    // Create isolated test directory
-    tempDir = mkdtempSync(join(tmpdir(), 'devflow-test-'));
-    originalHome = process.env.HOME;
-    process.env.HOME = tempDir;
-  });
+	beforeEach(() => {
+		// Create isolated test directory
+		tempDir = mkdtempSync(join(tmpdir(), 'devflow-test-'));
+		originalHome = process.env.HOME;
+		process.env.HOME = tempDir;
+	});
 
-  afterEach(() => {
-    // Restore and cleanup
-    process.env.HOME = originalHome;
-    if (tempDir) {
-      rmSync(tempDir, { recursive: true, force: true });
-    }
-  });
+	afterEach(() => {
+		// Restore and cleanup
+		process.env.HOME = originalHome;
+		if (tempDir) {
+			rmSync(tempDir, { recursive: true, force: true });
+		}
+	});
 
-  test('creates database in home directory', () => {
-    const database = createAnalyticsDatabase();
-    // Database will be created at temporaryDirectory/.devflow/analytics.db
-    expect(database).toBeDefined();
-  });
+	test('creates database in home directory', () => {
+		const database = createAnalyticsDatabase();
+		// Database will be created at temporaryDirectory/.devflow/analytics.db
+		expect(database).toBeDefined();
+	});
 });
 ```
 
@@ -627,6 +627,7 @@ describe('Analytics Database', () => {
 ### Coverage Expectations
 
 Analytics module tests should achieve ≥90% code coverage:
+
 - Database initialization and directory creation
 - WAL mode enablement
 - Migration execution
@@ -640,9 +641,9 @@ Analytics tests are excluded from the main Vitest test suite (see `vitest.config
 
 ```typescript
 export default defineConfig({
-  test: {
-    exclude: ['tests/unit/analytics/**/*.test.ts'],
-  },
+	test: {
+		exclude: ['tests/unit/analytics/**/*.test.ts'],
+	},
 });
 ```
 
