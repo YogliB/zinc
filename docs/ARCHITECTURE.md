@@ -908,7 +908,7 @@ const calls = database
 .where(eq(toolCalls.sessionId, session.id))
 .all();
 
-````
+```
 
 ---
 
