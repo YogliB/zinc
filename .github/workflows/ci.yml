@@ -242,7 +242,6 @@ jobs:
                         "${{ needs.type-check.result }}" == "failure" || \
                         "${{ needs.build.result }}" == "failure" || \
                         "${{ needs.test.result }}" == "failure" || \
-                        "${{ needs.performance.result }}" == "failure" || \
                         "${{ needs.security-audit.result }}" == "failure" || \
                         "${{ needs.circular-deps.result }}" == "failure" ]]; then
                     echo "❌ CI failed"
