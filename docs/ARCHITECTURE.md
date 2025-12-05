@@ -787,7 +787,6 @@ The analytics database provides persistent storage for MCP tool call metrics and
 - **Native Bindings**: Requires native module compilation (automatic with `bun install`)
 - **Drizzle Integration**: Full support via `drizzle-orm/better-sqlite3` adapter
 
-
 #### Database Location
 
 - **Path**: `~/.devflow/analytics.db` (user's home directory)
@@ -843,14 +842,14 @@ const database = getAnalyticsDatabase();
 **Testing Support**:
 
 ```typescript
-import { 
-  getAnalyticsDatabase, 
-  closeAnalyticsDatabase 
+import {
+	getAnalyticsDatabase,
+	closeAnalyticsDatabase,
 } from './analytics/database.js';
 
 afterEach(() => {
-  // Reset singleton state between tests
-  closeAnalyticsDatabase();
+	// Reset singleton state between tests
+	closeAnalyticsDatabase();
 });
 ```
 
@@ -882,33 +881,34 @@ const database = getAnalyticsDatabase();
 
 // Insert session
 const session = database
-	.insert(sessions)
-	.values({
-		startedAt: new Date(),
-		toolCount: 0,
-	})
-	.returning()
-	.get();
+.insert(sessions)
+.values({
+startedAt: new Date(),
+toolCount: 0,
+})
+.returning()
+.get();
 
 // Insert tool call
 database
-	.insert(toolCalls)
-	.values({
-		toolName: 'grep',
-		durationMs: 123,
-		status: 'success',
-		timestamp: new Date(),
-		sessionId: session.id,
-	})
-	.run();
+.insert(toolCalls)
+.values({
+toolName: 'grep',
+durationMs: 123,
+status: 'success',
+timestamp: new Date(),
+sessionId: session.id,
+})
+.run();
 
 // Query tool calls
 const calls = database
-	.select()
-	.from(toolCalls)
-	.where(eq(toolCalls.sessionId, session.id))
-	.all();
-```
+.select()
+.from(toolCalls)
+.where(eq(toolCalls.sessionId, session.id))
+.all();
+
+````
 
 ---
 
@@ -941,7 +941,7 @@ export interface LanguagePlugin {
 	canIncrementallyUpdate?(oldAST: AST, changes: FileChange): boolean;
 	incrementallyUpdate?(oldAST: AST, changes: FileChange): Promise<AST>;
 }
-```
+````
 
 **TypeScript Plugin**: `src/core/analysis/plugins/typescript.ts`
 

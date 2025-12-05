@@ -685,6 +685,7 @@ bun run test
 ### Performance Test Guidelines
 
 **When to add to `tests/integration/analysis-engine.test.ts`**:
+
 - Testing TypeScript plugin initialization
 - Testing file analysis performance
 - Testing cache efficiency
@@ -692,16 +693,19 @@ bun run test
 - **NO database imports allowed** - must be completely database-free
 
 **When to add to `tests/integration/database-performance.test.ts`**:
+
 - Testing database write performance
 - Testing query performance with indexes
 - Testing migration speed
 - Testing concurrent database operations
 
 This separation ensures:
+
 - Performance tests run in < 5 seconds without database overhead
 - Database tests measure real SQLite performance
 - CI can run suites independently with appropriate timeouts
-```
+
+````
 
 ## Worker Thread Compatibility
 
@@ -729,7 +733,7 @@ it('should detect project root', async () => {
 	const result = await detectProjectRoot();
 	expect(result).toBe(testDir);
 });
-```
+````
 
 ```typescript
 // ✅ Good: Using explicit startFrom parameter
@@ -865,10 +869,10 @@ The FileWatcher threshold tests (`file-watcher.test.ts` and `server-init.test.ts
 
 ## Scripts Reference
 
-| Script                     | Purpose                                     |
-| -------------------------- | ------------------------------------------- |
-| `bun run test`             | Run all tests (with concurrent execution)   |
-| `bun run test:core`        | Run core tests                              |
-| `bun run test:dashboard`   | Run dashboard tests                         |
-| `bun test --watch`         | Watch mode (re-runs on file changes)        |
-| `bun run update-baseline`  | Update performance baseline                 |
+| Script                    | Purpose                                   |
+| ------------------------- | ----------------------------------------- |
+| `bun run test`            | Run all tests (with concurrent execution) |
+| `bun run test:core`       | Run core tests                            |
+| `bun run test:dashboard`  | Run dashboard tests                       |
+| `bun test --watch`        | Watch mode (re-runs on file changes)      |
+| `bun run update-baseline` | Update performance baseline               |
