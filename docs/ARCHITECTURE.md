@@ -772,6 +772,95 @@ export class AnalysisEngine {
 - `FileAnalysis` contains symbols, relationships, patterns, and AST
 - All analysis results are typed and immutable
 
+### Analytics Database
+
+**Location**: `src/analytics/`
+
+The analytics database provides persistent storage for MCP tool call metrics and session data using SQLite with Drizzle ORM:
+
+#### Database Location
+
+- **Path**: `~/.devflow/analytics.db` (user's home directory)
+- **Journal Mode**: WAL (Write-Ahead Logging) for concurrent access
+- **Directory Creation**: Automatically creates `~/.devflow/` if needed
+
+#### Schema Design
+
+**Sessions Table** (`sessions`):
+- `id` (text, primary key, auto-generated UUID)
+- `startedAt` (timestamp, not null)
+- `endedAt` (timestamp, nullable)
+- `toolCount` (integer, default 0)
+
+**Tool Calls Table** (`tool_calls`):
+- `id` (text, primary key, auto-generated UUID)
+- `toolName` (text, not null, indexed)
+- `durationMs` (integer, not null)
+- `status` (enum: 'success', 'error', 'timeout')
+- `errorType` (text, nullable)
+- `timestamp` (timestamp, not null, indexed)
+- `sessionId` (text, foreign key to sessions.id)
+
+**Indexes**:
+- `tool_name_idx` on `toolName` for fast tool-specific queries
+- `timestamp_idx` on `timestamp` for time-based filtering
+- `timestamp_tool_name_idx` composite index for combined queries
+
+#### Database Initialization
+
+```typescript
+import { createAnalyticsDatabase } from './analytics/database.js';
+
+const database = createAnalyticsDatabase();
+// Database is created at ~/.devflow/analytics.db with WAL mode enabled
+// Migrations run automatically on initialization
+```
+
+#### Type Safety
+
+Drizzle ORM provides full TypeScript type inference:
+- `Session` and `NewSession` types for select/insert operations
+- `ToolCall` and `NewToolCall` types for select/insert operations
+- Compile-time validation of queries and schema changes
+
+#### Migration Management
+
+Migrations are stored in `src/analytics/migrations/` and run automatically when `createAnalyticsDatabase()` is called. The migration system:
+- Tracks applied migrations in `__drizzle_migrations` table
+- Ensures migrations run only once
+- Maintains schema version consistency
+
+#### Usage Pattern
+
+```typescript
+import { createAnalyticsDatabase } from './analytics/database.js';
+import { sessions, toolCalls } from './analytics/schema.js';
+import { eq } from 'drizzle-orm';
+
+const database = createAnalyticsDatabase();
+
+// Insert session
+const session = database.insert(sessions).values({
+  startedAt: new Date(),
+  toolCount: 0,
+}).returning().get();
+
+// Insert tool call
+database.insert(toolCalls).values({
+  toolName: 'grep',
+  durationMs: 123,
+  status: 'success',
+  timestamp: new Date(),
+  sessionId: session.id,
+}).run();
+
+// Query tool calls
+const calls = database.select()
+  .from(toolCalls)
+  .where(eq(toolCalls.sessionId, session.id))
+  .all();
+```
+
 ---
 
 ## Analysis System

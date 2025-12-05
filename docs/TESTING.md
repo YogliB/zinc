@@ -44,6 +44,9 @@ bun run test:unit
 # Integration tests only
 bun run test:integration
 
+# Analytics tests only (uses Bun's native SQLite)
+bun run test:analytics
+
 # AI agent mode (quiet output, only failures shown)
 bun run test:ai
 ```
@@ -558,6 +561,95 @@ describe('Counter', () => {
 		expect(counter).toBe(1);
 	});
 });
+```
+
+## Testing Analytics Database
+
+### Overview
+
+The analytics database uses Bun's native SQLite (`bun:sqlite`) which is not compatible with Node.js-based test runners like Vitest. Therefore, analytics tests must be run with Bun's test runner.
+
+### Running Analytics Tests
+
+```bash
+# Run analytics tests in isolation
+bun run test:analytics
+
+# Or directly with Bun
+bun test tests/unit/analytics
+```
+
+### Test Isolation
+
+Analytics tests use temporary directories to ensure complete isolation:
+
+```typescript
+import { mkdtempSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+
+describe('Analytics Database', () => {
+  let tempDir: string;
+  let originalHome: string | undefined;
+
+  beforeEach(() => {
+    // Create isolated test directory
+    tempDir = mkdtempSync(join(tmpdir(), 'devflow-test-'));
+    originalHome = process.env.HOME;
+    process.env.HOME = tempDir;
+  });
+
+  afterEach(() => {
+    // Restore and cleanup
+    process.env.HOME = originalHome;
+    if (tempDir) {
+      rmSync(tempDir, { recursive: true, force: true });
+    }
+  });
+
+  test('creates database in home directory', () => {
+    const database = createAnalyticsDatabase();
+    // Database will be created at temporaryDirectory/.devflow/analytics.db
+    expect(database).toBeDefined();
+  });
+});
+```
+
+### Key Testing Principles
+
+1. **Mock Home Directory**: Always override `process.env.HOME` to point to a temporary directory
+2. **Complete Cleanup**: Use `afterEach` to remove test databases and directories
+3. **Verify WAL Mode**: Test that Write-Ahead Logging is enabled via `PRAGMA journal_mode`
+4. **Schema Validation**: Query `sqlite_master` and `PRAGMA` statements to verify schema structure
+5. **Foreign Key Testing**: Ensure constraints are properly enforced between tables
+6. **Index Verification**: Confirm indexes exist and are used for queries
+
+### Coverage Expectations
+
+Analytics module tests should achieve ≥90% code coverage:
+- Database initialization and directory creation
+- WAL mode enablement
+- Migration execution
+- Schema validation (tables, columns, indexes, foreign keys)
+- CRUD operations with type safety
+- Error handling for filesystem and database operations
+
+### CI Integration
+
+Analytics tests are excluded from the main Vitest test suite (see `vitest.config.ts`):
+
+```typescript
+export default defineConfig({
+  test: {
+    exclude: ['tests/unit/analytics/**/*.test.ts'],
+  },
+});
+```
+
+Run analytics tests separately in CI:
+
+```bash
+bun run test:analytics
 ```
 
 ## Worker Thread Compatibility
