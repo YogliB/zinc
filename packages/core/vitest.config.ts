@@ -40,9 +40,5 @@ export default defineConfig({
 			reportOnFailure: true,
 		},
 		include: ['src/**/*.test.ts', 'tests/**/*.test.ts'],
-		exclude: [
-			'tests/unit/analytics/**/*.test.ts',
-			'tests/integration/database-performance.test.ts',
-		],
 	},
 });
