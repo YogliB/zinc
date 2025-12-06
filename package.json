@@ -13,7 +13,7 @@
 		"packages/dashboard"
 	],
 	"scripts": {
-		"prepare": "volta setup && husky",
+		"prepare": "(volta setup || true) && husky",
 		"format:check": "prettier --check .",
 		"format": "prettier --write .",
 		"knip": "turbo knip --filter=devflow-mcp",
