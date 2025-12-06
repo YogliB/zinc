@@ -1,3 +1,4 @@
+import { EventEmitter } from 'node:events';
 import { FastMCP, type FastMCPSession } from 'fastmcp';
 import { createStorageEngine } from './core/storage/engine';
 import type { StorageEngine } from './core/storage/engine';
@@ -254,17 +255,23 @@ async function main(): Promise<void> {
 		`All MCP tools registered (${(performance.now() - toolsStart).toFixed(2)}ms)`,
 	);
 
-	server.on('connect', (event: { session: FastMCPSession }) => {
-		if (event.session.sessionId) {
-			telemetryService.startSession(event.session.sessionId);
-		}
-	});
+	(server as EventEmitter).on(
+		'connect',
+		(event: { session: FastMCPSession }) => {
+			if (event.session.sessionId) {
+				telemetryService.startSession(event.session.sessionId);
+			}
+		},
+	);
 
-	server.on('disconnect', (event: { session: FastMCPSession }) => {
-		if (event.session.sessionId) {
-			telemetryService.endSession(event.session.sessionId);
-		}
-	});
+	(server as EventEmitter).on(
+		'disconnect',
+		(event: { session: FastMCPSession }) => {
+			if (event.session.sessionId) {
+				telemetryService.endSession(event.session.sessionId);
+			}
+		},
+	);
 
 	await server.start({
 		transportType: 'stdio',
