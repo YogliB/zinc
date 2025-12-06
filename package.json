@@ -13,6 +13,7 @@
 		"packages/dashboard"
 	],
 	"scripts": {
+		"prepare": "volta setup && husky",
 		"format:check": "prettier --check .",
 		"format": "prettier --write .",
 		"knip": "bun run --filter devflow-mcp knip",
@@ -59,5 +60,8 @@
 		"typescript": "5.9.3",
 		"typescript-eslint": "8.48.1",
 		"yaml": "2.8.2"
+	},
+	"volta": {
+		"node": "24.11.1"
 	}
 }

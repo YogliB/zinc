@@ -242,8 +242,9 @@ async function main(): Promise<void> {
 		version: '0.1.0',
 	});
 
+	const originalAddTool = server.addTool.bind(server);
 	server.addTool = wrapToolWithTelemetry(
-		server.addTool,
+		originalAddTool,
 		telemetryService,
 	) as typeof server.addTool;
 

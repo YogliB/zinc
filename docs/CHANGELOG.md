@@ -21,6 +21,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Fixed
 
+- **Build Process**: Fixed better-sqlite3 native bindings issue for Node.js compatibility
+    - Marked better-sqlite3 as external dependency in Bun build configuration
+    - Disabled code splitting to ensure correct import.meta.url path resolution
+    - Updated migration folder path resolution to handle both source and built environments
 - **CI Pipeline**: Resolved all CI script failures
     - Fixed ESLint errors in dashboard package (removed commented code from `app.d.ts`, removed unused `lib/index.ts`)
     - Fixed Prettier formatting issues in documentation

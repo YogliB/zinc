@@ -5,6 +5,7 @@ import { existsSync, mkdirSync } from 'node:fs';
 import { homedir } from 'node:os';
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
+
 import * as schema from './schema.js';
 
 export type AnalyticsDatabase = ReturnType<typeof createAnalyticsDatabase>;
@@ -34,10 +35,18 @@ const createAnalyticsDatabase = () => {
 
 	const database = drizzle(sqlite, { schema });
 
-	const currentDirectory = path.dirname(fileURLToPath(import.meta.url));
-	migrate(database, {
-		migrationsFolder: path.join(currentDirectory, 'migrations'),
-	});
+	const __dirname = path.dirname(fileURLToPath(import.meta.url));
+	const builtMigrationsPath = path.join(
+		__dirname,
+		'../../../dist/analytics/migrations',
+	);
+	const sourceMigrationsPath = path.join(__dirname, './migrations');
+	const migrationsFolder = existsSync(
+		path.join(builtMigrationsPath, 'meta/_journal.json'),
+	)
+		? builtMigrationsPath
+		: sourceMigrationsPath;
+	migrate(database, { migrationsFolder });
 
 	return database;
 };

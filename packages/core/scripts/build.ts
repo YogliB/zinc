@@ -31,8 +31,13 @@ try {
 		outdir: './dist',
 		target: 'node',
 		minify: true,
-		splitting: true,
-		external: ['effect', '@valibot/to-json-schema', 'sury'],
+		splitting: false,
+		external: [
+			'effect',
+			'@valibot/to-json-schema',
+			'sury',
+			'better-sqlite3',
+		],
 	});
 
 	if (!result.success) {

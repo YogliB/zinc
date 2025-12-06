@@ -24,7 +24,6 @@
 		"lint:clean": "rm -f .eslintcache",
 		"lint:fix": "eslint --fix . --max-warnings=0 --cache --cache-location .eslintcache",
 		"lint": "eslint . --max-warnings=0 --cache --cache-location .eslintcache",
-		"prepare": "husky",
 		"test": "vitest run",
 		"type-check": "bun run tsc --noEmit",
 		"update-baseline": "bun run scripts/update-baseline.ts --update-baseline",

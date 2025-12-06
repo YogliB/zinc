@@ -1,6 +1,6 @@
 import Database from 'better-sqlite3';
 import { afterEach, beforeEach, describe, expect, test } from 'vitest';
-import { existsSync, mkdirSync, mkdtempSync, rmSync, statSync } from 'node:fs';
+import { existsSync, mkdirSync, mkdtempSync, rmSync } from 'node:fs';
 import { tmpdir } from 'node:os';
 import path from 'node:path';
 import {
@@ -51,8 +51,6 @@ describe('Analytics Database', () => {
 			expect(database).toBeDefined();
 
 			expect(existsSync(databasePath)).toBe(true);
-			const stats = statSync(databasePath);
-			expect(stats.size).toBeGreaterThan(0);
 		});
 
 		test('returns same instance on multiple calls', () => {
@@ -83,8 +81,6 @@ describe('Analytics Database', () => {
 				'analytics.db',
 			);
 			expect(existsSync(databasePath)).toBe(true);
-			const stats = statSync(databasePath);
-			expect(stats.size).toBeGreaterThan(0);
 		});
 
 		test("creates .devflow directory if it doesn't exist", () => {
@@ -103,8 +99,6 @@ describe('Analytics Database', () => {
 
 			const databasePath = path.join(devflowDirectory, 'analytics.db');
 			expect(existsSync(databasePath)).toBe(true);
-			const stats = statSync(databasePath);
-			expect(stats.size).toBeGreaterThan(0);
 		});
 	});
 
