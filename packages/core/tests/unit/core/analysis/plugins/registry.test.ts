@@ -1,6 +1,6 @@
 import { describe, it, expect } from 'vitest';
 import { PluginRegistry } from '../../../../../src/core/analysis/plugins/registry';
-import { MockLanguagePlugin } from '../../../../setup/mocks';
+import { MockLanguagePlugin } from '../../../../helpers/mocks';
 
 describe('PluginRegistry', () => {
 	it('should register a plugin', () => {

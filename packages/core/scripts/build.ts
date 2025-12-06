@@ -1,4 +1,4 @@
-import { readdirSync, rmSync } from 'node:fs';
+import { cpSync, readdirSync, rmSync } from 'node:fs';
 
 function cleanupDistributionDirectory(): void {
 	try {
@@ -44,6 +44,11 @@ try {
 	}
 
 	cleanupBuildArtifacts();
+
+	// Copy migration files
+	cpSync('./src/analytics/migrations', './dist/analytics/migrations', {
+		recursive: true,
+	});
 
 	console.log('✅ Build completed successfully');
 } catch (error) {

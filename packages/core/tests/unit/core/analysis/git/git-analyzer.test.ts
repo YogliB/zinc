@@ -1,6 +1,6 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { GitAnalyzer } from '../../../../../src/core/analysis/git/git-analyzer';
-import { createTestProject } from '../../../../setup/test-helpers';
+import { createTestProject } from '../../../../helpers/test-helpers';
 import path from 'node:path';
 import { mkdir, rm, realpath } from 'node:fs/promises';
 import { tmpdir } from 'node:os';

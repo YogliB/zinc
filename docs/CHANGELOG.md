@@ -9,6 +9,16 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Changed
+
+- **Analytics Database**: Migrated from `bun:sqlite` to `better-sqlite3` for cross-runtime compatibility
+    - Analytics now works in both Bun and Node.js environments
+    - Enables vitest (Node.js) to run all analytics and database performance tests
+    - Fixes pre-push hook failures caused by Node.js incompatibility
+    - Requires native module compilation for `better-sqlite3` (automatic with `bun install`)
+    - No performance regression - `better-sqlite3` performs comparably to `bun:sqlite`
+    - Migration path resolution updated to use `fileURLToPath(import.meta.url)` for Node.js compatibility
+
 ### Fixed
 
 - **CI Pipeline**: Resolved all CI script failures

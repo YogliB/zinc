@@ -75,20 +75,20 @@ Knip analyzes both packages using workspace configuration:
 
 ```json
 {
-	"workspaces": {
-		"packages/core": {
-			"entry": ["src/server.ts"],
-			"project": ["src/**/*.ts", "tests/**/*.ts", "scripts/**/*.ts"]
-		},
-		"packages/dashboard": {
-			"entry": [
-				"src/routes/**/*.svelte",
-				".storybook/main.ts",
-				"vite.config.ts"
-			],
-			"project": ["src/**/*.{ts,svelte}", ".storybook/**/*.ts"]
-		}
-	}
+    "workspaces": {
+        "packages/core": {
+            "entry": ["src/server.ts"],
+            "project": ["src/**/*.ts", "tests/**/*.ts", "scripts/**/*.ts"]
+        },
+        "packages/dashboard": {
+            "entry": [
+                "src/routes/**/*.svelte",
+                ".storybook/main.ts",
+                "vite.config.ts"
+            ],
+            "project": ["src/**/*.{ts,svelte}", ".storybook/**/*.ts"]
+        }
+    }
 }
 ```
 
@@ -100,11 +100,11 @@ Knip analyzes both packages using workspace configuration:
 
 ```json
 {
-	"prettier": {
-		"singleQuote": true,
-		"useTabs": true,
-		"tabWidth": 4
-	}
+    "prettier": {
+        "singleQuote": true,
+        "useTabs": true,
+        "tabWidth": 4
+    }
 }
 ```
 
@@ -129,10 +129,10 @@ All packages inherit the root Prettier config automatically. Package-specific `.
 import rootConfig from '../../eslint.config.mjs';
 
 export default [
-	...rootConfig,
-	{
-		// Package-specific rules
-	},
+    ...rootConfig,
+    {
+        // Package-specific rules
+    },
 ];
 ```
 
@@ -144,10 +144,10 @@ export default [
 
 ```json
 {
-	"extends": "../../tsconfig.json",
-	"compilerOptions": {
-		// Package-specific overrides
-	}
+    "extends": "../../tsconfig.json",
+    "compilerOptions": {
+        // Package-specific overrides
+    }
 }
 ```
 
@@ -206,7 +206,7 @@ DevFlow embeds a web dashboard that automatically starts when the MCP server run
 **Key Components:**
 
 - **Dashboard Server Module** (`packages/core/src/dashboard/server.ts`)
-  - Implements `startDashboardServer()` using `Bun.serve()`
+    - Implements `startDashboardServer()` using `Bun.serve()`
   - Serves static files from `packages/dashboard/build/`
   - Handles SPA routing with `index.html` fallback
   - Automatic MIME type detection for assets
@@ -234,6 +234,7 @@ DevFlow embeds a web dashboard that automatically starts when the MCP server run
 **Architecture Decision:**
 
 The dashboard uses static build + native Bun HTTP server (not `adapter-node`) because:
+
 1. Follows project principle: "Prefer native Bun tools"
 2. Dashboard is purely visualization (all backend logic in MCP tools)
 3. Simpler deployment, smaller bundle size, better performance
@@ -243,8 +244,8 @@ The dashboard uses static build + native Bun HTTP server (not `adapter-node`) be
 
 1. MCP server initializes (stdio transport for Model Context Protocol)
 2. Dashboard port is determined:
-   - If `DEVFLOW_DASHBOARD_PORT` is set, use that port
-   - Otherwise, auto-detect available port (range: 3000-3100)
+    - If `DEVFLOW_DASHBOARD_PORT` is set, use that port
+    - Otherwise, auto-detect available port (range: 3000-3100)
 3. Dashboard server starts asynchronously on determined port
 4. If `DEVFLOW_DASHBOARD_AUTO_OPEN` is true, browser launches automatically
 5. Both MCP and dashboard run in same process, non-blocking
@@ -254,10 +255,10 @@ The dashboard uses static build + native Bun HTTP server (not `adapter-node`) be
 1. Check if `DEVFLOW_DASHBOARD_PORT` environment variable is set
 2. If set and valid, attempt to use that port
 3. If not set, call `findAvailablePort()`:
-   - Start at port 3000
-   - Test port availability using Bun.serve() socket check
-   - If busy, try next port in range (3001, 3002, etc.)
-   - Continue until port 3100 or available port found
+    - Start at port 3000
+    - Test port availability using Bun.serve() socket check
+    - If busy, try next port in range (3001, 3002, etc.)
+    - Continue until port 3100 or available port found
 4. If all ports busy, throw error with clear message
 5. Log whether port was explicit or auto-detected
 
@@ -288,43 +289,43 @@ The server initializes through `src/server.ts`, which orchestrates component set
 
 ```18:56:src/server.ts
 async function initializeServer(): Promise<void> {
-	try {
-		const projectRoot = await detectProjectRoot();
-		console.error(`[DevFlow:INFO] Project root detected: ${projectRoot}`);
+    try {
+        const projectRoot = await detectProjectRoot();
+        console.error(`[DevFlow:INFO] Project root detected: ${projectRoot}`);
 
-		storageEngine = createStorageEngine({
-			rootPath: projectRoot,
-			debug: false,
-		});
-		console.error('[DevFlow:INFO] StorageEngine initialized');
+        storageEngine = createStorageEngine({
+            rootPath: projectRoot,
+            debug: false,
+        });
+        console.error('[DevFlow:INFO] StorageEngine initialized');
 
-		analysisEngine = new AnalysisEngine(projectRoot);
-		const tsPlugin = new TypeScriptPlugin(projectRoot);
-		analysisEngine.registerPlugin(tsPlugin);
-		console.error('[DevFlow:INFO] AnalysisEngine initialized');
+        analysisEngine = new AnalysisEngine(projectRoot);
+        const tsPlugin = new TypeScriptPlugin(projectRoot);
+        analysisEngine.registerPlugin(tsPlugin);
+        console.error('[DevFlow:INFO] AnalysisEngine initialized');
 
-		gitAnalyzer = new GitAnalyzer(projectRoot);
-		console.error('[DevFlow:INFO] GitAnalyzer initialized');
+        gitAnalyzer = new GitAnalyzer(projectRoot);
+        console.error('[DevFlow:INFO] GitAnalyzer initialized');
 
-		cache = new GitAwareCache();
-		console.error('[DevFlow:INFO] Cache initialized');
+        cache = new GitAwareCache();
+        console.error('[DevFlow:INFO] Cache initialized');
 
-		fileWatcher = new FileWatcher(100, cache);
-		fileWatcher.watchDirectory(projectRoot);
-		console.error('[DevFlow:INFO] FileWatcher initialized');
-	} catch (error) {
-		const errorMessage =
-			error instanceof Error
-				? error.message
-				: 'Unknown error during initialization';
-		console.error(
-			`[DevFlow:ERROR] Failed to initialize server: ${errorMessage}`,
-		);
-		if (error instanceof Error && error.stack) {
-			console.error(`[DevFlow:ERROR] Stack trace: ${error.stack}`);
-		}
-		throw error;
-	}
+        fileWatcher = new FileWatcher(100, cache);
+        fileWatcher.watchDirectory(projectRoot);
+        console.error('[DevFlow:INFO] FileWatcher initialized');
+    } catch (error) {
+        const errorMessage =
+            error instanceof Error
+                ? error.message
+                : 'Unknown error during initialization';
+        console.error(
+            `[DevFlow:ERROR] Failed to initialize server: ${errorMessage}`,
+        );
+        if (error instanceof Error && error.stack) {
+            console.error(`[DevFlow:ERROR] Stack trace: ${error.stack}`);
+        }
+        throw error;
+    }
 }
 ```
 
@@ -334,20 +335,20 @@ DevFlow communicates via the MCP protocol over stdio, making it compatible with 
 
 ```58:73:src/server.ts
 async function main(): Promise<void> {
-	await initializeServer();
+    await initializeServer();
 
-	const server = new FastMCP({
-		name: 'devflow-mcp',
-		version: '0.1.0',
-	});
+    const server = new FastMCP({
+        name: 'devflow-mcp',
+        version: '0.1.0',
+    });
 
-	registerAllTools(server, analysisEngine, storageEngine, gitAnalyzer);
-	console.error('[DevFlow:INFO] All MCP tools registered');
+    registerAllTools(server, analysisEngine, storageEngine, gitAnalyzer);
+    console.error('[DevFlow:INFO] All MCP tools registered');
 
-	await server.start({
-		transportType: 'stdio',
-	});
-	console.error('DevFlow MCP Server running on stdio');
+    await server.start({
+        transportType: 'stdio',
+    });
+    console.error('DevFlow MCP Server running on stdio');
 }
 ```
 
@@ -387,226 +388,226 @@ The storage engine provides a secure file I/O abstraction layer with comprehensi
 
 ```21:242:src/core/storage/engine.ts
 export function createStorageEngine(
-	options: StorageEngineOptions,
+    options: StorageEngineOptions,
 ): StorageEngine {
-	const rootPath = path.resolve(options.rootPath);
-	const debug = options.debug ?? false;
+    const rootPath = path.resolve(options.rootPath);
+    const debug = options.debug ?? false;
 
-	const log = (level: 'debug' | 'warn' | 'error', message: string): void => {
-		if (debug || level !== 'debug') {
-			console.log(`[StorageEngine:${level.toUpperCase()}] ${message}`);
-		}
-	};
+    const log = (level: 'debug' | 'warn' | 'error', message: string): void => {
+        if (debug || level !== 'debug') {
+            console.log(`[StorageEngine:${level.toUpperCase()}] ${message}`);
+        }
+    };
 
-	const validatePath = (filePath: string): string => {
-		if (!filePath || typeof filePath !== 'string') {
-			throw new PathValidationError(
-				'File path must be a non-empty string',
-			);
-		}
+    const validatePath = (filePath: string): string => {
+        if (!filePath || typeof filePath !== 'string') {
+            throw new PathValidationError(
+                'File path must be a non-empty string',
+            );
+        }
 
-		const normalized = path.normalize(filePath);
+        const normalized = path.normalize(filePath);
 
-		if (normalized.startsWith('..')) {
-			throw new PathValidationError(
-				'Path traversal detected: path cannot start with ..',
-			);
-		}
+        if (normalized.startsWith('..')) {
+            throw new PathValidationError(
+                'Path traversal detected: path cannot start with ..',
+            );
+        }
 
-		const fullPath = path.resolve(rootPath, normalized);
+        const fullPath = path.resolve(rootPath, normalized);
 
-		const relative = path.relative(rootPath, fullPath);
-		if (relative.startsWith('..') || path.isAbsolute(relative)) {
-			throw new PathValidationError(
-				`Path is outside root directory: ${filePath}`,
-			);
-		}
+        const relative = path.relative(rootPath, fullPath);
+        if (relative.startsWith('..') || path.isAbsolute(relative)) {
+            throw new PathValidationError(
+                `Path is outside root directory: ${filePath}`,
+            );
+        }
 
-		return fullPath;
-	};
+        return fullPath;
+    };
 
-	const readFile = async (filePath: string): Promise<string> => {
-		try {
-			const validatedPath = validatePath(filePath);
-			log('debug', `Reading file: ${filePath}`);
+    const readFile = async (filePath: string): Promise<string> => {
+        try {
+            const validatedPath = validatePath(filePath);
+            log('debug', `Reading file: ${filePath}`);
 
-			const { readFile: fsReadFile } = await import('node:fs/promises');
-			const content = await fsReadFile(validatedPath, 'utf8');
-			log(
-				'debug',
-				`Successfully read file: ${filePath} (${content.length} bytes)`,
-			);
-			return content;
-		} catch (error) {
-			if (error instanceof PathValidationError) {
-				throw error;
-			}
+            const { readFile: fsReadFile } = await import('node:fs/promises');
+            const content = await fsReadFile(validatedPath, 'utf8');
+            log(
+                'debug',
+                `Successfully read file: ${filePath} (${content.length} bytes)`,
+            );
+            return content;
+        } catch (error) {
+            if (error instanceof PathValidationError) {
+                throw error;
+            }
 
-			if (
-				error instanceof Error &&
-				'code' in error &&
-				error.code === 'ENOENT'
-			) {
-				throw new FileNotFoundError(filePath);
-			}
+            if (
+                error instanceof Error &&
+                'code' in error &&
+                error.code === 'ENOENT'
+            ) {
+                throw new FileNotFoundError(filePath);
+            }
 
-			throw error;
-		}
-	};
+            throw error;
+        }
+    };
 
-	const writeFile = async (
-		filePath: string,
-		content: string,
-	): Promise<void> => {
-		try {
-			const validatedPath = validatePath(filePath);
-			log('debug', `Writing file: ${filePath}`);
+    const writeFile = async (
+        filePath: string,
+        content: string,
+    ): Promise<void> => {
+        try {
+            const validatedPath = validatePath(filePath);
+            log('debug', `Writing file: ${filePath}`);
 
-			const directory = path.dirname(validatedPath);
+            const directory = path.dirname(validatedPath);
 
-			try {
-				const { mkdir } = await import('node:fs/promises');
-				await mkdir(directory, { recursive: true });
-			} catch (mkdirError) {
-				throw new WriteError(
-					filePath,
-					`Failed to create directory: ${mkdirError instanceof Error ? mkdirError.message : 'Unknown error'}`,
-				);
-			}
+            try {
+                const { mkdir } = await import('node:fs/promises');
+                await mkdir(directory, { recursive: true });
+            } catch (mkdirError) {
+                throw new WriteError(
+                    filePath,
+                    `Failed to create directory: ${mkdirError instanceof Error ? mkdirError.message : 'Unknown error'}`,
+                );
+            }
 
-			const { writeFile: fsWriteFile } = await import('node:fs/promises');
-			await fsWriteFile(validatedPath, content, 'utf8');
-			log(
-				'debug',
-				`Successfully wrote file: ${filePath} (${content.length} bytes)`,
-			);
-		} catch (error) {
-			if (
-				error instanceof PathValidationError ||
-				error instanceof WriteError
-			) {
-				throw error;
-			}
+            const { writeFile: fsWriteFile } = await import('node:fs/promises');
+            await fsWriteFile(validatedPath, content, 'utf8');
+            log(
+                'debug',
+                `Successfully wrote file: ${filePath} (${content.length} bytes)`,
+            );
+        } catch (error) {
+            if (
+                error instanceof PathValidationError ||
+                error instanceof WriteError
+            ) {
+                throw error;
+            }
 
-			throw new WriteError(
-				filePath,
-				error instanceof Error ? error.message : 'Unknown error',
-			);
-		}
-	};
+            throw new WriteError(
+                filePath,
+                error instanceof Error ? error.message : 'Unknown error',
+            );
+        }
+    };
 
-	const exists = async (filePath: string): Promise<boolean> => {
-		try {
-			const validatedPath = validatePath(filePath);
-			const { access } = await import('node:fs/promises');
-			await access(validatedPath);
-			return true;
-		} catch (error) {
-			if (error instanceof PathValidationError) {
-				throw error;
-			}
-			return false;
-		}
-	};
+    const exists = async (filePath: string): Promise<boolean> => {
+        try {
+            const validatedPath = validatePath(filePath);
+            const { access } = await import('node:fs/promises');
+            await access(validatedPath);
+            return true;
+        } catch (error) {
+            if (error instanceof PathValidationError) {
+                throw error;
+            }
+            return false;
+        }
+    };
 
-	const deleteFile = async (filePath: string): Promise<void> => {
-		try {
-			const validatedPath = validatePath(filePath);
-			log('debug', `Deleting file: ${filePath}`);
-			const { unlink } = await import('node:fs/promises');
-			await unlink(validatedPath);
-			log('debug', `Successfully deleted file: ${filePath}`);
-		} catch (error) {
-			if (error instanceof PathValidationError) {
-				throw error;
-			}
+    const deleteFile = async (filePath: string): Promise<void> => {
+        try {
+            const validatedPath = validatePath(filePath);
+            log('debug', `Deleting file: ${filePath}`);
+            const { unlink } = await import('node:fs/promises');
+            await unlink(validatedPath);
+            log('debug', `Successfully deleted file: ${filePath}`);
+        } catch (error) {
+            if (error instanceof PathValidationError) {
+                throw error;
+            }
 
-			if (
-				error instanceof Error &&
-				'code' in error &&
-				error.code === 'ENOENT'
-			) {
-				throw new FileNotFoundError(filePath);
-			}
+            if (
+                error instanceof Error &&
+                'code' in error &&
+                error.code === 'ENOENT'
+            ) {
+                throw new FileNotFoundError(filePath);
+            }
 
-			throw error;
-		}
-	};
+            throw error;
+        }
+    };
 
-	const listFiles = async (
-		directoryPath: string = '',
-		options: { recursive?: boolean } = {},
-	): Promise<string[]> => {
-		try {
-			const safeDirectory = directoryPath || '.';
-			const validatedPath = validatePath(safeDirectory);
-			log('debug', `Listing files in: ${safeDirectory}`);
+    const listFiles = async (
+        directoryPath: string = '',
+        options: { recursive?: boolean } = {},
+    ): Promise<string[]> => {
+        try {
+            const safeDirectory = directoryPath || '.';
+            const validatedPath = validatePath(safeDirectory);
+            log('debug', `Listing files in: ${safeDirectory}`);
 
-			const files: string[] = [];
+            const files: string[] = [];
 
-			const readDirectory = async (
-				currentValidatedPath: string,
-			): Promise<void> => {
-				try {
-					const { readdir } = await import('node:fs/promises');
-					const entries = await readdir(currentValidatedPath, {
-						withFileTypes: true,
-					});
+            const readDirectory = async (
+                currentValidatedPath: string,
+            ): Promise<void> => {
+                try {
+                    const { readdir } = await import('node:fs/promises');
+                    const entries = await readdir(currentValidatedPath, {
+                        withFileTypes: true,
+                    });
 
-					for (const entry of entries) {
-						const fullPath = path.join(
-							currentValidatedPath,
-							entry.name,
-						);
-						const relativePath = path
-							.relative(rootPath, fullPath)
-							.replaceAll('\\', '/');
+                    for (const entry of entries) {
+                        const fullPath = path.join(
+                            currentValidatedPath,
+                            entry.name,
+                        );
+                        const relativePath = path
+                            .relative(rootPath, fullPath)
+                            .replaceAll('\\', '/');
 
-						if (entry.isFile()) {
-							files.push(relativePath);
-						} else if (entry.isDirectory() && options.recursive) {
-							await readDirectory(fullPath);
-						}
-					}
-				} catch (error) {
-					if (
-						error instanceof Error &&
-						'code' in error &&
-						error.code === 'ENOENT'
-					) {
-						log(
-							'debug',
-							`Directory not found: ${currentValidatedPath}`,
-						);
-					} else {
-						throw error;
-					}
-				}
-			};
+                        if (entry.isFile()) {
+                            files.push(relativePath);
+                        } else if (entry.isDirectory() && options.recursive) {
+                            await readDirectory(fullPath);
+                        }
+                    }
+                } catch (error) {
+                    if (
+                        error instanceof Error &&
+                        'code' in error &&
+                        error.code === 'ENOENT'
+                    ) {
+                        log(
+                            'debug',
+                            `Directory not found: ${currentValidatedPath}`,
+                        );
+                    } else {
+                        throw error;
+                    }
+                }
+            };
 
-			await readDirectory(validatedPath);
-			return files;
-		} catch (error) {
-			if (error instanceof PathValidationError) {
-				throw error;
-			}
+            await readDirectory(validatedPath);
+            return files;
+        } catch (error) {
+            if (error instanceof PathValidationError) {
+                throw error;
+            }
 
-			throw error;
-		}
-	};
+            throw error;
+        }
+    };
 
-	const getRootPath = (): string => {
-		return rootPath;
-	};
+    const getRootPath = (): string => {
+        return rootPath;
+    };
 
-	return {
-		readFile,
-		writeFile,
-		exists,
-		delete: deleteFile,
-		listFiles,
-		getRootPath,
-	};
+    return {
+        readFile,
+        writeFile,
+        exists,
+        delete: deleteFile,
+        listFiles,
+        getRootPath,
+    };
 }
 ```
 
@@ -659,31 +660,31 @@ logger.error('Error message');
 
 ```typescript
 export interface Logger {
-	debug: (message: string) => void;
-	info: (message: string) => void;
-	warn: (message: string) => void;
-	error: (message: string) => void;
+    debug: (message: string) => void;
+    info: (message: string) => void;
+    warn: (message: string) => void;
+    error: (message: string) => void;
 }
 
 export function createLogger(
-	namespace: string,
-	options: { debug?: boolean } = {},
+    namespace: string,
+    options: { debug?: boolean } = {},
 ): Logger {
-	const debugEnabled = options.debug ?? false;
+    const debugEnabled = options.debug ?? false;
 
-	const log = (level: string, message: string): void => {
-		if (level === 'debug' && !debugEnabled) {
-			return;
-		}
-		console.error(`[${namespace}:${level.toUpperCase()}] ${message}`);
-	};
+    const log = (level: string, message: string): void => {
+        if (level === 'debug' && !debugEnabled) {
+            return;
+        }
+        console.error(`[${namespace}:${level.toUpperCase()}] ${message}`);
+    };
 
-	return {
-		debug: (message: string) => log('debug', message),
-		info: (message: string) => log('info', message),
-		warn: (message: string) => log('warn', message),
-		error: (message: string) => log('error', message),
-	};
+    return {
+        debug: (message: string) => log('debug', message),
+        info: (message: string) => log('info', message),
+        warn: (message: string) => log('warn', message),
+        error: (message: string) => log('error', message),
+    };
 }
 ```
 
@@ -704,57 +705,57 @@ The analysis engine orchestrates code analysis through a plugin-based architectu
 
 ```6:58:src/core/analysis/engine.ts
 export class AnalysisEngine {
-	private plugins: PluginRegistry;
-	private projectRoot: string;
+    private plugins: PluginRegistry;
+    private projectRoot: string;
 
-	constructor(projectRoot: string) {
-		this.projectRoot = projectRoot;
-		this.plugins = new PluginRegistry();
-	}
+    constructor(projectRoot: string) {
+        this.projectRoot = projectRoot;
+        this.plugins = new PluginRegistry();
+    }
 
-	registerPlugin(plugin: LanguagePlugin): void {
-		this.plugins.register(plugin);
-	}
+    registerPlugin(plugin: LanguagePlugin): void {
+        this.plugins.register(plugin);
+    }
 
-	async analyzeFile(filePath: string): Promise<FileAnalysis> {
-		const language = detectLanguage(filePath);
-		const plugin = this.plugins.get(language);
+    async analyzeFile(filePath: string): Promise<FileAnalysis> {
+        const language = detectLanguage(filePath);
+        const plugin = this.plugins.get(language);
 
-		if (!plugin) {
-			throw new Error(
-				`No plugin available for language: ${language} (file: ${filePath})`,
-			);
-		}
+        if (!plugin) {
+            throw new Error(
+                `No plugin available for language: ${language} (file: ${filePath})`,
+            );
+        }
 
-		const ast = await plugin.parse(filePath);
-		const symbols = await plugin.extractSymbols(ast, filePath);
-		const relationships = await plugin.buildRelationships(
-			symbols,
-			ast,
-			filePath,
-		);
-		const patterns = await plugin.detectPatterns(ast, symbols, filePath);
+        const ast = await plugin.parse(filePath);
+        const symbols = await plugin.extractSymbols(ast, filePath);
+        const relationships = await plugin.buildRelationships(
+            symbols,
+            ast,
+            filePath,
+        );
+        const patterns = await plugin.detectPatterns(ast, symbols, filePath);
 
-		return {
-			path: filePath,
-			symbols,
-			relationships,
-			patterns,
-			ast,
-		};
-	}
+        return {
+            path: filePath,
+            symbols,
+            relationships,
+            patterns,
+            ast,
+        };
+    }
 
-	async analyzeFiles(filePaths: string[]): Promise<FileAnalysis[]> {
-		return Promise.all(filePaths.map((path) => this.analyzeFile(path)));
-	}
+    async analyzeFiles(filePaths: string[]): Promise<FileAnalysis[]> {
+        return Promise.all(filePaths.map((path) => this.analyzeFile(path)));
+    }
 
-	getPlugin(language: string): LanguagePlugin | undefined {
-		return this.plugins.get(language);
-	}
+    getPlugin(language: string): LanguagePlugin | undefined {
+        return this.plugins.get(language);
+    }
 
-	getProjectRoot(): string {
-		return this.projectRoot;
-	}
+    getProjectRoot(): string {
+        return this.projectRoot;
+    }
 }
 ```
 
@@ -772,6 +773,142 @@ export class AnalysisEngine {
 - `FileAnalysis` contains symbols, relationships, patterns, and AST
 - All analysis results are typed and immutable
 
+### Analytics Database
+
+**Location**: `src/analytics/`
+
+The analytics database provides persistent storage for MCP tool call metrics and session data using SQLite with Drizzle ORM.
+
+**SQLite Implementation**: Uses `better-sqlite3` for cross-runtime compatibility:
+
+- **Library Choice**: `better-sqlite3` instead of `bun:sqlite` to ensure analytics works in both Bun and Node.js environments
+- **Cross-Runtime**: Enables vitest (Node.js) to run all analytics tests alongside the MCP server (Bun runtime)
+- **Performance**: Comparable performance to `bun:sqlite` - no significant regression in benchmarks
+- **Native Bindings**: Requires native module compilation (automatic with `bun install`)
+- **Drizzle Integration**: Full support via `drizzle-orm/better-sqlite3` adapter
+
+#### Database Location
+
+- **Path**: `~/.devflow/analytics.db` (user's home directory)
+- **Journal Mode**: WAL (Write-Ahead Logging) for concurrent access
+- **Directory Creation**: Automatically creates `~/.devflow/` if needed
+
+#### Schema Design
+
+**Sessions Table** (`sessions`):
+
+- `id` (text, primary key, auto-generated UUID)
+- `startedAt` (timestamp, not null)
+- `endedAt` (timestamp, nullable)
+- `toolCount` (integer, default 0)
+
+**Tool Calls Table** (`tool_calls`):
+
+- `id` (text, primary key, auto-generated UUID)
+- `toolName` (text, not null, indexed)
+- `durationMs` (integer, not null)
+- `status` (enum: 'success', 'error', 'timeout')
+- `errorType` (text, nullable)
+- `timestamp` (timestamp, not null, indexed)
+- `sessionId` (text, foreign key to sessions.id)
+
+**Indexes**:
+
+- `tool_name_idx` on `toolName` for fast tool-specific queries
+- `timestamp_idx` on `timestamp` for time-based filtering
+- `timestamp_tool_name_idx` composite index for combined queries
+
+#### Database Initialization
+
+The database uses a **lazy initialization pattern** with a singleton to eliminate overhead in code paths that don't require analytics:
+
+```typescript
+import { getAnalyticsDatabase } from './analytics/database.js';
+
+// Database is NOT created on module import
+// Database is created lazily on first access
+const database = getAnalyticsDatabase();
+// Database is created at ~/.devflow/analytics.db with WAL mode enabled
+// Migrations run automatically on first initialization
+```
+
+**Key Design Decisions**:
+
+- **Lazy Loading**: Database is created only when `getAnalyticsDatabase()` is first called, not on module import
+- **Singleton Pattern**: Multiple calls to `getAnalyticsDatabase()` return the same instance
+- **Zero Overhead**: Performance tests and non-analytics code paths have no database initialization cost
+- **Runtime Agnostic**: Works in both Bun and Node.js environments
+
+**Testing Support**:
+
+```typescript
+import {
+    getAnalyticsDatabase,
+    closeAnalyticsDatabase,
+} from './analytics/database.js';
+
+afterEach(() => {
+    // Reset singleton state between tests
+    closeAnalyticsDatabase();
+});
+```
+
+#### Type Safety
+
+Drizzle ORM provides full TypeScript type inference:
+
+- `Session` and `NewSession` types for select/insert operations
+- `ToolCall` and `NewToolCall` types for select/insert operations
+- Compile-time validation of queries and schema changes
+
+#### Migration Management
+
+Migrations are stored in `src/analytics/migrations/` and run automatically when `createAnalyticsDatabase()` is called. The migration system:
+
+- Tracks applied migrations in `__drizzle_migrations` table
+- Ensures migrations run only once
+- Maintains schema version consistency
+
+#### Usage Pattern
+
+```typescript
+import { getAnalyticsDatabase } from './analytics/database.js';
+import { sessions, toolCalls } from './analytics/schema.js';
+import { eq } from 'drizzle-orm';
+
+const database = getAnalyticsDatabase();
+
+// Insert session
+const session = database
+.insert(sessions)
+.values({
+startedAt: new Date(),
+toolCount: 0,
+})
+.returning()
+.get();
+
+// Insert tool call
+database
+.insert(toolCalls)
+.values({
+toolName: 'grep',
+durationMs: 123,
+status: 'success',
+timestamp: new Date(),
+sessionId: session.id,
+})
+.run();
+
+// Query tool calls
+const calls = database
+.select()
+.from(toolCalls)
+.where(eq(toolCalls.sessionId, session.id))
+.all();
+
+```
+
 ---
 
 ## Analysis System
@@ -784,26 +921,26 @@ Plugins implement the `LanguagePlugin` interface to provide language-specific an
 
 ```3:22:src/core/analysis/plugins/base.ts
 export interface LanguagePlugin {
-	readonly name: string;
-	readonly languages: string[];
+    readonly name: string;
+    readonly languages: string[];
 
-	parse(path: string): Promise<AST>;
-	extractSymbols(ast: AST, path: string): Promise<Symbol[]>;
-	buildRelationships(
-		symbols: Symbol[],
-		ast: AST,
-		path: string,
-	): Promise<Relationship[]>;
-	detectPatterns(
-		ast: AST,
-		symbols: Symbol[],
-		path: string,
-	): Promise<Pattern[]>;
+    parse(path: string): Promise<AST>;
+    extractSymbols(ast: AST, path: string): Promise<Symbol[]>;
+    buildRelationships(
+        symbols: Symbol[],
+        ast: AST,
+        path: string,
+    ): Promise<Relationship[]>;
+    detectPatterns(
+        ast: AST,
+        symbols: Symbol[],
+        path: string,
+    ): Promise<Pattern[]>;
 
-	canIncrementallyUpdate?(oldAST: AST, changes: FileChange): boolean;
-	incrementallyUpdate?(oldAST: AST, changes: FileChange): Promise<AST>;
+    canIncrementallyUpdate?(oldAST: AST, changes: FileChange): boolean;
+    incrementallyUpdate?(oldAST: AST, changes: FileChange): Promise<AST>;
 }
-```
+````
 
 **TypeScript Plugin**: `src/core/analysis/plugins/typescript.ts`
 
@@ -831,101 +968,101 @@ The Git analyzer provides git repository insights for decision tracking and chan
 
 ```18:114:src/core/analysis/git/git-analyzer.ts
 export class GitAnalyzer {
-	private git: SimpleGit;
-	private projectRoot: string;
+    private git: SimpleGit;
+    private projectRoot: string;
 
-	constructor(projectRoot: string) {
-		this.projectRoot = projectRoot;
-		this.git = simpleGit(projectRoot);
-	}
+    constructor(projectRoot: string) {
+        this.projectRoot = projectRoot;
+        this.git = simpleGit(projectRoot);
+    }
 
-	async getFileHash(filePath: string): Promise<string> {
-		try {
-			const log = await this.git.log({
-				file: filePath,
-				maxCount: 1,
-			});
-			return log.latest?.hash || '';
-		} catch {
-			return '';
-		}
-	}
+    async getFileHash(filePath: string): Promise<string> {
+        try {
+            const log = await this.git.log({
+                file: filePath,
+                maxCount: 1,
+            });
+            return log.latest?.hash || '';
+        } catch {
+            return '';
+        }
+    }
 
-	async getCurrentCommitSHA(): Promise<string> {
-		try {
-			return await this.git.revparse(['HEAD']);
-		} catch {
-			return '';
-		}
-	}
+    async getCurrentCommitSHA(): Promise<string> {
+        try {
+            return await this.git.revparse(['HEAD']);
+        } catch {
+            return '';
+        }
+    }
 
-	async getRecentDecisions(
-		since: string,
-		workspace?: string,
-	): Promise<GitDecision[]> {
-		try {
-			const log = workspace
-				? await this.git.log({ since, '--': workspace })
-				: await this.git.log({ since });
+    async getRecentDecisions(
+        since: string,
+        workspace?: string,
+    ): Promise<GitDecision[]> {
+        try {
+            const log = workspace
+                ? await this.git.log({ since, '--': workspace })
+                : await this.git.log({ since });
 
-			return log.all.map((commit) => ({
-				commitSHA: commit.hash,
-				message: commit.message,
-				author: commit.author_name,
-				date: commit.date,
-				files: Array.isArray(commit.diff?.changed)
-					? commit.diff.changed
-					: [],
-			}));
-		} catch {
-			return [];
-		}
-	}
+            return log.all.map((commit) => ({
+                commitSHA: commit.hash,
+                message: commit.message,
+                author: commit.author_name,
+                date: commit.date,
+                files: Array.isArray(commit.diff?.changed)
+                    ? commit.diff.changed
+                    : [],
+            }));
+        } catch {
+            return [];
+        }
+    }
 
-	async analyzeChangeVelocity(
-		filePath: string,
-		since: string,
-	): Promise<ChangeVelocity> {
-		try {
-			const log = await this.git.log({
-				since,
-				file: filePath,
-			});
+    async analyzeChangeVelocity(
+        filePath: string,
+        since: string,
+    ): Promise<ChangeVelocity> {
+        try {
+            const log = await this.git.log({
+                since,
+                file: filePath,
+            });
 
-			const authors = new Set<string>();
-			let lastModified = '';
+            const authors = new Set<string>();
+            let lastModified = '';
 
-			for (const commit of log.all) {
-				authors.add(commit.author_name);
-				if (!lastModified) {
-					lastModified = commit.date;
-				}
-			}
+            for (const commit of log.all) {
+                authors.add(commit.author_name);
+                if (!lastModified) {
+                    lastModified = commit.date;
+                }
+            }
 
-			return {
-				path: filePath,
-				commitCount: log.total,
-				lastModified,
-				authors: [...authors],
-			};
-		} catch {
-			return {
-				path: filePath,
-				commitCount: 0,
-				lastModified: '',
-				authors: [],
-			};
-		}
-	}
+            return {
+                path: filePath,
+                commitCount: log.total,
+                lastModified,
+                authors: [...authors],
+            };
+        } catch {
+            return {
+                path: filePath,
+                commitCount: 0,
+                lastModified: '',
+                authors: [],
+            };
+        }
+    }
 
-	async getCommitMessages(since: string): Promise<string[]> {
-		try {
-			const log = await this.git.log({ since });
-			return log.all.map((commit) => commit.message);
-		} catch {
-			return [];
-		}
-	}
+    async getCommitMessages(since: string): Promise<string[]> {
+        try {
+            const log = await this.git.log({ since });
+            return log.all.map((commit) => commit.message);
+        } catch {
+            return [];
+        }
+    }
 }
 ```
 
@@ -944,111 +1081,111 @@ The cache system provides git-aware caching with file hash validation to ensure 
 
 ```12:118:src/core/analysis/cache/git-aware.ts
 export class GitAwareCache {
-	private cache: Map<string, CacheEntry> = new Map();
-	private maxSize: number;
+    private cache: Map<string, CacheEntry> = new Map();
+    private maxSize: number;
 
-	constructor(maxSize = 1000) {
-		this.maxSize = maxSize;
-	}
+    constructor(maxSize = 1000) {
+        this.maxSize = maxSize;
+    }
 
-	private async getFileHash(filePath: string): Promise<string> {
-		try {
-			const resolvedPath = path.resolve(filePath);
-			const { readFile } = await import('node:fs/promises');
-			const content = await readFile(resolvedPath, 'utf8');
-			return createHash('sha256').update(content).digest('hex');
-		} catch {
-			return '';
-		}
-	}
+    private async getFileHash(filePath: string): Promise<string> {
+        try {
+            const resolvedPath = path.resolve(filePath);
+            const { readFile } = await import('node:fs/promises');
+            const content = await readFile(resolvedPath, 'utf8');
+            return createHash('sha256').update(content).digest('hex');
+        } catch {
+            return '';
+        }
+    }
 
-	private getCacheKey(filePath: string, commitSHA?: string): string {
-		if (commitSHA) {
-			return `${filePath}:${commitSHA}`;
-		}
-		return filePath;
-	}
+    private getCacheKey(filePath: string, commitSHA?: string): string {
+        if (commitSHA) {
+            return `${filePath}:${commitSHA}`;
+        }
+        return filePath;
+    }
 
-	async get(
-		filePath: string,
-		commitSHA?: string,
-	): Promise<FileAnalysis | undefined> {
-		const key = this.getCacheKey(filePath, commitSHA);
-		const entry = this.cache.get(key);
+    async get(
+        filePath: string,
+        commitSHA?: string,
+    ): Promise<FileAnalysis | undefined> {
+        const key = this.getCacheKey(filePath, commitSHA);
+        const entry = this.cache.get(key);
 
-		if (!entry) {
-			return undefined;
-		}
+        if (!entry) {
+            return undefined;
+        }
 
-		const currentHash = await this.getFileHash(filePath);
-		if (entry.fileHash !== currentHash) {
-			this.cache.delete(key);
-			return undefined;
-		}
+        const currentHash = await this.getFileHash(filePath);
+        if (entry.fileHash !== currentHash) {
+            this.cache.delete(key);
+            return undefined;
+        }
 
-		return entry.analysis;
-	}
+        return entry.analysis;
+    }
 
-	async set(
-		filePath: string,
-		analysis: FileAnalysis,
-		commitSHA?: string,
-	): Promise<void> {
-		if (this.cache.size >= this.maxSize) {
-			this.evictOldest();
-		}
+    async set(
+        filePath: string,
+        analysis: FileAnalysis,
+        commitSHA?: string,
+    ): Promise<void> {
+        if (this.cache.size >= this.maxSize) {
+            this.evictOldest();
+        }
 
-		const fileHash = await this.getFileHash(filePath);
-		const key = this.getCacheKey(filePath, commitSHA);
+        const fileHash = await this.getFileHash(filePath);
+        const key = this.getCacheKey(filePath, commitSHA);
 
-		this.cache.set(key, {
-			analysis,
-			fileHash,
-			commitSHA,
-			timestamp: Date.now(),
-		});
-	}
+        this.cache.set(key, {
+            analysis,
+            fileHash,
+            commitSHA,
+            timestamp: Date.now(),
+        });
+    }
 
-	async isStale(filePath: string, commitSHA?: string): Promise<boolean> {
-		const key = this.getCacheKey(filePath, commitSHA);
-		const entry = this.cache.get(key);
+    async isStale(filePath: string, commitSHA?: string): Promise<boolean> {
+        const key = this.getCacheKey(filePath, commitSHA);
+        const entry = this.cache.get(key);
 
-		if (!entry) {
-			return true;
-		}
+        if (!entry) {
+            return true;
+        }
 
-		const currentHash = await this.getFileHash(filePath);
-		return entry.fileHash !== currentHash;
-	}
+        const currentHash = await this.getFileHash(filePath);
+        return entry.fileHash !== currentHash;
+    }
 
-	invalidate(filePath: string, commitSHA?: string): void {
-		const key = this.getCacheKey(filePath, commitSHA);
-		this.cache.delete(key);
-	}
+    invalidate(filePath: string, commitSHA?: string): void {
+        const key = this.getCacheKey(filePath, commitSHA);
+        this.cache.delete(key);
+    }
 
-	invalidateAll(): void {
-		this.cache.clear();
-	}
+    invalidateAll(): void {
+        this.cache.clear();
+    }
 
-	private evictOldest(): void {
-		let oldestKey: string | undefined;
-		let oldestTimestamp = Infinity;
+    private evictOldest(): void {
+        let oldestKey: string | undefined;
+        let oldestTimestamp = Infinity;
 
-		for (const [key, entry] of this.cache.entries()) {
-			if (entry.timestamp < oldestTimestamp) {
-				oldestTimestamp = entry.timestamp;
-				oldestKey = key;
-			}
-		}
+        for (const [key, entry] of this.cache.entries()) {
+            if (entry.timestamp < oldestTimestamp) {
+                oldestTimestamp = entry.timestamp;
+                oldestKey = key;
+            }
+        }
 
-		if (oldestKey) {
-			this.cache.delete(oldestKey);
-		}
-	}
+        if (oldestKey) {
+            this.cache.delete(oldestKey);
+        }
+    }
 
-	getSize(): number {
-		return this.cache.size;
-	}
+    getSize(): number {
+        return this.cache.size;
+    }
 }
 ```
 
@@ -1094,15 +1231,15 @@ The watcher prevents watching excessively large directories by:
 4.  Logging warnings for large but acceptable directories
 
         stop(): void {
-        	for (const watcher of this.watchers.values()) {
-        		watcher.close();
-        	}
-        	this.watchers.clear();
+            for (const watcher of this.watchers.values()) {
+                watcher.close();
+            }
+            this.watchers.clear();
 
-        	for (const timer of this.debounceTimers.values()) {
-        		clearTimeout(timer);
-        	}
-        	this.debounceTimers.clear();
+            for (const timer of this.debounceTimers.values()) {
+                clearTimeout(timer);
+            }
+            this.debounceTimers.clear();
         }
 
     }
@@ -1129,18 +1266,18 @@ All MCP tools are registered through a centralized registration function:
 
 ```13:26:src/mcp/tools/register.ts
 export function registerAllTools(
-	server: FastMCP,
-	engine: AnalysisEngine,
-	storage: StorageEngine,
-	gitAnalyzer: GitAnalyzer,
+    server: FastMCP,
+    engine: AnalysisEngine,
+    storage: StorageEngine,
+    gitAnalyzer: GitAnalyzer,
 ): void {
-	registerProjectTools(server, engine, storage);
-	registerArchitectureTools(server, engine);
-	registerSymbolTools(server, engine);
-	registerPatternTools(server, engine);
-	registerGraphTools(server, engine);
-	registerGitTools(server, gitAnalyzer);
-	registerContextTools(server, engine);
+    registerProjectTools(server, engine, storage);
+    registerArchitectureTools(server, engine);
+    registerSymbolTools(server, engine);
+    registerPatternTools(server, engine);
+    registerGraphTools(server, engine);
+    registerGitTools(server, gitAnalyzer);
+    registerContextTools(server, engine);
 }
 ````
 
@@ -1309,13 +1446,13 @@ To add support for a new language:
 
 ```typescript
 export class PythonPlugin implements LanguagePlugin {
-	readonly name = 'python';
-	readonly languages = ['python'];
+    readonly name = 'python';
+    readonly languages = ['python'];
 
-	async parse(path: string): Promise<AST> { /* ... */ }
-	async extractSymbols(ast: AST, path: string): Promise<Symbol[]> { /* ... */ }
-	async buildRelationships(...): Promise<Relationship[]> { /* ... */ }
-	async detectPatterns(...): Promise<Pattern[]> { /* ... */ }
+    async parse(path: string): Promise<AST> { /* ... */ }
+    async extractSymbols(ast: AST, path: string): Promise<Symbol[]> { /* ... */ }
+    async buildRelationships(...): Promise<Relationship[]> { /* ... */ }
+    async detectPatterns(...): Promise<Pattern[]> { /* ... */ }
 }
 ```
 
@@ -1327,17 +1464,17 @@ To add a new MCP tool:
 
     ```typescript
     export function registerMyTools(
-    	server: FastMCP,
-    	engine: AnalysisEngine,
-    	storage: StorageEngine,
+        server: FastMCP,
+        engine: AnalysisEngine,
+        storage: StorageEngine,
     ): void {
-    	server.addTool({
-    		name: 'myTool',
-    		description: 'Tool description',
-    		execute: async () => {
-    			// Tool implementation
-    		},
-    	});
+        server.addTool({
+            name: 'myTool',
+            description: 'Tool description',
+            execute: async () => {
+                // Tool implementation
+            },
+        });
     }
     ```
 

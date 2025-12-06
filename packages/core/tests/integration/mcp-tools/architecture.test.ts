@@ -3,7 +3,7 @@ import { FastMCP } from 'fastmcp';
 import { AnalysisEngine } from '../../../src/core/analysis/engine';
 import { TypeScriptPlugin } from '../../../src/core/analysis/plugins/typescript';
 import { registerArchitectureTools } from '../../../src/mcp/tools/architecture';
-import { createTestProject } from '../../setup/test-helpers';
+import { createTestProject } from '../../helpers/test-helpers';
 
 describe('MCP Tools - Architecture', () => {
 	let testProject: Awaited<ReturnType<typeof createTestProject>>;

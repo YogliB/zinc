@@ -19,9 +19,13 @@ All tests use Vitest directly, ensuring consistent test execution across both Bu
 ```
 tests/
 ├── unit/              # Fast, mocked tests (<10ms each)
+│   ├── analytics/     # Analytics database tests (Vitest/Node.js)
 │   └── examples.test.ts
 ├── integration/       # Real dependencies (<100ms each)
+│   ├── database-performance.test.ts  # Database performance benchmarks
 │   └── examples.test.ts
+├── performance/       # Performance benchmarks (database-free)
+│   └── analysis-engine.test.ts
 └── e2e/              # Full system tests (CI-only)
 ```
 
@@ -43,6 +47,12 @@ bun run test:unit
 
 # Integration tests only
 bun run test:integration
+
+# Analytics tests only (uses better-sqlite3)
+bun run test:analytics
+
+# Performance tests (now part of integration tests)
+# All tests run with: bun run test
 
 # AI agent mode (quiet output, only failures shown)
 bun run test:ai
@@ -560,6 +570,143 @@ describe('Counter', () => {
 });
 ```
 
+## Testing Analytics Database
+
+### Overview
+
+The analytics database uses **lazy initialization** with a singleton pattern to eliminate overhead in code paths that don't require analytics. This design allows performance tests to run without any database initialization cost.
+
+The database uses `better-sqlite3`, a Node.js-compatible SQLite library that works with both Bun and Node.js runtimes. This ensures analytics tests run successfully with Vitest (the project's test runner) and enables cross-runtime compatibility.
+
+### Running Analytics Tests
+
+```bash
+# Run analytics tests in isolation (uses Vitest)
+bun run test:analytics
+
+# Run database performance tests (uses Vitest)
+bun run test:integration:perf
+
+# Or run with the main test suite
+bun run test -- tests/unit/analytics
+bun run test -- tests/integration/database-performance.test.ts
+```
+
+### Test Isolation and Lazy Initialization
+
+Analytics tests use temporary directories and the lazy initialization cleanup function to ensure complete isolation:
+
+```typescript
+import { mkdtempSync, rmSync } from 'node:fs';
+import { tmpdir } from 'node:os';
+import { join } from 'node:path';
+
+describe('Analytics Database', () => {
+    let tempDir: string;
+    let originalHome: string | undefined;
+
+    beforeEach(() => {
+        // Create isolated test directory
+        tempDir = mkdtempSync(join(tmpdir(), 'devflow-test-'));
+        originalHome = process.env.HOME;
+        process.env.HOME = tempDir;
+    });
+
+    afterEach(() => {
+        // Reset singleton state
+        closeAnalyticsDatabase();
+        // Restore and cleanup
+        process.env.HOME = originalHome;
+        if (tempDir) {
+            rmSync(tempDir, { recursive: true, force: true });
+        }
+    });
+
+    test('creates database in home directory', () => {
+        const database = getAnalyticsDatabase();
+        // Database will be created at temporaryDirectory/.devflow/analytics.db
+        expect(database).toBeDefined();
+    });
+});
+```
+
+### Key Testing Principles
+
+1. **Lazy Initialization**: Use `getAnalyticsDatabase()` instead of `createAnalyticsDatabase()`
+2. **Singleton Cleanup**: Always call `closeAnalyticsDatabase()` in `afterEach` to reset state
+3. **Mock Home Directory**: Always override `process.env.HOME` to point to a temporary directory
+4. **Complete Cleanup**: Use `afterEach` to remove test databases and directories
+5. **Verify WAL Mode**: Test that Write-Ahead Logging is enabled via `PRAGMA journal_mode`
+6. **Schema Validation**: Query `sqlite_master` and `PRAGMA` statements to verify schema structure
+7. **Foreign Key Testing**: Ensure constraints are properly enforced between tables
+8. **Index Verification**: Confirm indexes exist and are used for queries
+
+### Coverage Expectations
+
+Analytics module tests should achieve ≥90% code coverage:
+
+- Database initialization and directory creation
+- WAL mode enablement
+- Migration execution
+- Schema validation (tables, columns, indexes, foreign keys)
+- CRUD operations with type safety
+- Error handling for filesystem and database operations
+
+### Test Suite Organization
+
+The project separates tests into three categories for optimal CI performance:
+
+1. **Unit & Integration Tests** (Vitest): Fast tests without database dependencies
+2. **Performance Tests** (Vitest): Database-free analysis engine benchmarks
+3. **Analytics & Database Performance Tests** (Vitest): Tests using `better-sqlite3`
+
+Analytics and database performance tests run with Vitest as part of the main test suite:
+
+```typescript
+export default defineConfig({
+    test: {
+        exclude: ['tests/unit/analytics/**/*.test.ts'],
+    },
+});
+```
+
+### CI Integration
+
+Run test suites separately in CI for better isolation and performance:
+
+```bash
+# Main test suite (unit + integration + performance)
+bun run test
+
+# Analytics tests (if separated)
+# bun run test -- tests/unit/analytics
+```
+
+### Performance Test Guidelines
+
+**When to add to `tests/integration/analysis-engine.test.ts`**:
+
+- Testing TypeScript plugin initialization
+- Testing file analysis performance
+- Testing cache efficiency
+- Testing memory usage
+- **NO database imports allowed** - must be completely database-free
+
+**When to add to `tests/integration/database-performance.test.ts`**:
+
+- Testing database write performance
+- Testing query performance with indexes
+- Testing migration speed
+- Testing concurrent database operations
+
+This separation ensures:
+
+- Performance tests run in < 5 seconds without database overhead
+- Database tests measure real SQLite performance
+- CI can run suites independently with appropriate timeouts
+
+````
+
 ## Worker Thread Compatibility
 
 ### Why Avoid `process.chdir()`?
@@ -722,13 +869,10 @@ The FileWatcher threshold tests (`file-watcher.test.ts` and `server-init.test.ts
 
 ## Scripts Reference
 
-| Script                     | Purpose                                     |
-| -------------------------- | ------------------------------------------- |
-| `bun test`                 | Run all tests (with concurrent execution)   |
-| `bun run test:unit`        | Unit tests only                             |
-| `bun run test:integration` | Integration tests only                      |
-| `bun test --watch`         | Watch mode (re-runs on file changes)        |
-| `bun run test:coverage`    | Run tests with coverage                     |
-| `bun run test:ai`          | AI agent mode (quiet output, only failures) |
-| `bun run test:perf`        | Performance tracking with baseline          |
-| `bun run update-baseline`  | Update performance baseline                 |
+| Script                    | Purpose                                   |
+| ------------------------- | ----------------------------------------- |
+| `bun run test`            | Run all tests (with concurrent execution) |
+| `bun run test:core`       | Run core tests                            |
+| `bun run test:dashboard`  | Run dashboard tests                       |
+| `bun test --watch`        | Watch mode (re-runs on file changes)      |
+| `bun run update-baseline` | Update performance baseline               |

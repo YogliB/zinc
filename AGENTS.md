@@ -43,3 +43,9 @@
     - **STOP** and alert the user about the need
     - **DO NOT** create the file unless explicitly approved by the user
     - Explain why existing files cannot accommodate the content
+
+## Test Structure
+
+- Test directories in packages must have only `unit/`, `integration/`, and `e2e/` subdirs (excluding `helpers/`).
+- Each package must have exactly one `test` script that runs all tests via Vitest.
+- CI must have separate test steps per package.

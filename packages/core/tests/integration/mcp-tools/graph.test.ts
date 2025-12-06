@@ -3,7 +3,7 @@ import { FastMCP } from 'fastmcp';
 import { AnalysisEngine } from '../../../src/core/analysis/engine';
 import { TypeScriptPlugin } from '../../../src/core/analysis/plugins/typescript';
 import { registerGraphTools } from '../../../src/mcp/tools/graph';
-import { createTestProject } from '../../setup/test-helpers';
+import { createTestProject } from '../../helpers/test-helpers';
 
 describe('MCP Tools - Graph', () => {
 	let testProject: Awaited<ReturnType<typeof createTestProject>>;

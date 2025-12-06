@@ -2,7 +2,7 @@ import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { FastMCP } from 'fastmcp';
 import { GitAnalyzer } from '../../../src/core/analysis/git/git-analyzer';
 import { registerGitTools } from '../../../src/mcp/tools/git';
-import { createTestProject } from '../../setup/test-helpers';
+import { createTestProject } from '../../helpers/test-helpers';
 import { AnalysisEngine } from '../../../src/core/analysis/engine';
 import { TypeScriptPlugin } from '../../../src/core/analysis/plugins/typescript';
 import { createStorageEngine } from '../../../src/core/storage/engine';

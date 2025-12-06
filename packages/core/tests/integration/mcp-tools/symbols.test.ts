@@ -3,7 +3,7 @@ import { FastMCP } from 'fastmcp';
 import { AnalysisEngine } from '../../../src/core/analysis/engine';
 import { TypeScriptPlugin } from '../../../src/core/analysis/plugins/typescript';
 import { registerSymbolTools } from '../../../src/mcp/tools/symbols';
-import { createTestProject } from '../../setup/test-helpers';
+import { createTestProject } from '../../helpers/test-helpers';
 
 describe('MCP Tools - Symbols', () => {
 	let testProject: Awaited<ReturnType<typeof createTestProject>>;

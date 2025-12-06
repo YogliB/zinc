@@ -5,9 +5,14 @@
 		"fileCount": 1,
 		"avgPerTest": 250,
 		"files": {
-			"tests/integration/performance-benchmarks.test.ts": {
-				"name": "tests/integration/performance-benchmarks.test.ts",
+			"tests/performance/analysis-engine.test.ts": {
+				"name": "tests/performance/analysis-engine.test.ts",
 				"duration": 2500,
+				"testCount": 10
+			},
+			"tests/integration/database-performance.test.ts": {
+				"name": "tests/integration/database-performance.test.ts",
+				"duration": 120,
 				"testCount": 10
 			}
 		},
@@ -56,6 +61,56 @@
 		"analysis-engine-lazy-loading.preloaded-file-analysis": {
 			"name": "analysis-engine-lazy-loading.preloaded-file-analysis",
 			"duration": 400,
+			"timestamp": "2025-12-04T14:30:00.000Z"
+		},
+		"database-performance.initialization": {
+			"name": "database-performance.initialization",
+			"duration": 50,
+			"timestamp": "2025-12-04T14:30:00.000Z"
+		},
+		"database-performance.single-write": {
+			"name": "database-performance.single-write",
+			"duration": 5,
+			"timestamp": "2025-12-04T14:30:00.000Z"
+		},
+		"database-performance.batch-write-100": {
+			"name": "database-performance.batch-write-100",
+			"duration": 50,
+			"timestamp": "2025-12-04T14:30:00.000Z"
+		},
+		"database-performance.concurrent-writes": {
+			"name": "database-performance.concurrent-writes",
+			"duration": 25,
+			"timestamp": "2025-12-04T14:30:00.000Z"
+		},
+		"database-performance.query-by-session": {
+			"name": "database-performance.query-by-session",
+			"duration": 5,
+			"timestamp": "2025-12-04T14:30:00.000Z"
+		},
+		"database-performance.query-by-tool-name": {
+			"name": "database-performance.query-by-tool-name",
+			"duration": 5,
+			"timestamp": "2025-12-04T14:30:00.000Z"
+		},
+		"database-performance.query-all": {
+			"name": "database-performance.query-all",
+			"duration": 10,
+			"timestamp": "2025-12-04T14:30:00.000Z"
+		},
+		"database-performance.update": {
+			"name": "database-performance.update",
+			"duration": 5,
+			"timestamp": "2025-12-04T14:30:00.000Z"
+		},
+		"database-performance.delete-cascade": {
+			"name": "database-performance.delete-cascade",
+			"duration": 10,
+			"timestamp": "2025-12-04T14:30:00.000Z"
+		},
+		"database-performance.migration": {
+			"name": "database-performance.migration",
+			"duration": 30,
 			"timestamp": "2025-12-04T14:30:00.000Z"
 		}
 	},

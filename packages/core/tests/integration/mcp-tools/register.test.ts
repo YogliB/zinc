@@ -4,7 +4,7 @@ import { AnalysisEngine } from '../../../src/core/analysis/engine';
 import { createStorageEngine } from '../../../src/core/storage/engine';
 import { GitAnalyzer } from '../../../src/core/analysis/git/git-analyzer';
 import { registerAllTools } from '../../../src/mcp/tools/register';
-import { createTestProject } from '../../setup/test-helpers';
+import { createTestProject } from '../../helpers/test-helpers';
 
 describe('MCP Tools - Register', () => {
 	let testProject: Awaited<ReturnType<typeof createTestProject>>;

@@ -1,8 +1,11 @@
 import { describe, it, expect, beforeEach, afterEach } from 'vitest';
 import { AnalysisEngine } from '../../../../src/core/analysis/engine';
-import { MockLanguagePlugin } from '../../../setup/mocks';
-import { createTestProject, writeTestFile } from '../../../setup/test-helpers';
-import { sampleTypeScriptFile } from '../../../setup/fixtures';
+import { MockLanguagePlugin } from '../../../helpers/mocks';
+import {
+	createTestProject,
+	writeTestFile,
+} from '../../../helpers/test-helpers';
+import { sampleTypeScriptFile } from '../../../helpers/fixtures';
 import type {
 	Symbol,
 	Relationship,

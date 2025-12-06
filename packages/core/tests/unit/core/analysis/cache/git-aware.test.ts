@@ -4,8 +4,8 @@ import type { FileAnalysis } from '../../../../../src/core/analysis/types';
 import {
 	createTestProject,
 	writeTestFile,
-} from '../../../../setup/test-helpers';
-import { sampleTypeScriptFile } from '../../../../setup/fixtures';
+} from '../../../../helpers/test-helpers';
+import { sampleTypeScriptFile } from '../../../../helpers/fixtures';
 
 describe('GitAwareCache', () => {
 	let testProject: Awaited<ReturnType<typeof createTestProject>>;

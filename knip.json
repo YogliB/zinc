@@ -5,7 +5,6 @@
 		"type": true,
 		"function": true
 	},
-	"ignore": ["tests/setup/vitest-compat.ts"],
 	"tags": ["-lintignore"],
 	"workspaces": {
 		"packages/core": {

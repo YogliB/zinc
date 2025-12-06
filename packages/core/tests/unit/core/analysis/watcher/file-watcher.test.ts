@@ -8,8 +8,8 @@ import { GitAwareCache } from '../../../../../src/core/analysis/cache/git-aware'
 import {
 	createTestProject,
 	writeTestFile,
-} from '../../../../setup/test-helpers';
-import { sampleTypeScriptFile } from '../../../../setup/fixtures';
+} from '../../../../helpers/test-helpers';
+import { sampleTypeScriptFile } from '../../../../helpers/fixtures';
 import path from 'node:path';
 import { mkdir, writeFile, rm } from 'node:fs/promises';
 import { tmpdir } from 'node:os';

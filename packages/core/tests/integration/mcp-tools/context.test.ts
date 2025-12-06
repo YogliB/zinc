@@ -5,7 +5,7 @@ import { TypeScriptPlugin } from '../../../src/core/analysis/plugins/typescript'
 import { registerContextTools } from '../../../src/mcp/tools/context';
 import { createStorageEngine } from '../../../src/core/storage/engine';
 import { GitAnalyzer } from '../../../src/core/analysis/git/git-analyzer';
-import { createTestProject } from '../../setup/test-helpers';
+import { createTestProject } from '../../helpers/test-helpers';
 
 describe('MCP Tools - Context', () => {
 	let testProject: Awaited<ReturnType<typeof createTestProject>>;
