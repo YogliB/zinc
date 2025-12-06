@@ -255,7 +255,7 @@ async function main(): Promise<void> {
 		`All MCP tools registered (${(performance.now() - toolsStart).toFixed(2)}ms)`,
 	);
 
-	(server as EventEmitter).on(
+	(server as unknown as EventEmitter).on(
 		'connect',
 		(event: { session: FastMCPSession }) => {
 			if (event.session.sessionId) {
@@ -264,7 +264,7 @@ async function main(): Promise<void> {
 		},
 	);
 
-	(server as EventEmitter).on(
+	(server as unknown as EventEmitter).on(
 		'disconnect',
 		(event: { session: FastMCPSession }) => {
 			if (event.session.sessionId) {
