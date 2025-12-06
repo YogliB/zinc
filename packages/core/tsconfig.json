@@ -8,8 +8,8 @@
 		"target": "ESNext",
 		"module": "Preserve",
 
-		// Node.js runtime types (with Bun types for dashboard code)
-		"types": ["node", "bun"],
+		// Node.js runtime types
+		"types": ["node"],
 
 		// Package-specific path aliases
 		"baseUrl": ".",
