@@ -602,31 +602,31 @@ import { tmpdir } from 'node:os';
 import { join } from 'node:path';
 
 describe('Analytics Database', () => {
-    let tempDir: string;
-    let originalHome: string | undefined;
+	let tempDir: string;
+	let originalHome: string | undefined;
 
-    beforeEach(() => {
-        // Create isolated test directory
-        tempDir = mkdtempSync(join(tmpdir(), 'devflow-test-'));
-        originalHome = process.env.HOME;
-        process.env.HOME = tempDir;
-    });
+	beforeEach(() => {
+		// Create isolated test directory
+		tempDir = mkdtempSync(join(tmpdir(), 'devflow-test-'));
+		originalHome = process.env.HOME;
+		process.env.HOME = tempDir;
+	});
 
-    afterEach(() => {
-        // Reset singleton state
-        closeAnalyticsDatabase();
-        // Restore and cleanup
-        process.env.HOME = originalHome;
-        if (tempDir) {
-            rmSync(tempDir, { recursive: true, force: true });
-        }
-    });
+	afterEach(() => {
+		// Reset singleton state
+		closeAnalyticsDatabase();
+		// Restore and cleanup
+		process.env.HOME = originalHome;
+		if (tempDir) {
+			rmSync(tempDir, { recursive: true, force: true });
+		}
+	});
 
-    test('creates database in home directory', () => {
-        const database = getAnalyticsDatabase();
-        // Database will be created at temporaryDirectory/.devflow/analytics.db
-        expect(database).toBeDefined();
-    });
+	test('creates database in home directory', () => {
+		const database = getAnalyticsDatabase();
+		// Database will be created at temporaryDirectory/.devflow/analytics.db
+		expect(database).toBeDefined();
+	});
 });
 ```
 
@@ -664,9 +664,9 @@ Analytics and database performance tests run with Vitest as part of the main tes
 
 ```typescript
 export default defineConfig({
-    test: {
-        exclude: ['tests/unit/analytics/**/*.test.ts'],
-    },
+	test: {
+		exclude: ['tests/unit/analytics/**/*.test.ts'],
+	},
 });
 ```
 
@@ -876,3 +876,4 @@ The FileWatcher threshold tests (`file-watcher.test.ts` and `server-init.test.ts
 | `bun run test:dashboard`  | Run dashboard tests                       |
 | `bun test --watch`        | Watch mode (re-runs on file changes)      |
 | `bun run update-baseline` | Update performance baseline               |
+````

@@ -16,7 +16,7 @@
 
 | PR  | Repo    | Status | Link | Notes                                   |
 | --- | ------- | ------ | ---- | --------------------------------------- |
-| 1   | devflow | ⏸️     | -    | Database schema & Drizzle ORM setup     |
+| 1   | devflow | 🟢     | -    | Database schema & Drizzle ORM setup     |
 | 2   | devflow | ⏸️     | -    | Telemetry collection service            |
 | 3   | devflow | ⏸️     | -    | MCP tool wrapper integration            |
 | 4   | devflow | ⏸️     | -    | Hono API routes for metrics             |
@@ -28,7 +28,7 @@ Status: 🟢 done · 🟡 in‑progress · 🟠 review · ⏸️ not‑started �
 
 ---
 
-## PR1: Database Schema & Drizzle Setup — ⏸️
+## PR1: Database Schema & Drizzle Setup — 🟢
 
 **Repo:** devflow · **Link:** - · **ETA:** 4-6h dev + 1h review
 

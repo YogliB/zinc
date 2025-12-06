@@ -75,20 +75,20 @@ Knip analyzes both packages using workspace configuration:
 
 ```json
 {
-    "workspaces": {
-        "packages/core": {
-            "entry": ["src/server.ts"],
-            "project": ["src/**/*.ts", "tests/**/*.ts", "scripts/**/*.ts"]
-        },
-        "packages/dashboard": {
-            "entry": [
-                "src/routes/**/*.svelte",
-                ".storybook/main.ts",
-                "vite.config.ts"
-            ],
-            "project": ["src/**/*.{ts,svelte}", ".storybook/**/*.ts"]
-        }
-    }
+	"workspaces": {
+		"packages/core": {
+			"entry": ["src/server.ts"],
+			"project": ["src/**/*.ts", "tests/**/*.ts", "scripts/**/*.ts"]
+		},
+		"packages/dashboard": {
+			"entry": [
+				"src/routes/**/*.svelte",
+				".storybook/main.ts",
+				"vite.config.ts"
+			],
+			"project": ["src/**/*.{ts,svelte}", ".storybook/**/*.ts"]
+		}
+	}
 }
 ```
 
@@ -100,11 +100,11 @@ Knip analyzes both packages using workspace configuration:
 
 ```json
 {
-    "prettier": {
-        "singleQuote": true,
-        "useTabs": true,
-        "tabWidth": 4
-    }
+	"prettier": {
+		"singleQuote": true,
+		"useTabs": true,
+		"tabWidth": 4
+	}
 }
 ```
 
@@ -129,10 +129,10 @@ All packages inherit the root Prettier config automatically. Package-specific `.
 import rootConfig from '../../eslint.config.mjs';
 
 export default [
-    ...rootConfig,
-    {
-        // Package-specific rules
-    },
+	...rootConfig,
+	{
+		// Package-specific rules
+	},
 ];
 ```
 
@@ -144,10 +144,10 @@ export default [
 
 ```json
 {
-    "extends": "../../tsconfig.json",
-    "compilerOptions": {
-        // Package-specific overrides
-    }
+	"extends": "../../tsconfig.json",
+	"compilerOptions": {
+		// Package-specific overrides
+	}
 }
 ```
 
@@ -207,29 +207,29 @@ DevFlow embeds a web dashboard that automatically starts when the MCP server run
 
 - **Dashboard Server Module** (`packages/core/src/dashboard/server.ts`)
     - Implements `startDashboardServer()` using `Bun.serve()`
-  - Serves static files from `packages/dashboard/build/`
-  - Handles SPA routing with `index.html` fallback
-  - Automatic MIME type detection for assets
-  - Automatic port detection when port not specified (range: 3000-3100)
-  - Optional browser auto-launch on startup
+    - Serves static files from `packages/dashboard/build/`
+    - Handles SPA routing with `index.html` fallback
+    - Automatic MIME type detection for assets
+    - Automatic port detection when port not specified (range: 3000-3100)
+    - Optional browser auto-launch on startup
 
 - **Port Finder Module** (`packages/core/src/dashboard/port-finder.ts`)
-  - Implements `findAvailablePort()` for automatic port detection
-  - Tests port availability using Bun's TCP socket check
-  - Retry logic with configurable range (default: 3000-3100)
-  - Returns port number and auto-detection status
+    - Implements `findAvailablePort()` for automatic port detection
+    - Tests port availability using Bun's TCP socket check
+    - Retry logic with configurable range (default: 3000-3100)
+    - Returns port number and auto-detection status
 
 - **Browser Launcher Module** (`packages/core/src/dashboard/browser-launcher.ts`)
-  - Implements `openBrowser()` for cross-platform browser launch
-  - Platform-specific commands (macOS: `open`, Linux: `xdg-open`, Windows: `start`)
-  - Graceful error handling (logs warning, doesn't crash server)
-  - 1-second delay after server start before launching
+    - Implements `openBrowser()` for cross-platform browser launch
+    - Platform-specific commands (macOS: `open`, Linux: `xdg-open`, Windows: `start`)
+    - Graceful error handling (logs warning, doesn't crash server)
+    - 1-second delay after server start before launching
 
 - **Static Build** (`packages/dashboard/`)
-  - SvelteKit app configured with `@sveltejs/adapter-static`
-  - Builds to static HTML/JS/CSS files
-  - No SSR or server-side routes (client-side only)
-  - Backend logic handled by MCP tools, not SvelteKit API routes
+    - SvelteKit app configured with `@sveltejs/adapter-static`
+    - Builds to static HTML/JS/CSS files
+    - No SSR or server-side routes (client-side only)
+    - Backend logic handled by MCP tools, not SvelteKit API routes
 
 **Architecture Decision:**
 
@@ -660,31 +660,31 @@ logger.error('Error message');
 
 ```typescript
 export interface Logger {
-    debug: (message: string) => void;
-    info: (message: string) => void;
-    warn: (message: string) => void;
-    error: (message: string) => void;
+	debug: (message: string) => void;
+	info: (message: string) => void;
+	warn: (message: string) => void;
+	error: (message: string) => void;
 }
 
 export function createLogger(
-    namespace: string,
-    options: { debug?: boolean } = {},
+	namespace: string,
+	options: { debug?: boolean } = {},
 ): Logger {
-    const debugEnabled = options.debug ?? false;
+	const debugEnabled = options.debug ?? false;
 
-    const log = (level: string, message: string): void => {
-        if (level === 'debug' && !debugEnabled) {
-            return;
-        }
-        console.error(`[${namespace}:${level.toUpperCase()}] ${message}`);
-    };
+	const log = (level: string, message: string): void => {
+		if (level === 'debug' && !debugEnabled) {
+			return;
+		}
+		console.error(`[${namespace}:${level.toUpperCase()}] ${message}`);
+	};
 
-    return {
-        debug: (message: string) => log('debug', message),
-        info: (message: string) => log('info', message),
-        warn: (message: string) => log('warn', message),
-        error: (message: string) => log('error', message),
-    };
+	return {
+		debug: (message: string) => log('debug', message),
+		info: (message: string) => log('info', message),
+		warn: (message: string) => log('warn', message),
+		error: (message: string) => log('error', message),
+	};
 }
 ```
 
@@ -843,13 +843,13 @@ const database = getAnalyticsDatabase();
 
 ```typescript
 import {
-    getAnalyticsDatabase,
-    closeAnalyticsDatabase,
+	getAnalyticsDatabase,
+	closeAnalyticsDatabase,
 } from './analytics/database.js';
 
 afterEach(() => {
-    // Reset singleton state between tests
-    closeAnalyticsDatabase();
+	// Reset singleton state between tests
+	closeAnalyticsDatabase();
 });
 ```
 
@@ -880,33 +880,32 @@ const database = getAnalyticsDatabase();
 
 // Insert session
 const session = database
-.insert(sessions)
-.values({
-startedAt: new Date(),
-toolCount: 0,
-})
-.returning()
-.get();
+	.insert(sessions)
+	.values({
+		startedAt: new Date(),
+		toolCount: 0,
+	})
+	.returning()
+	.get();
 
 // Insert tool call
 database
-.insert(toolCalls)
-.values({
-toolName: 'grep',
-durationMs: 123,
-status: 'success',
-timestamp: new Date(),
-sessionId: session.id,
-})
-.run();
+	.insert(toolCalls)
+	.values({
+		toolName: 'grep',
+		durationMs: 123,
+		status: 'success',
+		timestamp: new Date(),
+		sessionId: session.id,
+	})
+	.run();
 
 // Query tool calls
 const calls = database
-.select()
-.from(toolCalls)
-.where(eq(toolCalls.sessionId, session.id))
-.all();
-
+	.select()
+	.from(toolCalls)
+	.where(eq(toolCalls.sessionId, session.id))
+	.all();
 ```
 
 ---
@@ -940,7 +939,7 @@ export interface LanguagePlugin {
     canIncrementallyUpdate?(oldAST: AST, changes: FileChange): boolean;
     incrementallyUpdate?(oldAST: AST, changes: FileChange): Promise<AST>;
 }
-````
+```
 
 **TypeScript Plugin**: `src/core/analysis/plugins/typescript.ts`
 
@@ -1464,17 +1463,17 @@ To add a new MCP tool:
 
     ```typescript
     export function registerMyTools(
-        server: FastMCP,
-        engine: AnalysisEngine,
-        storage: StorageEngine,
+    	server: FastMCP,
+    	engine: AnalysisEngine,
+    	storage: StorageEngine,
     ): void {
-        server.addTool({
-            name: 'myTool',
-            description: 'Tool description',
-            execute: async () => {
-                // Tool implementation
-            },
-        });
+    	server.addTool({
+    		name: 'myTool',
+    		description: 'Tool description',
+    		execute: async () => {
+    			// Tool implementation
+    		},
+    	});
     }
     ```
 
