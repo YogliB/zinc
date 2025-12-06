@@ -22,6 +22,8 @@ jobs:
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
+              with:
+                  fetch-depth: 2
 
             - name: Setup Node.js
               uses: actions/setup-node@v4
@@ -39,6 +41,14 @@ jobs:
             - name: Install dependencies
               run: npm ci
 
+            - name: Restore Turborepo cache
+              uses: actions/cache@v4
+              with:
+                  path: .turbo
+                  key: ${{ runner.os }}-turbo-${{ hashFiles('turbo.json', 'package-lock.json') }}
+                  restore-keys: |
+                      ${{ runner.os }}-turbo-
+
             - name: Run ESLint
               run: npx turbo run lint
 
@@ -48,6 +58,10 @@ jobs:
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
+              with:
+                  fetch-depth: 2
+              with:
+                  fetch-depth: 2
 
             - name: Setup Node.js
               uses: actions/setup-node@v4
@@ -74,6 +88,8 @@ jobs:
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
+              with:
+                  fetch-depth: 2
 
             - name: Setup Node.js
               uses: actions/setup-node@v4
@@ -100,6 +116,8 @@ jobs:
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
+              with:
+                  fetch-depth: 2
 
             - name: Setup Node.js
               uses: actions/setup-node@v4
@@ -116,6 +134,14 @@ jobs:
 
             - name: Install dependencies
               run: npm ci
+
+            - name: Restore Turborepo cache
+              uses: actions/cache@v4
+              with:
+                  path: .turbo
+                  key: ${{ runner.os }}-turbo-${{ hashFiles('turbo.json', 'package-lock.json') }}
+                  restore-keys: |
+                      ${{ runner.os }}-turbo-
 
             - name: Type check with TypeScript
               run: npx turbo run type-check
@@ -126,6 +152,8 @@ jobs:
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
+              with:
+                  fetch-depth: 2
 
             - name: Setup Node.js
               uses: actions/setup-node@v4
@@ -142,6 +170,14 @@ jobs:
 
             - name: Install dependencies
               run: npm ci
+
+            - name: Restore Turborepo cache
+              uses: actions/cache@v4
+              with:
+                  path: .turbo
+                  key: ${{ runner.os }}-turbo-${{ hashFiles('turbo.json', 'package-lock.json') }}
+                  restore-keys: |
+                      ${{ runner.os }}-turbo-
 
             - name: Build packages
               run: npm run build
@@ -165,6 +201,8 @@ jobs:
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
+              with:
+                  fetch-depth: 2
 
             - name: Setup Node.js
               uses: actions/setup-node@v4
@@ -181,6 +219,14 @@ jobs:
 
             - name: Install dependencies
               run: npm ci
+
+            - name: Restore Turborepo cache
+              uses: actions/cache@v4
+              with:
+                  path: .turbo
+                  key: ${{ runner.os }}-turbo-${{ hashFiles('turbo.json', 'package-lock.json') }}
+                  restore-keys: |
+                      ${{ runner.os }}-turbo-
 
             - name: Install Playwright browsers
               run: npx playwright install --with-deps
@@ -197,6 +243,8 @@ jobs:
         steps:
             - name: Checkout code
               uses: actions/checkout@v4
+              with:
+                  fetch-depth: 2
 
             - name: Setup Node.js
               uses: actions/setup-node@v4
@@ -213,6 +261,14 @@ jobs:
 
             - name: Install dependencies
               run: npm ci
+
+            - name: Restore Turborepo cache
+              uses: actions/cache@v4
+              with:
+                  path: .turbo
+                  key: ${{ runner.os }}-turbo-${{ hashFiles('turbo.json', 'package-lock.json') }}
+                  restore-keys: |
+                      ${{ runner.os }}-turbo-
 
             - name: Check for circular dependencies
               run: npx turbo run check:circular:ci --filter=devflow-mcp
