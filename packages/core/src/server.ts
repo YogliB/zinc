@@ -252,12 +252,12 @@ async function main(): Promise<void> {
 		`All MCP tools registered (${(performance.now() - toolsStart).toFixed(2)}ms)`,
 	);
 
-	server.on('connect', (sessionId: string) =>
-		telemetryService.startSession(sessionId),
+	server.on('connect', (event) =>
+		telemetryService.startSession((event.session as { id: string }).id),
 	);
 
-	server.on('disconnect', (sessionId: string) =>
-		telemetryService.endSession(sessionId),
+	server.on('disconnect', (event) =>
+		telemetryService.endSession((event.session as { id: string }).id),
 	);
 
 	await server.start({

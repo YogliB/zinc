@@ -1,13 +1,7 @@
 import type { TelemetryService } from './telemetry.js';
+import type { Tool } from 'fastmcp';
 
-export interface ToolDefinition {
-	name: string;
-	description: string;
-	parameters: unknown;
-	execute: (parameters: unknown) => Promise<unknown>;
-}
-
-type AddToolFunction = (tool: ToolDefinition) => void;
+type AddToolFunction<ToolType> = (tool: ToolType) => void;
 
 const recordCall = (
 	telemetry: TelemetryService,
@@ -18,22 +12,25 @@ const recordCall = (
 	});
 };
 
-export function wrapToolWithTelemetry(
-	originalAddTool: AddToolFunction,
+export function wrapToolWithTelemetry<ToolType extends Tool<unknown, unknown>>(
+	originalAddTool: AddToolFunction<ToolType>,
 	telemetry: TelemetryService,
-): AddToolFunction {
-	return (tool: ToolDefinition) => {
-		const wrappedExecute = async (parameters: unknown) => {
+): AddToolFunction<ToolType> {
+	return (tool: ToolType) => {
+		const wrappedExecute = async (
+			arguments_: Parameters<ToolType['execute']>[0],
+			context: Parameters<ToolType['execute']>[1],
+		) => {
 			const startTime = performance.now();
 			const sessionId = telemetry.getCurrentSessionId();
 
 			if (!sessionId) {
 				console.warn('No active session for tool execution telemetry');
-				return await tool.execute(parameters);
+				return await tool.execute(arguments_, context);
 			}
 
 			try {
-				const result = await tool.execute(parameters);
+				const result = await tool.execute(arguments_, context);
 				const durationMs = performance.now() - startTime;
 
 				// Record success asynchronously
@@ -74,6 +71,6 @@ export function wrapToolWithTelemetry(
 		originalAddTool({
 			...tool,
 			execute: wrappedExecute,
-		});
+		} as ToolType);
 	};
 }
