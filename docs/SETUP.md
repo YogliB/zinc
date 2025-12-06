@@ -28,17 +28,17 @@ bun run dev:core
 
 ## Available Commands
 
-| Command                 | Purpose                                   |
-| ----------------------- | ----------------------------------------- |
-| `bun run dev:core`      | Development mode (tsx)                    |
-| `bun run build`         | Build with esbuild                        |
-| `bun test`              | Run tests (Bun test runner)               |
-| `bun run test:ui`       | Interactive test dashboard                |
-| `bun run test:coverage` | Coverage report                           |
-| `bun run lint`          | Check code with ESLint                    |
-| `bun run lint:fix`      | Auto-fix linting issues                   |
-| `bun run format`        | Format with Prettier                      |
-| `bun run type-check`    | TypeScript validation                     |
+| Command                 | Purpose                     |
+| ----------------------- | --------------------------- |
+| `bun run dev:core`      | Development mode (tsx)      |
+| `bun run build`         | Build with esbuild          |
+| `bun test`              | Run tests (Bun test runner) |
+| `bun run test:ui`       | Interactive test dashboard  |
+| `bun run test:coverage` | Coverage report             |
+| `bun run lint`          | Check code with ESLint      |
+| `bun run lint:fix`      | Auto-fix linting issues     |
+| `bun run format`        | Format with Prettier        |
+| `bun run type-check`    | TypeScript validation       |
 
 ## Project Structure
 

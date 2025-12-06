@@ -6,15 +6,15 @@ Replace Bun as the primary bundler with esbuild for production builds and replac
 
 ## Scope
 
-- **In Scope:** 
-  - Update build script to use esbuild API
-  - Replace dev script with tsx
-  - Test build and development functionality
-  - Update package.json scripts
-- **Out of Scope:** 
-  - Changing package management from Bun
-  - Modifying test runner (Vitest)
-  - Updating other Bun-dependent scripts
+- **In Scope:**
+    - Update build script to use esbuild API
+    - Replace dev script with tsx
+    - Test build and development functionality
+    - Update package.json scripts
+- **Out of Scope:**
+    - Changing package management from Bun
+    - Modifying test runner (Vitest)
+    - Updating other Bun-dependent scripts
 
 ## Risks
 
@@ -87,6 +87,7 @@ High - Current Bun setup has blocking issues with native modules and CI/CD
 ## Fallback Plan
 
 If esbuild or tsx causes issues:
+
 1. Revert package.json scripts to Bun versions
 2. Revert build.ts changes
 3. Investigate alternative bundlers (webpack, rollup) if needed
