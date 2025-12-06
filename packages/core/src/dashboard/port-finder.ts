@@ -1,3 +1,4 @@
+import { createServer } from 'node:net';
 import { createLogger } from '../core/utils/logger';
 
 const logger = createLogger('PortFinder');
@@ -12,19 +13,17 @@ export interface PortResult {
 }
 
 const isPortAvailable = async (port: number): Promise<boolean> => {
-	try {
-		const server = Bun.serve({
-			port,
-			fetch() {
-				return new Response('Port test');
-			},
+	return new Promise((resolve) => {
+		const server = createServer();
+
+		server.listen(port, () => {
+			server.close(() => resolve(true));
 		});
 
-		server.stop();
-		return true;
-	} catch {
-		return false;
-	}
+		server.on('error', () => {
+			resolve(false);
+		});
+	});
 };
 
 export const findAvailablePort = async (

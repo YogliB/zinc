@@ -162,7 +162,7 @@ export default [
 					extensions: ['.js', '.jsx', '.ts', '.tsx'],
 				},
 			},
-			'import/core-modules': ['bun:test', 'bun:sqlite'],
+			'import/core-modules': [],
 		},
 	},
 	{
@@ -175,6 +175,7 @@ export default [
 			'packages/core/**/tools/patterns.ts',
 			'packages/core/**/helpers/**/*.ts',
 			'packages/core/**/analytics/**/*.ts',
+			'packages/core/**/dashboard/**/*.ts',
 		],
 		rules: {
 			'security/detect-non-literal-fs-filename': 'off',

@@ -59,7 +59,7 @@ const createAnalyticsDatabase = () => {
  * is first called. This eliminates initialization overhead in performance
  * tests and other code paths that don't require analytics.
  *
- * Thread-safety: Bun is single-threaded, so no locking is required.
+ * Thread-safety: Node.js is single-threaded, so no locking is required.
  *
  * @returns The shared analytics database instance
  *

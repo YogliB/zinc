@@ -7,7 +7,7 @@
 	"engines": {
 		"node": "24.11.1"
 	},
-	"packageManager": "bun@1.3.3",
+	"packageManager": "npm@11.6.2",
 	"workspaces": [
 		"packages/core",
 		"packages/dashboard"
@@ -16,21 +16,22 @@
 		"prepare": "volta setup && husky",
 		"format:check": "prettier --check .",
 		"format": "prettier --write .",
-		"knip": "bun run --filter devflow-mcp knip",
+		"knip": "turbo knip --filter=devflow-mcp",
 		"lint:clean": "rm -f packages/core/.eslintcache packages/dashboard/.eslintcache",
-		"lint:fix": "eslint --fix packages/core packages/dashboard --max-warnings=0 --cache",
-		"lint": "eslint packages/core packages/dashboard --max-warnings=0 --cache",
-		"test:core": "bun run --filter devflow-mcp test",
-		"test:dashboard": "bun run --filter dashboard test",
-		"type-check": "bun run --filter devflow-mcp type-check",
-		"build": "bun run --filter dashboard build && test -f packages/dashboard/build/index.html && bun run --filter devflow-mcp build",
-		"dev:core": "bun run --filter devflow-mcp dev",
-		"dev:dashboard": "bun run --filter dashboard dev",
-		"ci": "bun run lint && bun run test:core && bun run build",
-		"generate:ci-sh": "bun run scripts/generate-ci-sh.ts",
-		"validate:ci-sync": "bun run scripts/validate-ci-sync.ts"
+		"lint:fix": "turbo lint:fix",
+		"lint": "turbo lint",
+		"test:core": "turbo test --filter=devflow-mcp",
+		"test:dashboard": "turbo test --filter=dashboard",
+		"type-check": "turbo type-check --filter=devflow-mcp",
+		"build": "turbo build --filter=dashboard && test -f packages/dashboard/build/index.html && turbo build --filter=devflow-mcp",
+		"dev:core": "turbo dev --filter=devflow-mcp",
+		"dev:dashboard": "turbo dev --filter=dashboard",
+		"ci": "turbo lint && turbo test --filter=devflow-mcp && turbo build --filter=dashboard && test -f packages/dashboard/build/index.html && turbo build --filter=devflow-mcp",
+		"generate:ci-sh": "tsx scripts/generate-ci-sh.ts",
+		"validate:ci-sync": "tsx scripts/validate-ci-sync.ts"
 	},
 	"resolutions": {
+		"better-sqlite3": "12.5.0",
 		"cookie": "^0.7.0",
 		"esbuild": ">=0.25.0",
 		"express": ">=5.2.0",
@@ -43,6 +44,7 @@
 	},
 	"devDependencies": {
 		"@eslint/js": "9.39.1",
+		"esbuild": "^0.25.0",
 		"eslint": "9.39.1",
 		"eslint-config-prettier": "10.1.8",
 		"eslint-import-resolver-typescript": "4.4.4",
@@ -54,16 +56,20 @@
 		"eslint-plugin-svelte": "3.13.0",
 		"eslint-plugin-unicorn": "62.0.0",
 		"globals": "16.5.0",
+		"husky": "9.1.7",
 		"prettier": "3.7.3",
 		"prettier-plugin-svelte": "3.4.0",
 		"prettier-plugin-tailwindcss": "0.7.2",
+		"tsx": "^4.19.2",
+		"turbo": "^2.6.3",
 		"typescript": "5.9.3",
 		"typescript-eslint": "8.48.1",
-		"yaml": "2.8.2",
-		"esbuild": "^0.25.0",
-		"tsx": "^4.19.2"
+		"yaml": "2.8.2"
 	},
 	"volta": {
 		"node": "24.11.1"
+	},
+	"dependencies": {
+		"better-sqlite3": "12.5.0"
 	}
 }

@@ -206,7 +206,7 @@ DevFlow embeds a web dashboard that automatically starts when the MCP server run
 **Key Components:**
 
 - **Dashboard Server Module** (`packages/core/src/dashboard/server.ts`)
-    - Implements `startDashboardServer()` using `Bun.serve()`
+    - Implements `startDashboardServer()` using Node.js HTTP server
     - Serves static files from `packages/dashboard/build/`
     - Handles SPA routing with `index.html` fallback
     - Automatic MIME type detection for assets
@@ -258,7 +258,7 @@ The dashboard uses static build + native Bun HTTP server (not `adapter-node`) be
 2. If set and valid, attempt to use that port
 3. If not set, call `findAvailablePort()`:
     - Start at port 3000
-    - Test port availability using Bun.serve() socket check
+    - Test port availability using Node.js net server
     - If busy, try next port in range (3001, 3002, etc.)
     - Continue until port 3100 or available port found
 4. If all ports busy, throw error with clear message
@@ -269,7 +269,7 @@ The dashboard uses static build + native Bun HTTP server (not `adapter-node`) be
 1. After server starts successfully, check `autoOpen` config
 2. If enabled, detect platform (macOS/Linux/Windows)
 3. Wait 1 second for server to be fully ready
-4. Execute platform-specific command using `Bun.spawn()`
+4. Execute platform-specific command using Node.js child_process.spawn()
 5. Log success/failure without blocking server operation
 
 **Environment Variables:**

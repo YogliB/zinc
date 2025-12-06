@@ -14,7 +14,7 @@
 
 ## Dependencies
 
-- Use **Bun as package manager** for dependency management and script execution.
+- Use **npm as package manager** for dependency management and script execution.
 - Use **Vitest** for testing (not `bun:test`).
 - Use **esbuild** for production bundling.
 - Use **tsx** for development runtime.

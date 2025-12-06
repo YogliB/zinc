@@ -208,7 +208,7 @@ Understanding large codebases is challenging:
 - **TypeScript 5.3+** - Type safety and developer experience
 - **MCP SDK** - Standard protocol implementation
 - **Node.js 24.11.1** - Production runtime
-- **Bun 1.3.3** - Package management
+- **npm** - Package management
 - **esbuild** - Production bundler
 - **tsx** - Development runtime
 - **ts-morph** - TypeScript AST manipulation
@@ -221,45 +221,45 @@ Understanding large codebases is challenging:
 
 ```bash
 # Install dependencies
-bun install
+npm install
 
 # Run tests
-bun test
+npm test
 
 # Type check
-bun run type-check
+npm run type-check
 
 # Build standalone executable
-bun run build
+npm run build
 
 # The build creates a bundled JavaScript file at dist/server.js
 # optimized for Node.js runtime
 
 # Lint & format
-bun run lint:fix
-bun run format
+npm run lint:fix
+npm run format
 ```
 
 ### Testing
 
 ```bash
 # All tests
-bun test
+pnpm test
 
 # Watch mode
-bun test --watch
+pnpm test --watch
 
 # Coverage
-bun test --coverage
+pnpm test --coverage
 
 # AI agent mode (quiet output, only failures)
-bun run test:ai
+pnpm run test:ai
 
 # Unit tests only
-bun test tests/unit
+pnpm test tests/unit
 
 # Integration tests only
-bun test tests/integration
+pnpm test tests/integration
 ```
 
 **[Testing Guide](./docs/TESTING.md)** - Detailed testing documentation
@@ -287,10 +287,10 @@ DevFlow is actively maintained and welcomes contributions!
 **Before Pushing:**
 
 ```bash
-bun run lint:fix    # Fix linting
-bun run format      # Format code
-bun run type-check  # Check types
-bun test            # Run tests
+npm run lint:fix    # Fix linting
+npm run format      # Format code
+npm run type-check  # Check types
+npm test            # Run tests
 ```
 
 See [Setup Guide](./docs/SETUP.md) for detailed development instructions.

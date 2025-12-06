@@ -1,3 +1,4 @@
+import { spawn } from 'node:child_process';
 import { createLogger } from '../core/utils/logger';
 
 const logger = createLogger('BrowserLauncher');
@@ -39,13 +40,24 @@ export const openBrowser = async (url: string): Promise<boolean> => {
 
 		await new Promise((resolve) => setTimeout(resolve, 1000));
 
-		const process = Bun.spawn({
-			cmd: [browserCommand.command, ...browserCommand.args, url],
-			stdout: 'ignore',
-			stderr: 'ignore',
-		});
+		const process = spawn(
+			browserCommand.command,
+			[...browserCommand.args, url],
+			{
+				stdio: ['ignore', 'ignore', 'ignore'],
+			},
+		);
 
-		await process.exited;
+		await new Promise<void>((resolve, reject) => {
+			process.on('close', (code: number | null) => {
+				if (code === 0) {
+					resolve();
+				} else {
+					reject(new Error(`Process exited with code ${code}`));
+				}
+			});
+			process.on('error', reject);
+		});
 
 		logger.info(`Browser launched successfully: ${url}`);
 		return true;

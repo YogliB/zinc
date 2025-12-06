@@ -1,5 +1,7 @@
 import path from 'node:path';
 import { existsSync } from 'node:fs';
+import { readFile } from 'node:fs/promises';
+import { createServer } from 'node:http';
 import { createLogger } from '../core/utils/logger';
 import { findAvailablePort } from './port-finder';
 import { openBrowser } from './browser-launcher';
@@ -46,7 +48,6 @@ const normalizePath = (pathname: string): string => {
 };
 
 export const startDashboardServer = async (config: DashboardServerConfig) => {
-	// eslint-disable-next-line security/detect-non-literal-fs-filename
 	if (!existsSync(config.buildDirectory)) {
 		throw new Error(
 			`Dashboard build directory not found: ${config.buildDirectory}. Run 'bun run --filter dashboard build' first.`,
@@ -62,44 +63,39 @@ export const startDashboardServer = async (config: DashboardServerConfig) => {
 		logger.info(`Using configured port: ${port}`);
 	}
 
-	const server = Bun.serve({
-		port,
-		development: false,
-		fetch: async (request): Promise<Response> => {
-			const url = new URL(request.url);
-			const pathname = normalizePath(url.pathname);
+	const server = createServer(async (request, response) => {
+		const url = new URL(request.url!, `http://localhost:${port}`);
+		const pathname = normalizePath(url.pathname);
 
-			const filePath = path.join(config.buildDirectory, pathname);
+		const filePath = path.join(config.buildDirectory, pathname);
 
-			const file = Bun.file(filePath);
-			const exists = await file.exists();
+		try {
+			const fileContent = await readFile(filePath);
+			response.writeHead(200, {
+				'Content-Type': resolveMimeType(pathname),
+			});
+			response.end(fileContent);
+			return;
+		} catch {
+			// File not found, try index.html for SPA routing
+		}
 
-			if (exists) {
-				return new Response(file, {
-					headers: {
-						'Content-Type': resolveMimeType(pathname),
-					},
-				});
-			}
-
-			const indexFile = Bun.file(
-				path.join(config.buildDirectory, 'index.html'),
-			);
-			const indexExists = await indexFile.exists();
-
-			if (indexExists) {
-				return new Response(indexFile, {
-					headers: {
-						'Content-Type': 'text/html; charset=utf-8',
-					},
-				});
-			}
-
-			return new Response('Not Found', { status: 404 });
-		},
+		try {
+			const indexPath = path.join(config.buildDirectory, 'index.html');
+			const indexContent = await readFile(indexPath);
+			response.writeHead(200, {
+				'Content-Type': 'text/html; charset=utf-8',
+			});
+			response.end(indexContent);
+		} catch {
+			response.writeHead(404, { 'Content-Type': 'text/plain' });
+			response.end('Not Found');
+		}
 	});
 
-	const dashboardUrl = `http://localhost:${server.port}`;
+	server.listen(port);
+
+	const dashboardUrl = `http://localhost:${port}`;
 	logger.info(`Dashboard server started at ${dashboardUrl}`);
 
 	if (config.autoOpen) {

@@ -9,9 +9,8 @@
 	"engines": {
 		"node": "24.11.1"
 	},
-	"packageManager": "bun@1.3.3",
 	"scripts": {
-		"build": "bun run scripts/build.ts",
+		"build": "tsx scripts/build.ts",
 		"check:circular:ci": "dpdm --no-warning --no-tree --no-progress --exit-code circular:1 --tsconfig ./tsconfig.json ./src/server.ts",
 		"check:circular:verbose": "dpdm ./src/server.ts",
 		"check:circular": "dpdm --no-warning --no-tree ./src/server.ts",
@@ -19,15 +18,15 @@
 		"dev": "tsx src/server.ts",
 		"format:check": "prettier --check .",
 		"format": "prettier --write .",
-		"generate:ci-sh": "bun run scripts/generate-ci-sh.ts",
+		"generate:ci-sh": "tsx scripts/generate-ci-sh.ts",
 		"knip": "knip",
 		"lint:clean": "rm -f .eslintcache",
-		"lint:fix": "eslint --fix . --max-warnings=0 --cache --cache-location .eslintcache",
-		"lint": "eslint . --max-warnings=0 --cache --cache-location .eslintcache",
+		"lint:fix": "cd ../.. && eslint --fix packages/core --max-warnings=0 --cache --cache-location packages/core/.eslintcache",
+		"lint": "cd ../.. && eslint packages/core --max-warnings=0 --cache --cache-location packages/core/.eslintcache",
 		"test": "vitest run",
-		"type-check": "bun run tsc --noEmit",
-		"update-baseline": "bun run scripts/update-baseline.ts --update-baseline",
-		"validate:ci-sync": "bun run scripts/validate-ci-sync.ts"
+		"type-check": "tsc --noEmit",
+		"update-baseline": "tsx scripts/update-baseline.ts --update-baseline",
+		"validate:ci-sync": "tsx scripts/validate-ci-sync.ts"
 	},
 	"keywords": [
 		"mcp",
@@ -39,7 +38,6 @@
 		"code-analysis",
 		"ast",
 		"modelcontextprotocol",
-		"bun",
 		"typescript",
 		"static-analysis",
 		"developer-tools",
@@ -73,7 +71,6 @@
 	"devDependencies": {
 		"@eslint/js": "9.39.1",
 		"@types/better-sqlite3": "^7.6.12",
-		"@types/bun": "1.3.3",
 		"@types/node": "24.10.1",
 		"@vitest/coverage-v8": "4.0.14",
 		"dpdm-fast": "1.0.14",

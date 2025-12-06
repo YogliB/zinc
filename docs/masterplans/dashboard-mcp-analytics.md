@@ -232,7 +232,7 @@ Status: 🟢 done · 🟡 in‑progress · 🟠 review · ⏸️ not‑started �
 4. **Integrate into dashboard server** — File: `packages/core/src/dashboard/server.ts` (MODIFIED)
     - Add `analyticsDb: AnalyticsDb` to `DashboardServerConfig`
     - Create Hono API routes instance
-    - In Bun.serve fetch handler:
+    - In Node.js HTTP server request handler:
         - Check if path starts with `/api/`
         - If yes, delegate to Hono app
         - If no, serve static files (existing logic)
