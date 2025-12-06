@@ -17,7 +17,7 @@
 | PR  | Repo    | Status | Link | Notes                                   |
 | --- | ------- | ------ | ---- | --------------------------------------- |
 | 1   | devflow | 🟢     | -    | Database schema & Drizzle ORM setup     |
-| 2   | devflow | ⏸️     | -    | Telemetry collection service            |
+| 2   | devflow | 🟢     | -    | Telemetry collection service            |
 | 3   | devflow | ⏸️     | -    | MCP tool wrapper integration            |
 | 4   | devflow | ⏸️     | -    | Hono API routes for metrics             |
 | 5   | devflow | ⏸️     | -    | Dashboard UI (Atomic Design + Flowbite) |
@@ -89,7 +89,7 @@ Status: 🟢 done · 🟡 in‑progress · 🟠 review · ⏸️ not‑started �
 
 ---
 
-## PR2: Telemetry Collection Service — ⏸️
+## PR2: Telemetry Collection Service — 🟢 Completed
 
 **Repo:** devflow · **Link:** - · **ETA:** 6-8h dev + 1-2h review
 

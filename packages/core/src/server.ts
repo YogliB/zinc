@@ -1,4 +1,4 @@
-import { FastMCP } from 'fastmcp';
+import { FastMCP, type FastMCPSession } from 'fastmcp';
 import { createStorageEngine } from './core/storage/engine';
 import type { StorageEngine } from './core/storage/engine';
 import { detectProjectRoot } from './core/config';
@@ -15,6 +15,10 @@ import { registerAllTools } from './mcp/tools';
 import { createLogger } from './core/utils/logger';
 import { startDashboardServer } from './dashboard/server';
 import path from 'node:path';
+
+import { getAnalyticsDatabase } from './analytics/database.js';
+import { TelemetryService } from './analytics/telemetry.js';
+import { wrapToolWithTelemetry } from './analytics/tool-wrapper.js';
 
 const logger = createLogger('DevFlow');
 
@@ -52,6 +56,8 @@ let gitAnalyzer: GitAnalyzer;
 let cache: GitAwareCache;
 let fileWatcher: FileWatcher;
 let tsPlugin: TypeScriptPlugin;
+
+let telemetryService: TelemetryService;
 
 async function validateProjectRoot(projectRoot: string): Promise<void> {
 	const estimatedSize = await estimateDirectorySize(projectRoot);
@@ -221,10 +227,25 @@ async function main(): Promise<void> {
 	const projectRoot = await detectProjectRoot();
 	await initializeServer();
 
+	const analyticsInitStart = performance.now();
+
+	const analyticsDatabase = getAnalyticsDatabase();
+
+	telemetryService = new TelemetryService(analyticsDatabase);
+
+	logger.info(
+		`Analytics initialized (${(performance.now() - analyticsInitStart).toFixed(2)}ms)`,
+	);
+
 	const server = new FastMCP({
 		name: 'devflow-mcp',
 		version: '0.1.0',
 	});
+
+	server.addTool = wrapToolWithTelemetry(
+		server.addTool,
+		telemetryService,
+	) as typeof server.addTool;
 
 	const toolsStart = performance.now();
 	registerAllTools(server, analysisEngine, storageEngine, gitAnalyzer);
@@ -232,10 +253,24 @@ async function main(): Promise<void> {
 		`All MCP tools registered (${(performance.now() - toolsStart).toFixed(2)}ms)`,
 	);
 
+	server.on('connect', (event: { session: FastMCPSession }) =>
+		telemetryService.startSession(event.session.sessionId),
+	);
+
+	server.on('disconnect', (event: { session: FastMCPSession }) =>
+		telemetryService.endSession(event.session.sessionId),
+	);
+
 	await server.start({
 		transportType: 'stdio',
 	});
+
 	logger.info('DevFlow MCP Server ready on stdio');
+
+	process.on('SIGINT', async () => {
+		await telemetryService.shutdown();
+		process.exit(0);
+	});
 
 	void startDashboard(projectRoot);
 }

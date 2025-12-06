@@ -18,28 +18,41 @@ export class TypeScriptPlugin implements LanguagePlugin {
 	readonly name = 'typescript';
 	readonly languages = ['typescript', 'javascript'];
 
-	private project: Project;
+	private project: Project | undefined;
 	private projectRoot: string;
 	private loadedFiles: Set<string>;
+	private relationshipsCache: Map<string, Relationship[]> = new Map();
+	private patternsCache: Map<string, Pattern[]> = new Map();
 
 	constructor(projectRoot: string) {
 		this.projectRoot = projectRoot;
 		this.loadedFiles = new Set();
-		this.project = new Project({
-			tsConfigFilePath: undefined,
-			skipAddingFilesFromTsConfig: true,
-			skipFileDependencyResolution: true,
-			skipLoadingLibFiles: true,
-		});
+	}
+
+	private getProject(): Project {
+		if (!this.project) {
+			this.project = new Project({
+				tsConfigFilePath: undefined,
+				skipAddingFilesFromTsConfig: true,
+				skipFileDependencyResolution: true,
+				skipLoadingLibFiles: true,
+				compilerOptions: {
+					noLib: true,
+					skipLibCheck: true,
+					skipDefaultLibCheck: true,
+				},
+			});
+		}
+		return this.project;
 	}
 
 	private getOrLoadSourceFile(
 		path: string,
 	): ReturnType<Project['getSourceFile']> {
-		let sourceFile = this.project.getSourceFile(path);
+		let sourceFile = this.getProject().getSourceFile(path);
 		if (!sourceFile && !this.loadedFiles.has(path)) {
 			try {
-				sourceFile = this.project.addSourceFileAtPath(path);
+				sourceFile = this.getProject().addSourceFileAtPath(path);
 				this.loadedFiles.add(path);
 			} catch (error) {
 				const errorMessage =
@@ -76,7 +89,7 @@ export class TypeScriptPlugin implements LanguagePlugin {
 
 		try {
 			const sourceFiles =
-				this.project.addSourceFilesAtPaths(patternsToUse);
+				this.getProject().addSourceFilesAtPaths(patternsToUse);
 			count = sourceFiles.length;
 			for (const sourceFile of sourceFiles) {
 				this.loadedFiles.add(sourceFile.getFilePath());
@@ -102,11 +115,18 @@ export class TypeScriptPlugin implements LanguagePlugin {
 			return [];
 		}
 
+		// Clear caches for this file
+		this.relationshipsCache.delete(filePath);
+		this.patternsCache.delete(filePath);
+
 		const symbols: Symbol[] = [];
+		const functions: FunctionDeclaration[] = [];
+		const classes: ClassDeclaration[] = [];
 
 		const extractFromNode = (node: Node): void => {
 			if (Node.isClassDeclaration(node)) {
 				symbols.push(this.extractClassSymbol(node, filePath));
+				classes.push(node);
 				for (const method of node.getMethods()) {
 					symbols.push(
 						this.extractMethodSymbol(method, node, filePath),
@@ -119,6 +139,7 @@ export class TypeScriptPlugin implements LanguagePlugin {
 				}
 			} else if (Node.isFunctionDeclaration(node)) {
 				symbols.push(this.extractFunctionSymbol(node, filePath));
+				functions.push(node);
 			} else if (Node.isInterfaceDeclaration(node)) {
 				symbols.push(this.extractInterfaceSymbol(node, filePath));
 			} else if (Node.isTypeAliasDeclaration(node)) {
@@ -135,6 +156,34 @@ export class TypeScriptPlugin implements LanguagePlugin {
 		};
 
 		extractFromNode(tsSourceFile);
+
+		// Collect relationships and patterns in one go
+		const importRelationships = this.extractImportRelationships(
+			tsSourceFile,
+			filePath,
+		);
+		const exportRelationships = this.extractExportRelationships(
+			tsSourceFile,
+			filePath,
+		);
+		const classRelationships = this.extractClassRelationships(
+			tsSourceFile,
+			filePath,
+		);
+		const relationships = [
+			...importRelationships,
+			...exportRelationships,
+			...classRelationships,
+		];
+		this.relationshipsCache.set(filePath, relationships);
+
+		const functionPatterns = this.detectFunctionPatterns(
+			functions,
+			filePath,
+		);
+		const classPatterns = this.detectClassPatterns(classes, filePath);
+		const patterns = [...functionPatterns, ...classPatterns];
+		this.patternsCache.set(filePath, patterns);
 
 		return symbols;
 	}
@@ -433,35 +482,7 @@ export class TypeScriptPlugin implements LanguagePlugin {
 		ast: AST,
 		filePath: string,
 	): Promise<Relationship[]> {
-		const astData = ast as unknown as { sourceFile?: unknown };
-		const sourceFile = astData.sourceFile;
-		if (!sourceFile || !Node.isSourceFile(sourceFile as Node)) {
-			return [];
-		}
-
-		const tsSourceFile = sourceFile as ReturnType<Project['getSourceFile']>;
-		if (!tsSourceFile) {
-			return [];
-		}
-
-		const importRelationships = this.extractImportRelationships(
-			tsSourceFile,
-			filePath,
-		);
-		const exportRelationships = this.extractExportRelationships(
-			tsSourceFile,
-			filePath,
-		);
-		const classRelationships = this.extractClassRelationships(
-			tsSourceFile,
-			filePath,
-		);
-
-		return [
-			...importRelationships,
-			...exportRelationships,
-			...classRelationships,
-		];
+		return this.relationshipsCache.get(filePath) || [];
 	}
 
 	private detectFunctionPatterns(
@@ -538,23 +559,6 @@ export class TypeScriptPlugin implements LanguagePlugin {
 		symbols: Symbol[],
 		filePath: string,
 	): Promise<Pattern[]> {
-		const astData = ast as unknown as { sourceFile?: unknown };
-		const sourceFile = astData.sourceFile;
-		if (!sourceFile || !Node.isSourceFile(sourceFile as Node)) {
-			return [];
-		}
-
-		const tsSourceFile = sourceFile as ReturnType<Project['getSourceFile']>;
-		if (!tsSourceFile) {
-			return [];
-		}
-
-		const patterns: Pattern[] = [];
-		const functions = tsSourceFile.getFunctions();
-		patterns.push(...this.detectFunctionPatterns(functions, filePath));
-		const classes = tsSourceFile.getClasses();
-		patterns.push(...this.detectClassPatterns(classes, filePath));
-
-		return patterns;
+		return this.patternsCache.get(filePath) || [];
 	}
 }

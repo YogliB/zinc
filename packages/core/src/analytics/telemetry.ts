@@ -20,6 +20,7 @@ export class TelemetryService {
 	private queue: NewToolCall[] = [];
 	private flushTimer: ReturnType<typeof setTimeout> | undefined = undefined;
 	private sessionToolCounts: Map<string, number> = new Map();
+	private currentSessionId: string | undefined;
 
 	constructor(
 		database: AnalyticsDatabase,
@@ -56,12 +57,16 @@ export class TelemetryService {
 
 	async startSession(sessionId: string): Promise<void> {
 		try {
-			await this.db.insert(sessions).values({
-				id: sessionId,
-				startedAt: new Date(),
-				toolCount: 0,
-			});
+			this.db
+				.insert(sessions)
+				.values({
+					id: sessionId,
+					startedAt: new Date(),
+					toolCount: 0,
+				})
+				.run();
 			console.log(`Session ${sessionId} started`);
+			this.currentSessionId = sessionId;
 		} catch (error) {
 			console.error(`Failed to start session ${sessionId}:`, error);
 		}
@@ -70,17 +75,19 @@ export class TelemetryService {
 	async endSession(sessionId: string): Promise<void> {
 		try {
 			const toolCount = this.sessionToolCounts.get(sessionId) || 0;
-			await this.db
+			this.db
 				.update(sessions)
 				.set({
 					endedAt: new Date(),
 					toolCount,
 				})
-				.where(eq(sessions.id, sessionId));
+				.where(eq(sessions.id, sessionId))
+				.run();
 			this.sessionToolCounts.delete(sessionId);
 			console.log(
 				`Session ${sessionId} ended with ${toolCount} tool calls`,
 			);
+			this.currentSessionId = undefined;
 		} catch (error) {
 			console.error(`Failed to end session ${sessionId}:`, error);
 		}
@@ -95,13 +102,17 @@ export class TelemetryService {
 			this.flushTimer = undefined;
 		}
 		try {
-			await this.db.insert(toolCalls).values(batch);
+			this.db.insert(toolCalls).values(batch).run();
 			console.log(`Flushed ${batch.length} tool calls`);
 		} catch (error) {
 			console.error('Failed to flush tool calls:', error);
 			// Re-queue the batch on failure to avoid data loss
 			this.queue.unshift(...batch);
 		}
+	}
+
+	getCurrentSessionId(): string | undefined {
+		return this.currentSessionId;
 	}
 
 	async shutdown(): Promise<void> {
