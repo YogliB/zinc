@@ -1,4 +1,4 @@
-import { FastMCP } from 'fastmcp';
+import { FastMCP, type FastMCPSession } from 'fastmcp';
 import { createStorageEngine } from './core/storage/engine';
 import type { StorageEngine } from './core/storage/engine';
 import { detectProjectRoot } from './core/config';
@@ -253,16 +253,12 @@ async function main(): Promise<void> {
 		`All MCP tools registered (${(performance.now() - toolsStart).toFixed(2)}ms)`,
 	);
 
-	server.on('connect', (event) =>
-		telemetryService.startSession(
-			(event.session as unknown as { id: string }).id,
-		),
+	server.on('connect', (event: { session: FastMCPSession }) =>
+		telemetryService.startSession(event.session.sessionId),
 	);
 
-	server.on('disconnect', (event) =>
-		telemetryService.endSession(
-			(event.session as unknown as { id: string }).id,
-		),
+	server.on('disconnect', (event: { session: FastMCPSession }) =>
+		telemetryService.endSession(event.session.sessionId),
 	);
 
 	await server.start({
