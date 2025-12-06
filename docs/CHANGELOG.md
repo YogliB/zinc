@@ -159,7 +159,7 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Technical Details
 
-- Built with Bun runtime
+- Built with Node.js runtime
 - TypeScript with strict type checking
 - Zod schema validation
 - ts-morph for AST manipulation

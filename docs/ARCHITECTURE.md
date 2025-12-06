@@ -784,7 +784,7 @@ The analytics database provides persistent storage for MCP tool call metrics and
 **SQLite Implementation**: Uses `better-sqlite3` for cross-runtime compatibility:
 
 - **Library Choice**: `better-sqlite3` instead of `bun:sqlite` to ensure analytics works in both Bun and Node.js environments
-- **Cross-Runtime**: Enables vitest (Node.js) to run all analytics tests alongside the MCP server (Bun runtime)
+- **Cross-Runtime**: Enables vitest (Node.js) to run all analytics tests alongside the MCP server (Node.js runtime)
 - **Performance**: Comparable performance to `bun:sqlite` - no significant regression in benchmarks
 - **Native Bindings**: Requires native module compilation (automatic with `bun install`)
 - **Drizzle Integration**: Full support via `drizzle-orm/better-sqlite3` adapter

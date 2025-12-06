@@ -207,7 +207,10 @@ Understanding large codebases is challenging:
 
 - **TypeScript 5.3+** - Type safety and developer experience
 - **MCP SDK** - Standard protocol implementation
-- **Bun 1.3.2** - Fast runtime, package management, and testing
+- **Node.js 24.11.1** - Production runtime
+- **Bun 1.3.3** - Package management
+- **esbuild** - Production bundler
+- **tsx** - Development runtime
 - **ts-morph** - TypeScript AST manipulation
 - **simple-git** - Git repository analysis
 - **Zod** - Schema validation
@@ -229,8 +232,8 @@ bun run type-check
 # Build standalone executable
 bun run build
 
-# The build creates a single executable at dist/devflow
-# with embedded Bun runtime and bytecode compilation
+# The build creates a bundled JavaScript file at dist/server.js
+# optimized for Node.js runtime
 
 # Lint & format
 bun run lint:fix

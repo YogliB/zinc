@@ -509,7 +509,7 @@ All tests use Vitest directly:
 
 - **Use `bun test`** for:
     - Regular test runs during development
-    - Fast test execution with Bun runtime
+    - Fast test execution with Node.js runtime
     - Watch mode
     - Unit/integration/e2e test execution
     - Coverage reports
@@ -865,7 +865,7 @@ The FileWatcher threshold tests (`file-watcher.test.ts` and `server-init.test.ts
 - [Vitest Documentation](https://vitest.dev/)
 - [Vitest API Reference](https://vitest.dev/api/)
 - [Vitest Coverage Guide](https://vitest.dev/guide/coverage.html)
-- [Bun Runtime with Vitest](https://bun.sh/docs/test-runner/vitest)
+- [Node.js Runtime with Vitest](https://vitest.dev/guide/cli.html)
 
 ## Scripts Reference
 

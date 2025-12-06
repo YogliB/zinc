@@ -1,15 +1,15 @@
 {
-	// Extends root with Node.js/Bun-specific options
-	// Core package runs in Bun runtime with Node.js APIs
+	// Extends root with Node.js-specific options
+	// Core package runs in Node.js runtime
 	"extends": "../../tsconfig.json",
 	"compilerOptions": {
-		// Node.js/Bun runtime libraries
+		// Node.js runtime libraries
 		"lib": ["ESNext"],
 		"target": "ESNext",
 		"module": "Preserve",
 
-		// Bun runtime types
-		"types": ["bun"],
+		// Node.js runtime types
+		"types": ["node"],
 
 		// Package-specific path aliases
 		"baseUrl": ".",

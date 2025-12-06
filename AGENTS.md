@@ -14,8 +14,12 @@
 
 ## Dependencies
 
-- Prefer **native Bun tools and libraries** when possible (e.g., `bun:test`, `bun:sqlite`, built-in APIs).
-- Only use external dependencies when Bun's native alternatives are insufficient or unavailable.
+- Use **Bun as package manager** for dependency management and script execution.
+- Use **Vitest** for testing (not `bun:test`).
+- Use **esbuild** for production bundling.
+- Use **tsx** for development runtime.
+- Use **Node.js** for production runtime.
+- Only use external dependencies when necessary alternatives are insufficient or unavailable.
 
 ## File Editing
 
