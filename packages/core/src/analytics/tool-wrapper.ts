@@ -1,7 +1,8 @@
 import type { TelemetryService } from './telemetry.js';
-import type { Tool } from 'fastmcp';
+import type { Tool, ToolParameters } from 'fastmcp';
 
-type AddToolFunction<ToolType> = (tool: ToolType) => void;
+// FastMCPSessionAuth is not exported from fastmcp, so we define it here
+type FastMCPSessionAuth = Record<string, unknown> | undefined;
 
 const recordCall = (
 	telemetry: TelemetryService,
@@ -12,14 +13,14 @@ const recordCall = (
 	});
 };
 
-export function wrapToolWithTelemetry<ToolType extends Tool<unknown, unknown>>(
-	originalAddTool: AddToolFunction<ToolType>,
+export function wrapToolWithTelemetry(
+	originalAddTool: (tool: Tool<FastMCPSessionAuth, ToolParameters>) => void,
 	telemetry: TelemetryService,
-): AddToolFunction<ToolType> {
-	return (tool: ToolType) => {
+): (tool: Tool<FastMCPSessionAuth, ToolParameters>) => void {
+	return (tool) => {
 		const wrappedExecute = async (
-			arguments_: Parameters<ToolType['execute']>[0],
-			context: Parameters<ToolType['execute']>[1],
+			arguments_: Parameters<typeof tool.execute>[0],
+			context: Parameters<typeof tool.execute>[1],
 		) => {
 			const startTime = performance.now();
 			const sessionId = telemetry.getCurrentSessionId();
@@ -71,6 +72,6 @@ export function wrapToolWithTelemetry<ToolType extends Tool<unknown, unknown>>(
 		originalAddTool({
 			...tool,
 			execute: wrappedExecute,
-		} as ToolType);
+		});
 	};
 }

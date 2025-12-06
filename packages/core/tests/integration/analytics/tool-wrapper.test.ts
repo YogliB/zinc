@@ -1,14 +1,19 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { wrapToolWithTelemetry } from '../../../src/analytics/tool-wrapper.js';
 import type { TelemetryService } from '../../../src/analytics/telemetry.js';
-import type { Tool } from 'fastmcp';
+import type { Tool, ToolParameters } from 'fastmcp';
+
+// FastMCPSessionAuth is not exported from fastmcp, so we define it here
+type FastMCPSessionAuth = Record<string, unknown> | undefined;
 
 describe('Tool Wrapper Integration', () => {
 	let mockTelemetry: TelemetryService;
 	let mockRecordToolCall = vi.fn();
 	let mockGetCurrentSessionId = vi.fn();
-	let originalAddTool: (tool: Tool<unknown, unknown>) => void;
-	let addedTools: Tool<unknown, unknown>[] = [];
+	let originalAddTool: (
+		tool: Tool<FastMCPSessionAuth, ToolParameters>,
+	) => void;
+	let addedTools: Tool<FastMCPSessionAuth, ToolParameters>[] = [];
 
 	beforeEach(() => {
 		mockRecordToolCall = vi.fn().mockResolvedValue();

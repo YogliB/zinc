@@ -17,9 +17,7 @@ import { startDashboardServer } from './dashboard/server';
 import path from 'node:path';
 
 import { getAnalyticsDatabase } from './analytics/database.js';
-
 import { TelemetryService } from './analytics/telemetry.js';
-
 import { wrapToolWithTelemetry } from './analytics/tool-wrapper.js';
 
 const logger = createLogger('DevFlow');
@@ -244,7 +242,10 @@ async function main(): Promise<void> {
 		version: '0.1.0',
 	});
 
-	server.addTool = wrapToolWithTelemetry(server.addTool, telemetryService);
+	server.addTool = wrapToolWithTelemetry(
+		server.addTool,
+		telemetryService,
+	) as typeof server.addTool;
 
 	const toolsStart = performance.now();
 	registerAllTools(server, analysisEngine, storageEngine, gitAnalyzer);
@@ -253,11 +254,15 @@ async function main(): Promise<void> {
 	);
 
 	server.on('connect', (event) =>
-		telemetryService.startSession((event.session as { id: string }).id),
+		telemetryService.startSession(
+			(event.session as unknown as { id: string }).id,
+		),
 	);
 
 	server.on('disconnect', (event) =>
-		telemetryService.endSession((event.session as { id: string }).id),
+		telemetryService.endSession(
+			(event.session as unknown as { id: string }).id,
+		),
 	);
 
 	await server.start({
