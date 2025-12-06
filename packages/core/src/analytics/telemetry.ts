@@ -20,6 +20,7 @@ export class TelemetryService {
 	private queue: NewToolCall[] = [];
 	private flushTimer: ReturnType<typeof setTimeout> | undefined = undefined;
 	private sessionToolCounts: Map<string, number> = new Map();
+	private currentSessionId: string | undefined;
 
 	constructor(
 		database: AnalyticsDatabase,
@@ -65,6 +66,7 @@ export class TelemetryService {
 				})
 				.run();
 			console.log(`Session ${sessionId} started`);
+			this.currentSessionId = sessionId;
 		} catch (error) {
 			console.error(`Failed to start session ${sessionId}:`, error);
 		}
@@ -85,6 +87,7 @@ export class TelemetryService {
 			console.log(
 				`Session ${sessionId} ended with ${toolCount} tool calls`,
 			);
+			this.currentSessionId = undefined;
 		} catch (error) {
 			console.error(`Failed to end session ${sessionId}:`, error);
 		}
@@ -106,6 +109,10 @@ export class TelemetryService {
 			// Re-queue the batch on failure to avoid data loss
 			this.queue.unshift(...batch);
 		}
+	}
+
+	getCurrentSessionId(): string | undefined {
+		return this.currentSessionId;
 	}
 
 	async shutdown(): Promise<void> {
