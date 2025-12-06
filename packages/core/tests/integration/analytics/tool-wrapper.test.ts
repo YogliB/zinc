@@ -1,16 +1,14 @@
 import { describe, it, expect, beforeEach, vi } from 'vitest';
 import { wrapToolWithTelemetry } from '../../../src/analytics/tool-wrapper.js';
-import type {
-	TelemetryService,
-	ToolDefinition,
-} from '../../../src/analytics/tool-wrapper.js';
+import type { TelemetryService } from '../../../src/analytics/telemetry.js';
+import type { Tool } from 'fastmcp';
 
 describe('Tool Wrapper Integration', () => {
 	let mockTelemetry: TelemetryService;
 	let mockRecordToolCall = vi.fn();
 	let mockGetCurrentSessionId = vi.fn();
-	let originalAddTool: (tool: ToolDefinition) => void;
-	let addedTools: ToolDefinition[] = [];
+	let originalAddTool: (tool: Tool<unknown, unknown>) => void;
+	let addedTools: Tool<unknown, unknown>[] = [];
 
 	beforeEach(() => {
 		mockRecordToolCall = vi.fn().mockResolvedValue();
@@ -46,7 +44,7 @@ describe('Tool Wrapper Integration', () => {
 		const result = await tool.execute({ param: 'value' });
 
 		expect(result).toBe('success result');
-		expect(mockExecute).toHaveBeenCalledWith({ param: 'value' });
+		expect(mockExecute).toHaveBeenCalledWith({ param: 'value' }, undefined);
 		expect(mockRecordToolCall).toHaveBeenCalledTimes(1);
 		expect(mockRecordToolCall).toHaveBeenCalledWith(
 			expect.objectContaining({
@@ -189,7 +187,7 @@ describe('Tool Wrapper Integration', () => {
 
 		const result = await tool.execute({ x: 5 });
 		expect(result).toBe(42);
-		expect(mockExecute).toHaveBeenCalledWith({ x: 5 });
+		expect(mockExecute).toHaveBeenCalledWith({ x: 5 }, undefined);
 	});
 
 	it('should handle multiple concurrent tool calls', async () => {
