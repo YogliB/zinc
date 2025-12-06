@@ -2,9 +2,9 @@
 
 **Code analysis MCP server for understanding project structure, symbols, patterns, and dependencies.**
 
-✅ **Status:** Production Ready
-
 [![CI](https://github.com/YogliB/dev-toolkit-mcp/actions/workflows/ci.yml/badge.svg)](https://github.com/YogliB/dev-toolkit-mcp/actions/workflows/ci.yml)
+[![Snyk](https://snyk.io/test/github/YogliB/dev-toolkit-mcp/badge.svg)](https://snyk.io/test/github/YogliB/dev-toolkit-mcp)
+[![CodeRabbit AI Code Review](https://img.shields.io/badge/CodeRabbit-AI%20Code%20Review-FF6B6B.svg?logo=coderabbit&logoColor=white)](https://coderabbit.ai)
 
 ## What is DevFlow?
 
