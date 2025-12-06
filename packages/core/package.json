@@ -70,11 +70,11 @@
 	},
 	"devDependencies": {
 		"@eslint/js": "9.39.1",
-		"@types/better-sqlite3": "^7.6.12",
+		"@types/better-sqlite3": "^7.6.13",
 		"@types/node": "24.10.1",
-		"@vitest/coverage-v8": "4.0.14",
+		"@vitest/coverage-v8": "4.0.15",
 		"dpdm-fast": "1.0.14",
-		"drizzle-kit": "^0.28.0",
+		"drizzle-kit": "^0.31.8",
 		"eslint": "9.39.1",
 		"eslint-config-prettier": "10.1.8",
 		"eslint-import-resolver-typescript": "4.4.4",
@@ -84,14 +84,14 @@
 		"eslint-plugin-sonarjs": "3.0.5",
 		"eslint-plugin-storybook": "10.1.4",
 		"eslint-plugin-unicorn": "62.0.0",
-		"fastmcp": "3.24.0",
+		"fastmcp": "3.25.3",
 		"husky": "9.1.7",
 		"knip": "5.71.0",
 		"lint-staged": "16.2.7",
-		"prettier": "3.7.3",
+		"prettier": "3.7.4",
 		"typescript": "5.9.3",
 		"typescript-eslint": "8.48.1",
-		"vitest": "4.0.14",
+		"vitest": "4.0.15",
 		"yaml": "2.8.2",
 		"zod": "4.1.13"
 	},
@@ -104,8 +104,8 @@
 		]
 	},
 	"dependencies": {
-		"better-sqlite3": "^11.8.1",
-		"drizzle-orm": "^0.36.0",
+		"better-sqlite3": "^12.5.0",
+		"drizzle-orm": "^0.45.0",
 		"simple-git": "3.30.0",
 		"ts-morph": "27.0.2"
 	}

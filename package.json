@@ -7,7 +7,7 @@
 	"engines": {
 		"node": "24.11.1"
 	},
-	"packageManager": "npm@11.6.2",
+	"packageManager": "npm@11.6.4",
 	"workspaces": [
 		"packages/core",
 		"packages/dashboard"
@@ -30,13 +30,6 @@
 		"generate:ci-sh": "tsx scripts/generate-ci-sh.ts",
 		"validate:ci-sync": "tsx scripts/validate-ci-sync.ts"
 	},
-	"resolutions": {
-		"better-sqlite3": "12.5.0",
-		"cookie": "^0.7.0",
-		"esbuild": ">=0.25.0",
-		"express": ">=5.2.0",
-		"@modelcontextprotocol/sdk": ">=1.24.0"
-	},
 	"prettier": {
 		"singleQuote": true,
 		"useTabs": true,
@@ -44,7 +37,7 @@
 	},
 	"devDependencies": {
 		"@eslint/js": "9.39.1",
-		"esbuild": "^0.25.0",
+		"esbuild": "0.27.1",
 		"eslint": "9.39.1",
 		"eslint-config-prettier": "10.1.8",
 		"eslint-import-resolver-typescript": "4.4.4",
@@ -53,14 +46,14 @@
 		"eslint-plugin-security": "3.0.1",
 		"eslint-plugin-sonarjs": "3.0.5",
 		"eslint-plugin-storybook": "10.1.4",
-		"eslint-plugin-svelte": "3.13.0",
+		"eslint-plugin-svelte": "3.13.1",
 		"eslint-plugin-unicorn": "62.0.0",
 		"globals": "16.5.0",
 		"husky": "9.1.7",
-		"prettier": "3.7.3",
+		"prettier": "3.7.4",
 		"prettier-plugin-svelte": "3.4.0",
 		"prettier-plugin-tailwindcss": "0.7.2",
-		"tsx": "^4.19.2",
+		"tsx": "^4.21.0",
 		"turbo": "^2.6.3",
 		"typescript": "5.9.3",
 		"typescript-eslint": "8.48.1",

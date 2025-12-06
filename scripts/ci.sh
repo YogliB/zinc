@@ -30,25 +30,39 @@ run_check() {
 	fi
 }
 
-run_check "Run ESLint" "bun run lint" "false"
+run_check "Install dependencies" "npm ci" "false"
 
-run_check "Check Prettier formatting" "bun run format:check" "false"
+run_check "Run ESLint" "npx turbo run lint" "false"
 
-run_check "Run security audit" "bun audit" "false"
+run_check "Install dependencies" "npm ci" "false"
 
-run_check "Type check with TypeScript" "bun run type-check" "false"
+run_check "Check Prettier formatting" "npm run format:check" "false"
 
-run_check "Build packages" "bun run build" "false"
+run_check "Install dependencies" "npm ci" "false"
+
+run_check "Run security audit" "npm audit --omit=dev" "false"
+
+run_check "Install dependencies" "npm ci" "false"
+
+run_check "Type check with TypeScript" "npx turbo run type-check" "false"
+
+run_check "Install dependencies" "npm ci" "false"
+
+run_check "Build packages" "npm run build" "false"
 
 run_check "Verify core executable exists" "test -f packages/core/dist/server.js" "false"
 
-run_check "Verify dashboard build exists" "test -d packages/dashboard/.svelte-kit/output" "false"
+run_check "Verify dashboard build exists" "test -f packages/dashboard/build/index.html" "false"
 
-run_check "Run tests" "bun run test" "false"
+run_check "Install dependencies" "npm ci" "false"
 
-run_check "Run test coverage" "bun run test:coverage" "false"
+run_check "Run core tests" "npm run test:core" "false"
 
-run_check "Check for circular dependencies" "bun run --filter devflow-mcp check:circular:ci" "false"
+run_check "Run dashboard tests" "npm run test:dashboard" "false"
+
+run_check "Install dependencies" "npm ci" "false"
+
+run_check "Check for circular dependencies" "npx turbo run check:circular:ci --filter=devflow-mcp" "false"
 
 echo ""
 echo "━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━━"
