@@ -57,7 +57,7 @@ export class TelemetryService {
 
 	async startSession(sessionId: string): Promise<void> {
 		try {
-			await this.db
+			this.db
 				.insert(sessions)
 				.values({
 					id: sessionId,
@@ -75,7 +75,7 @@ export class TelemetryService {
 	async endSession(sessionId: string): Promise<void> {
 		try {
 			const toolCount = this.sessionToolCounts.get(sessionId) || 0;
-			await this.db
+			this.db
 				.update(sessions)
 				.set({
 					endedAt: new Date(),
@@ -102,7 +102,7 @@ export class TelemetryService {
 			this.flushTimer = undefined;
 		}
 		try {
-			await this.db.insert(toolCalls).values(batch).run();
+			this.db.insert(toolCalls).values(batch).run();
 			console.log(`Flushed ${batch.length} tool calls`);
 		} catch (error) {
 			console.error('Failed to flush tool calls:', error);
