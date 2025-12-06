@@ -35,5 +35,8 @@ src/**/*.js
 # Runtime directories
 .devflow/
 
+# Turbo cache
+.turbo/
+
 # Bun test artifacts
 .bun-test/
