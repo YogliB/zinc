@@ -1,4 +1,5 @@
 import { cpSync, readdirSync, rmSync } from 'node:fs';
+import * as esbuild from 'esbuild';
 
 function cleanupDistributionDirectory(): void {
 	try {
@@ -26,27 +27,32 @@ console.log('Building devflow...');
 try {
 	cleanupDistributionDirectory();
 
-	const result = await Bun.build({
-		entrypoints: ['./src/server.ts'],
+	await esbuild.build({
+		entryPoints: ['./src/server.ts'],
 		outdir: './dist',
-		target: 'node',
+		target: 'node20',
+		platform: 'node',
+		format: 'esm',
 		minify: true,
-		splitting: false,
+		bundle: true,
 		external: [
 			'effect',
 			'@valibot/to-json-schema',
 			'sury',
 			'better-sqlite3',
+			'node:path',
+			'node:fs',
+			'node:crypto',
+			'node:os',
+			'node:fs/promises',
+			'node:url',
+			'node:process',
+			'node:buffer',
+			'node:events',
+			'timers/promises',
+			'child_process',
 		],
 	});
-
-	if (!result.success) {
-		console.error('Build failed');
-		for (const log of result.logs) {
-			console.error(log);
-		}
-		throw new Error('Build failed');
-	}
 
 	cleanupBuildArtifacts();
 

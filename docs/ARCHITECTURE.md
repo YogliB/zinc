@@ -240,6 +240,8 @@ The dashboard uses static build + native Bun HTTP server (not `adapter-node`) be
 3. Simpler deployment, smaller bundle size, better performance
 4. Static files can be served from any platform
 
+**Build System Change**: The core MCP server uses esbuild for production builds instead of Bun's bundler to ensure better compatibility with native modules like better-sqlite3. Development uses tsx for fast TypeScript execution.
+
 **Startup Sequence:**
 
 1. MCP server initializes (stdio transport for Model Context Protocol)

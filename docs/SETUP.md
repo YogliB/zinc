@@ -2,7 +2,7 @@
 
 **DevFlow MCP** - A code analysis MCP server for understanding project structure and code relationships.
 
-Uses Bun as the package manager with strict, pinned dependency versions for reproducibility.
+Uses Bun as the package manager with strict, pinned dependency versions for reproducibility. Production builds use esbuild for better native module compatibility.
 
 ## Prerequisites
 
@@ -23,15 +23,15 @@ bun test
 bun run type-check
 
 # Start development
-bun run dev
+bun run dev:core
 ```
 
 ## Available Commands
 
 | Command                 | Purpose                                   |
 | ----------------------- | ----------------------------------------- |
-| `bun run dev`           | Development mode                          |
-| `bun run build`         | Build standalone executable with bytecode |
+| `bun run dev:core`      | Development mode (tsx)                    |
+| `bun run build`         | Build with esbuild                        |
 | `bun test`              | Run tests (Bun test runner)               |
 | `bun run test:ui`       | Interactive test dashboard                |
 | `bun run test:coverage` | Coverage report                           |
@@ -60,10 +60,10 @@ src/
 
 ### Build System
 
-- **Bun Compiler** with bytecode compilation for ~2x faster startup
-- Standalone executable includes embedded Bun runtime (~72MB)
-- Template files embedded directly in executable
-- No external dependencies needed at runtime
+- **esbuild** for production builds with native module support
+- ESM output format for modern JavaScript environments
+- External dependencies properly handled for better-sqlite3 compatibility
+- Development server uses tsx for fast TypeScript execution
 
 ### TypeScript (`tsconfig.json`)
 

@@ -16,7 +16,7 @@
 		"check:circular:verbose": "dpdm ./src/server.ts",
 		"check:circular": "dpdm --no-warning --no-tree ./src/server.ts",
 		"ci": "bash scripts/ci.sh",
-		"dev": "bun run src/server.ts",
+		"dev": "tsx src/server.ts",
 		"format:check": "prettier --check .",
 		"format": "prettier --write .",
 		"generate:ci-sh": "bun run scripts/generate-ci-sh.ts",
