@@ -253,13 +253,17 @@ async function main(): Promise<void> {
 		`All MCP tools registered (${(performance.now() - toolsStart).toFixed(2)}ms)`,
 	);
 
-	server.on('connect', (event: { session: FastMCPSession }) =>
-		telemetryService.startSession(event.session.sessionId),
-	);
+	server.on('connect', (event: { session: FastMCPSession }) => {
+		if (event.session.sessionId) {
+			telemetryService.startSession(event.session.sessionId);
+		}
+	});
 
-	server.on('disconnect', (event: { session: FastMCPSession }) =>
-		telemetryService.endSession(event.session.sessionId),
-	);
+	server.on('disconnect', (event: { session: FastMCPSession }) => {
+		if (event.session.sessionId) {
+			telemetryService.endSession(event.session.sessionId);
+		}
+	});
 
 	await server.start({
 		transportType: 'stdio',
