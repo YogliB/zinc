@@ -109,7 +109,7 @@ describe('Database Performance', () => {
 			);
 		});
 
-		it('should handle concurrent writes efficiently', () => {
+		it('should handle sequential writes efficiently', () => {
 			const database = getAnalyticsDatabase();
 
 			const newSession = {
@@ -143,12 +143,12 @@ describe('Database Performance', () => {
 
 			expectDurationWithinBaseline(
 				duration,
-				'database-performance.concurrent-writes',
+				'database-performance.sequential-writes',
 				0.5,
 			);
 			expect(duration).toBeLessThan(100);
 			console.log(
-				`✓ Concurrent writes (50 operations): ${duration.toFixed(2)}ms`,
+				`✓ Sequential writes (50 operations): ${duration.toFixed(2)}ms`,
 			);
 		});
 	});
