@@ -13,7 +13,7 @@
 
 | PR  | Repo   | Status | Link | Notes |
 | --- | ------ | ------ | ---- | ----- |
-| 1   | zinc   | ⏸️     | -    | MCP Tools and Agent Core (Rust) |
+| 1   | zinc   | 🟢     | -    | MCP Tools and Agent Core (Rust) |
 | 2   | zinc   | ⏸️     | -    | MCP Server Binary |
 | 3   | zinc   | ⏸️     | -    | IDE Shell (Tauri + SvelteKit + CodeMirror) |
 | 4   | zinc   | ⏸️     | -    | IDE ↔ Agent Integration (Shared Tools) |
@@ -21,7 +21,7 @@
 
 Status: 🟢 done · 🟡 in‑progress · 🟠 review · ⏸️ not‑started · 🔴 blocked · ⚫ canceled
 
-## PR1: MCP Tools and Agent Core (Rust) — ⏸️
+## PR1: MCP Tools and Agent Core (Rust) — 🟢
 
 **Repo:** zinc · **Link:** - · **ETA:** 4–6h dev + 1–2h review
 **Files:** `crates/agent-core/src/lib.rs`, `crates/agent-core/Cargo.toml`, new crate structure
@@ -67,7 +67,7 @@ Status: 🟢 done · 🟡 in‑progress · 🟠 review · ⏸️ not‑started �
 - [ ] No breaking changes
 - [ ] All checks pass
 
-**Dependencies:** Blocked by PR1 · Blocks None
+**Dependencies:** Blocked by None · Blocks None
 
 ## PR3: IDE Shell (Tauri + SvelteKit + CodeMirror) — ⏸️
 
@@ -128,7 +128,7 @@ Status: 🟢 done · 🟡 in‑progress · 🟠 review · ⏸️ not‑started �
 - [ ] No breaking changes
 - [ ] All checks pass
 
-**Dependencies:** Blocked by PR1, PR3 · Blocks PR5
+**Dependencies:** Blocked by PR3 · Blocks PR5
 
 ## PR5: Manual Wiring and Final Touches — ⏸️
 
