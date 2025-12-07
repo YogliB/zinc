@@ -10,7 +10,7 @@ use serde_json::{Value, Map};
 
 
 #[derive(Default)]
-struct ZincServer;
+pub struct ZincServer;
 
 impl ZincServer {
     async fn read_file(&self, path: String) -> Result<String, ErrorData> {
@@ -185,26 +185,43 @@ impl ServerHandler for ZincServer {
 }
 
 #[derive(Deserialize, JsonSchema)]
-struct ReadFileInput {
-    path: String,
+pub struct ReadFileInput {
+    pub path: String,
 }
 
 #[derive(Deserialize, JsonSchema)]
-struct WriteFileInput {
-    path: String,
-    content: String,
+pub struct WriteFileInput {
+    pub path: String,
+    pub content: String,
 }
 
 #[derive(Deserialize, JsonSchema)]
-struct ListFilesInput {
-    path: String,
+pub struct ListFilesInput {
+    pub path: String,
 }
 
 #[derive(Deserialize, JsonSchema)]
-struct RunCommandInput {
-    command: String,
+pub struct RunCommandInput {
+    pub command: String,
     #[serde(default)]
-    args: Vec<String>,
+    pub args: Vec<String>,
+}
+
+#[cfg(test)]
+mod tests {
+    use super::*;
+
+    #[tokio::test]
+    async fn test_server_initialization() {
+        let server = ZincServer::default();
+
+        // Test get_info
+        let info = server.get_info();
+        assert_eq!(info.protocol_version, ProtocolVersion::LATEST);
+        assert!(info.capabilities.tools.is_some());
+        assert_eq!(info.server_info.name, "zinc-mcp-server");
+        assert_eq!(info.server_info.version, "0.1.0");
+    }
 }
 
 #[tokio::main]
