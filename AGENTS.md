@@ -41,7 +41,7 @@
 - **NEVER** create new documentation files in the project root or `docs/` folder.
 - The following documentation files are **sacred** and must be preserved:
     - **Root**: `AGENTS.md`, `README.md`
-    - **docs/**: `ARCHITECTURE.md`, `CHANGELOG.md`, `CONTRIBUTING.md`, `README.md`, `SECURITY.md`, `SETUP.md`, `USAGE.md`
+    - **docs/**: `ARCHITECTURE.md`, `CONTRIBUTING.md`, `README.md`, `SECURITY.md`, `SETUP.md`, `USAGE.md`
 - All documentation must be added to existing files only.
 - If you are 99% certain a new documentation file must be created:
     - **STOP** and alert the user about the need
