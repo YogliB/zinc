@@ -1,1 +1,0 @@
-export { registerAllTools } from './register';

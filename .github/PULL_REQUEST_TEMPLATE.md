@@ -1,27 +1,23 @@
+## Description
+
+Brief description of the changes and why they are needed.
+
 ## Changes
 
-What was changed and why.
-
-## Type of Change
-
-- [ ] Bug fix
-- [ ] New feature
-- [ ] Breaking change
-- [ ] Documentation
-- [ ] Refactor
-- [ ] Performance improvement
+- List of key changes made
+- Include file paths and what was changed
 
 ## Testing
 
-How was this tested? Include steps to reproduce or verify the changes.
+- How the changes were tested
+- Any relevant test results
 
 ## Checklist
 
 - [ ] Code follows project style guidelines
-- [ ] Tests added/updated
-- [ ] Documentation updated
-- [ ] No new warnings or errors
-- [ ] Tested locally
+- [ ] Tests pass
+- [ ] Documentation updated if needed
+- [ ] No breaking changes
 
 ## Related Issues
 

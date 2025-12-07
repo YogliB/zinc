@@ -14,16 +14,20 @@
 
 ## Dependencies
 
-- Prefer **native Bun tools and libraries** when possible (e.g., `bun:test`, `bun:sqlite`, built-in APIs).
-- Only use external dependencies when Bun's native alternatives are insufficient or unavailable.
+- Use **npm as package manager** for dependency management and script execution.
+- Use **Vitest** for testing UI components.
+- Use **esbuild** for production bundling.
+- Use **Node.js** for production runtime.
+- Only use external dependencies when necessary alternatives are insufficient or unavailable.
 
 ## File Editing
 
 - **NEVER** edit config files unless specifically requested to. Forbidden files:
-    - `bunfig.toml`
-        - `eslint.config.mjs`
+    - `eslint.config.mjs`
     - `knip.json`
     - `tsconfig.json`
+    - `tauri.conf.json`
+    - `Cargo.toml`
 - **NEVER** disable eslint rules unless given a direct and clear instruction to do so
 
 ## Git Operations
@@ -36,8 +40,8 @@
 
 - **NEVER** create new documentation files in the project root or `docs/` folder.
 - The following documentation files are **sacred** and must be preserved:
-    - **Root**: `LICENCE.md`, `AGENTS.md`, `README.md`
-    - **docs/**: `ARCHITECTURE.md`, `CHANGELOG.md`, `CONTRIBUTING.md`, `README.md`, `ROADMAP.md`, `SECURITY.md`, `SETUP.md`, `TESTING.md`, `USAGE.md`
+    - **Root**: `AGENTS.md`, `README.md`
+    - **docs/**: `ARCHITECTURE.md`, `CHANGELOG.md`, `CONTRIBUTING.md`, `README.md`, `SECURITY.md`, `SETUP.md`, `USAGE.md`
 - All documentation must be added to existing files only.
 - If you are 99% certain a new documentation file must be created:
     - **STOP** and alert the user about the need
@@ -47,5 +51,5 @@
 ## Test Structure
 
 - Test directories in packages must have only `unit/`, `integration/`, and `e2e/` subdirs (excluding `helpers/`).
-- Each package must have exactly one `test` script that runs all tests via Vitest.
+- Each package must have one `test` script per subdir in addition to a general `test` script.
 - CI must have separate test steps per package.
