@@ -27,7 +27,7 @@
     - `knip.json`
     - `tsconfig.json`
     - `tauri.conf.json`
-    - `Cargo.toml` (workspace root only)
+    - `Cargo.toml`
 - **NEVER** disable eslint rules unless given a direct and clear instruction to do so
 
 ## Git Operations
@@ -51,5 +51,5 @@
 ## Test Structure
 
 - Test directories in packages must have only `unit/`, `integration/`, and `e2e/` subdirs (excluding `helpers/`).
-- Each package must have exactly one `test` script that runs all tests via Vitest.
+- Each package must have one `test` script per subdir in addition to a general `test` script.
 - CI must have separate test steps per package.
