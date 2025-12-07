@@ -1,0 +1,1 @@
+/Users/yogev.boaronben-har/dev/oss/zinc/crates/mcp-server/target/debug/mcp-server: /Users/yogev.boaronben-har/dev/oss/zinc/crates/agent-core/src/agent.rs /Users/yogev.boaronben-har/dev/oss/zinc/crates/agent-core/src/lib.rs /Users/yogev.boaronben-har/dev/oss/zinc/crates/agent-core/src/tools.rs /Users/yogev.boaronben-har/dev/oss/zinc/crates/mcp-server/src/main.rs
