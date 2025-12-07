@@ -1,268 +1,254 @@
-use tokio::io::{AsyncBufReadExt, AsyncWriteExt, BufReader};
-use serde::{Deserialize, Serialize};
-use serde_json;
+// This MCP server implementation uses the rmcp SDK for protocol handling,
+// providing a standardized and maintainable way to implement MCP tools.
+use rmcp_macros::tool;
+use rmcp::{ErrorData, ServiceExt, ServerHandler, model::{InitializeRequestParam, InitializeResult, ServerCapabilities, ToolsCapability, Implementation, ListToolsResult, PaginatedRequestParam, CallToolRequestParam, CallToolResult, Tool, Content, ProtocolVersion}, service::{RequestContext, RoleServer}};
+use tokio::io::{stdin, stdout};
+use agent_core;
+use serde::Deserialize;
+use schemars::JsonSchema;
+use std::sync::Arc;
+use serde_json::{Value, Map};
 
-#[derive(Deserialize)]
-struct Request {
-    jsonrpc: String,
-    id: Option<u64>,
-    method: String,
-    params: Option<serde_json::Value>,
+
+#[derive(Default)]
+struct ZincServer;
+
+impl ZincServer {
+    #[tool]
+    async fn read_file(&self, path: String) -> Result<String, ErrorData> {
+        agent_core::read_file(agent_core::ReadFileParams { path })
+            .map_err(|e| ErrorData::internal_error(format!("Failed to read file: {}", e), None))
+    }
+
+    #[tool]
+    async fn write_file(&self, path: String, content: String) -> Result<(), ErrorData> {
+        agent_core::write_file(agent_core::WriteFileParams { path, content })
+            .map_err(|e| ErrorData::internal_error(format!("Failed to write file: {}", e), None))
+    }
+
+    #[tool]
+    async fn list_files(&self, path: String) -> Result<Vec<String>, ErrorData> {
+        agent_core::list_files(agent_core::ListFilesParams { path })
+            .map_err(|e| ErrorData::internal_error(format!("Failed to list files: {}", e), None))
+    }
+
+    #[tool]
+    async fn run_command(&self, command: String, args: Vec<String>) -> Result<String, ErrorData> {
+        agent_core::run_command(agent_core::RunCommandParams { command, args })
+            .map_err(|e| ErrorData::internal_error(format!("Failed to run command: {}", e), None))
+    }
 }
 
-#[derive(Serialize)]
-struct Response {
-    jsonrpc: String,
-    id: Option<u64>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    result: Option<serde_json::Value>,
-    #[serde(skip_serializing_if = "Option::is_none")]
-    error: Option<Error>,
+impl ServerHandler for ZincServer {
+    fn get_info(&self) -> InitializeResult {
+        InitializeResult {
+            protocol_version: ProtocolVersion::V_2024_11_05,
+            capabilities: ServerCapabilities {
+                tools: Some(ToolsCapability::default()),
+                ..Default::default()
+            },
+            server_info: Implementation {
+                name: "zinc-mcp-server".into(),
+                version: "0.1.0".into(),
+                icons: None,
+                title: None,
+                website_url: None,
+            },
+            instructions: None,
+        }
+    }
+
+    fn initialize(
+        &self,
+        _request: InitializeRequestParam,
+        _context: RequestContext<RoleServer>,
+    ) -> impl std::future::Future<Output = Result<InitializeResult, ErrorData>> + Send + '_ {
+        async move {
+            Ok(self.get_info())
+        }
+    }
+
+    fn list_tools(
+        &self,
+        _cursor: Option<PaginatedRequestParam>,
+        _context: RequestContext<RoleServer>,
+    ) -> impl std::future::Future<Output = Result<ListToolsResult, ErrorData>> + Send + '_ {
+        async move {
+            let tools = vec![
+                Tool {
+                    name: "read_file".into(),
+                    description: Some("Read the contents of a file".into()),
+                    input_schema: {
+                        let value = serde_json::to_value(schemars::schema_for!(ReadFileInput)).unwrap();
+                        if let Value::Object(map) = value {
+                            Arc::new(map)
+                        } else {
+                            Arc::new(Map::new())
+                        }
+                    },
+                    annotations: None,
+                    icons: None,
+                    output_schema: None,
+                    title: None,
+                },
+                Tool {
+                    name: "write_file".into(),
+                    description: Some("Write content to a file".into()),
+                    input_schema: {
+                        let value = serde_json::to_value(schemars::schema_for!(WriteFileInput)).unwrap();
+                        if let Value::Object(map) = value {
+                            Arc::new(map)
+                        } else {
+                            Arc::new(Map::new())
+                        }
+                    },
+                    annotations: None,
+                    icons: None,
+                    output_schema: None,
+                    title: None,
+                },
+                Tool {
+                    name: "list_files".into(),
+                    description: Some("List files in a directory".into()),
+                    input_schema: {
+                        let value = serde_json::to_value(schemars::schema_for!(ListFilesInput)).unwrap();
+                        if let Value::Object(map) = value {
+                            Arc::new(map)
+                        } else {
+                            Arc::new(Map::new())
+                        }
+                    },
+                    annotations: None,
+                    icons: None,
+                    output_schema: None,
+                    title: None,
+                },
+                Tool {
+                    name: "run_command".into(),
+                    description: Some("Run a shell command".into()),
+                    input_schema: {
+                        let value = serde_json::to_value(schemars::schema_for!(RunCommandInput)).unwrap();
+                        if let Value::Object(map) = value {
+                            Arc::new(map)
+                        } else {
+                            Arc::new(Map::new())
+                        }
+                    },
+                    annotations: None,
+                    icons: None,
+                    output_schema: None,
+                    title: None,
+                },
+            ];
+            Ok(ListToolsResult { tools, next_cursor: None })
+        }
+    }
+
+    fn call_tool(
+        &self,
+        param: CallToolRequestParam,
+        _context: RequestContext<RoleServer>,
+    ) -> impl std::future::Future<Output = Result<CallToolResult, ErrorData>> + Send + '_ {
+        async move {
+            match param.name.as_ref() {
+                "read_file" => {
+                    if let Some(args) = param.arguments {
+                        let value = Value::Object(args);
+                        let input: ReadFileInput = serde_json::from_value(value).map_err(|_| ErrorData::invalid_params("Invalid arguments for read_file", None))?;
+                        let content = self.read_file(input.path).await?;
+                        Ok(CallToolResult {
+                            content: vec![Content::text(content)],
+                            meta: None,
+                            is_error: Some(false),
+                            structured_content: None,
+                        })
+                    } else {
+                        Err(ErrorData::invalid_params("Missing arguments for read_file", None))
+                    }
+                }
+                "write_file" => {
+                    if let Some(args) = param.arguments {
+                        let value = Value::Object(args);
+                        let input: WriteFileInput = serde_json::from_value(value).map_err(|_| ErrorData::invalid_params("Invalid arguments for write_file", None))?;
+                        self.write_file(input.path, input.content).await?;
+                        Ok(CallToolResult {
+                            content: vec![Content::text("File written successfully".to_string())],
+                            meta: None,
+                            is_error: Some(false),
+                            structured_content: None,
+                        })
+                    } else {
+                        Err(ErrorData::invalid_params("Missing arguments for write_file", None))
+                    }
+                }
+                "list_files" => {
+                    if let Some(args) = param.arguments {
+                        let value = Value::Object(args);
+                        let input: ListFilesInput = serde_json::from_value(value).map_err(|_| ErrorData::invalid_params("Invalid arguments for list_files", None))?;
+                        let files = self.list_files(input.path).await?;
+                        Ok(CallToolResult {
+                            content: vec![Content::text(format!("{:?}", files))],
+                            meta: None,
+                            is_error: Some(false),
+                            structured_content: None,
+                        })
+                    } else {
+                        Err(ErrorData::invalid_params("Missing arguments for list_files", None))
+                    }
+                }
+                "run_command" => {
+                    if let Some(args) = param.arguments {
+                        let value = Value::Object(args);
+                        let input: RunCommandInput = serde_json::from_value(value).map_err(|_| ErrorData::invalid_params("Invalid arguments for run_command", None))?;
+                        let output = self.run_command(input.command, input.args).await?;
+                        Ok(CallToolResult {
+                            content: vec![Content::text(output)],
+                            meta: None,
+                            is_error: Some(false),
+                            structured_content: None,
+                        })
+                    } else {
+                        Err(ErrorData::invalid_params("Missing arguments for run_command", None))
+                    }
+                }
+                _ => Err(ErrorData::invalid_request("Tool not found", None)),
+            }
+        }
+    }
 }
 
-#[derive(Serialize)]
-struct Error {
-    code: i32,
-    message: String,
+#[derive(Deserialize, JsonSchema)]
+struct ReadFileInput {
+    path: String,
+}
+
+#[derive(Deserialize, JsonSchema)]
+struct WriteFileInput {
+    path: String,
+    content: String,
+}
+
+#[derive(Deserialize, JsonSchema)]
+struct ListFilesInput {
+    path: String,
+}
+
+#[derive(Deserialize, JsonSchema)]
+struct RunCommandInput {
+    command: String,
+    #[serde(default)]
+    args: Vec<String>,
 }
 
 #[tokio::main]
 async fn main() -> Result<(), Box<dyn std::error::Error>> {
     let args: Vec<String> = std::env::args().collect();
     if args.len() > 1 && args[1] == "--exec" {
-        run_stdio().await?;
+        let service = ZincServer::default();
+        let transport = (stdin(), stdout());
+        service.serve(transport).await?;
     } else {
         eprintln!("Usage: {} --exec", args[0]);
     }
     Ok(())
-}
-
-async fn run_stdio() -> Result<(), Box<dyn std::error::Error>> {
-    let stdin = tokio::io::stdin();
-    let mut stdout = tokio::io::stdout();
-    let mut reader = BufReader::new(stdin);
-    let mut line = String::new();
-
-    loop {
-        line.clear();
-        match reader.read_line(&mut line).await {
-            Ok(0) => break, // EOF
-            Ok(_) => {
-                let trimmed = line.trim();
-                if trimmed.is_empty() {
-                    continue;
-                }
-                eprintln!("Received: {}", trimmed);
-                match serde_json::from_str::<Request>(trimmed) {
-                    Ok(req) => {
-                        let response = handle_request(req).await;
-                        let response_json = serde_json::to_string(&response)?;
-                        stdout.write_all(response_json.as_bytes()).await?;
-                        stdout.write_all(b"\n").await?;
-                        stdout.flush().await?;
-                        eprintln!("Sent: {}", response_json);
-                    }
-                    Err(e) => {
-                        eprintln!("Parse error: {}", e);
-                        let error_resp = Response {
-                            jsonrpc: "2.0".to_string(),
-                            id: None,
-                            result: None,
-                            error: Some(Error {
-                                code: -32700,
-                                message: "Parse error".to_string(),
-                            }),
-                        };
-                        let error_json = serde_json::to_string(&error_resp)?;
-                        stdout.write_all(error_json.as_bytes()).await?;
-                        stdout.write_all(b"\n").await?;
-                        stdout.flush().await?;
-                    }
-                }
-            }
-            Err(e) => {
-                eprintln!("Read error: {}", e);
-                break;
-            }
-        }
-    }
-    Ok(())
-}
-
-async fn handle_request(req: Request) -> Response {
-    match req.method.as_str() {
-        "initialize" => {
-            // Basic initialize response
-            let result = serde_json::json!({
-                "protocolVersion": "2024-11-05",
-                "capabilities": {
-                    "tools": {}
-                },
-                "serverInfo": {
-                    "name": "zinc-mcp-server",
-                    "version": "0.1.0"
-                }
-            });
-            Response {
-                jsonrpc: "2.0".to_string(),
-                id: req.id,
-                result: Some(result),
-                error: None,
-            }
-        }
-        "tools/list" => {
-            let tools = vec![
-                serde_json::json!({
-                    "name": "read_file",
-                    "description": "Read the contents of a file",
-                    "inputSchema": {
-                        "type": "object",
-                        "properties": {
-                            "path": {"type": "string"}
-                        },
-                        "required": ["path"]
-                    }
-                }),
-                serde_json::json!({
-                    "name": "write_file",
-                    "description": "Write content to a file",
-                    "inputSchema": {
-                        "type": "object",
-                        "properties": {
-                            "path": {"type": "string"},
-                            "content": {"type": "string"}
-                        },
-                        "required": ["path", "content"]
-                    }
-                }),
-                serde_json::json!({
-                    "name": "list_files",
-                    "description": "List files in a directory",
-                    "inputSchema": {
-                        "type": "object",
-                        "properties": {
-                            "path": {"type": "string"}
-                        },
-                        "required": ["path"]
-                    }
-                }),
-                serde_json::json!({
-                    "name": "run_command",
-                    "description": "Run a shell command",
-                    "inputSchema": {
-                        "type": "object",
-                        "properties": {
-                            "command": {"type": "string"},
-                            "args": {"type": "array", "items": {"type": "string"}}
-                        },
-                        "required": ["command"]
-                    }
-                }),
-            ];
-            let result = serde_json::json!({ "tools": tools });
-            Response {
-                jsonrpc: "2.0".to_string(),
-                id: req.id,
-                result: Some(result),
-                error: None,
-            }
-        }
-        "tools/call" => {
-            if let Some(params) = req.params {
-                if let Some(tool_name) = params.get("name").and_then(|v| v.as_str()) {
-                    let args = params.get("arguments").cloned();
-                    match handle_tool_call(tool_name, args).await {
-                        Ok(result) => Response {
-                            jsonrpc: "2.0".to_string(),
-                            id: req.id,
-                            result: Some(result),
-                            error: None,
-                        },
-                        Err(e) => Response {
-                            jsonrpc: "2.0".to_string(),
-                            id: req.id,
-                            result: None,
-                            error: Some(Error {
-                                code: -32603,
-                                message: e.to_string(),
-                            }),
-                        },
-                    }
-                } else {
-                    Response {
-                        jsonrpc: "2.0".to_string(),
-                        id: req.id,
-                        result: None,
-                        error: Some(Error {
-                            code: -32602,
-                            message: "Invalid params".to_string(),
-                        }),
-                    }
-                }
-            } else {
-                Response {
-                    jsonrpc: "2.0".to_string(),
-                    id: req.id,
-                    result: None,
-                    error: Some(Error {
-                        code: -32602,
-                        message: "Invalid params".to_string(),
-                    }),
-                }
-            }
-        }
-        _ => Response {
-            jsonrpc: "2.0".to_string(),
-            id: req.id,
-            result: None,
-            error: Some(Error {
-                code: -32601,
-                message: "Method not found".to_string(),
-            }),
-        },
-    }
-}
-
-async fn handle_tool_call(tool_name: &str, args: Option<serde_json::Value>) -> Result<serde_json::Value, Box<dyn std::error::Error>> {
-    match tool_name {
-        "read_file" => {
-            if let Some(args) = args {
-                let path: String = serde_json::from_value(args.get("path").unwrap().clone())?;
-                let content = agent_core::read_file(agent_core::ReadFileParams { path })?;
-                Ok(serde_json::json!({ "content": content }))
-            } else {
-                Err("Missing arguments".into())
-            }
-        }
-        "write_file" => {
-            if let Some(args) = args {
-                let path: String = serde_json::from_value(args.get("path").unwrap().clone())?;
-                let content: String = serde_json::from_value(args.get("content").unwrap().clone())?;
-                agent_core::write_file(agent_core::WriteFileParams { path, content })?;
-                Ok(serde_json::json!({ "success": true }))
-            } else {
-                Err("Missing arguments".into())
-            }
-        }
-        "list_files" => {
-            if let Some(args) = args {
-                let path: String = serde_json::from_value(args.get("path").unwrap().clone())?;
-                let files = agent_core::list_files(agent_core::ListFilesParams { path })?;
-                Ok(serde_json::json!({ "files": files }))
-            } else {
-                Err("Missing arguments".into())
-            }
-        }
-        "run_command" => {
-            if let Some(args) = args {
-                let command: String = serde_json::from_value(args.get("command").unwrap().clone())?;
-                let args_vec: Vec<String> = args.get("args").map(|a| serde_json::from_value(a.clone()).unwrap_or_default()).unwrap_or_default();
-                let output = agent_core::run_command(agent_core::RunCommandParams { command, args: args_vec })?;
-                Ok(serde_json::json!({ "output": output }))
-            } else {
-                Err("Missing arguments".into())
-            }
-        }
-        _ => Err("Unknown tool".into()),
-    }
 }

@@ -4,5 +4,5 @@
 - **Frontend:** SvelteKit, CodeMirror 6.
 - **Desktop:** Tauri.
 - **Agent:** OpenRouter API for AI.
-- **MCP:** JSON-RPC over stdio.
+- **MCP:** rmcp SDK for Model Context Protocol.
 - **Package Manager:** npm for Node, Cargo for Rust.
