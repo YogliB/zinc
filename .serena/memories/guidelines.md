@@ -8,3 +8,4 @@
 - Consistent style.
 - No unnecessary apologies in responses.
 - For agents: Validate facts, cite sources, concise responses.
+- Git: Never commit build artifacts (e.g., target/ in Rust crates)
