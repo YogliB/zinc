@@ -1,8 +1,0 @@
-/Users/yogev.boaronben-har/dev/oss/zinc/crates/mcp-server/target/debug/deps/icu_normalizer-feac7e3938fe016b.d: /Users/yogev.boaronben-har/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/lib.rs /Users/yogev.boaronben-har/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/properties.rs /Users/yogev.boaronben-har/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/provider.rs /Users/yogev.boaronben-har/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/uts46.rs
-
-/Users/yogev.boaronben-har/dev/oss/zinc/crates/mcp-server/target/debug/deps/libicu_normalizer-feac7e3938fe016b.rmeta: /Users/yogev.boaronben-har/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/lib.rs /Users/yogev.boaronben-har/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/properties.rs /Users/yogev.boaronben-har/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/provider.rs /Users/yogev.boaronben-har/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/uts46.rs
-
-/Users/yogev.boaronben-har/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/lib.rs:
-/Users/yogev.boaronben-har/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/properties.rs:
-/Users/yogev.boaronben-har/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/provider.rs:
-/Users/yogev.boaronben-har/.cargo/registry/src/index.crates.io-1949cf8c6b5b557f/icu_normalizer-2.1.1/src/uts46.rs:

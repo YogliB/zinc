@@ -37,7 +37,7 @@ impl ZincServer {
 impl ServerHandler for ZincServer {
     fn get_info(&self) -> InitializeResult {
         InitializeResult {
-            protocol_version: ProtocolVersion::V_2024_11_05,
+            protocol_version: ProtocolVersion::LATEST,
             capabilities: ServerCapabilities {
                 tools: Some(ToolsCapability::default()),
                 ..Default::default()
@@ -59,7 +59,6 @@ impl ServerHandler for ZincServer {
         _context: RequestContext<RoleServer>,
     ) -> impl std::future::Future<Output = Result<InitializeResult, ErrorData>> + Send + '_ {
         async move {
-            eprintln!("initialize called");
             Ok(self.get_info())
         }
     }
@@ -74,14 +73,7 @@ impl ServerHandler for ZincServer {
                 Tool {
                     name: "read_file".into(),
                     description: Some("Read the contents of a file".into()),
-                    input_schema: {
-                        let value = serde_json::to_value(schemars::schema_for!(ReadFileInput)).unwrap();
-                        if let Value::Object(map) = value {
-                            Arc::new(map)
-                        } else {
-                            Arc::new(Map::new())
-                        }
-                    },
+                    input_schema: Arc::new(Map::new()),
                     annotations: None,
                     icons: None,
                     output_schema: None,
@@ -90,14 +82,7 @@ impl ServerHandler for ZincServer {
                 Tool {
                     name: "write_file".into(),
                     description: Some("Write content to a file".into()),
-                    input_schema: {
-                        let value = serde_json::to_value(schemars::schema_for!(WriteFileInput)).unwrap();
-                        if let Value::Object(map) = value {
-                            Arc::new(map)
-                        } else {
-                            Arc::new(Map::new())
-                        }
-                    },
+                    input_schema: Arc::new(Map::new()),
                     annotations: None,
                     icons: None,
                     output_schema: None,
@@ -106,14 +91,7 @@ impl ServerHandler for ZincServer {
                 Tool {
                     name: "list_files".into(),
                     description: Some("List files in a directory".into()),
-                    input_schema: {
-                        let value = serde_json::to_value(schemars::schema_for!(ListFilesInput)).unwrap();
-                        if let Value::Object(map) = value {
-                            Arc::new(map)
-                        } else {
-                            Arc::new(Map::new())
-                        }
-                    },
+                    input_schema: Arc::new(Map::new()),
                     annotations: None,
                     icons: None,
                     output_schema: None,
@@ -122,21 +100,13 @@ impl ServerHandler for ZincServer {
                 Tool {
                     name: "run_command".into(),
                     description: Some("Run a shell command".into()),
-                    input_schema: {
-                        let value = serde_json::to_value(schemars::schema_for!(RunCommandInput)).unwrap();
-                        if let Value::Object(map) = value {
-                            Arc::new(map)
-                        } else {
-                            Arc::new(Map::new())
-                        }
-                    },
+                    input_schema: Arc::new(Map::new()),
                     annotations: None,
                     icons: None,
                     output_schema: None,
                     title: None,
                 },
             ];
-            eprintln!("list_tools called, returning {} tools", tools.len());
             Ok(ListToolsResult { tools, next_cursor: None })
         }
     }
