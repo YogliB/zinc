@@ -1,8 +1,0 @@
-[install]
-exact = true
-buntrust = true
-workspaces = ["packages/core", "packages/dashboard"]
-
-[test]
-concurrent = true
-maxConcurrency = 20
