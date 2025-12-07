@@ -1,6 +1,5 @@
 // This MCP server implementation uses the rmcp SDK for protocol handling,
 // providing a standardized and maintainable way to implement MCP tools.
-use rmcp_macros::tool;
 use rmcp::{ErrorData, ServiceExt, ServerHandler, model::{InitializeRequestParam, InitializeResult, ServerCapabilities, ToolsCapability, Implementation, ListToolsResult, PaginatedRequestParam, CallToolRequestParam, CallToolResult, Tool, Content, ProtocolVersion}, service::{RequestContext, RoleServer}};
 use tokio::io::{stdin, stdout};
 use agent_core;
@@ -14,25 +13,21 @@ use serde_json::{Value, Map};
 struct ZincServer;
 
 impl ZincServer {
-    #[tool]
     async fn read_file(&self, path: String) -> Result<String, ErrorData> {
         agent_core::read_file(agent_core::ReadFileParams { path })
             .map_err(|e| ErrorData::internal_error(format!("Failed to read file: {}", e), None))
     }
 
-    #[tool]
     async fn write_file(&self, path: String, content: String) -> Result<(), ErrorData> {
         agent_core::write_file(agent_core::WriteFileParams { path, content })
             .map_err(|e| ErrorData::internal_error(format!("Failed to write file: {}", e), None))
     }
 
-    #[tool]
     async fn list_files(&self, path: String) -> Result<Vec<String>, ErrorData> {
         agent_core::list_files(agent_core::ListFilesParams { path })
             .map_err(|e| ErrorData::internal_error(format!("Failed to list files: {}", e), None))
     }
 
-    #[tool]
     async fn run_command(&self, command: String, args: Vec<String>) -> Result<String, ErrorData> {
         agent_core::run_command(agent_core::RunCommandParams { command, args })
             .map_err(|e| ErrorData::internal_error(format!("Failed to run command: {}", e), None))
@@ -64,6 +59,7 @@ impl ServerHandler for ZincServer {
         _context: RequestContext<RoleServer>,
     ) -> impl std::future::Future<Output = Result<InitializeResult, ErrorData>> + Send + '_ {
         async move {
+            eprintln!("initialize called");
             Ok(self.get_info())
         }
     }
@@ -140,6 +136,7 @@ impl ServerHandler for ZincServer {
                     title: None,
                 },
             ];
+            eprintln!("list_tools called, returning {} tools", tools.len());
             Ok(ListToolsResult { tools, next_cursor: None })
         }
     }
