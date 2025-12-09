@@ -2,6 +2,7 @@
 	import { onMount } from 'svelte';
 	import { basicSetup } from '@codemirror/basic-setup';
 	import { EditorView } from '@codemirror/view';
+	import { Button } from 'flowbite-svelte';
 
 	let editorElement: HTMLElement;
 	let code = $state(`// Welcome to Zinc IDE
@@ -30,6 +31,7 @@ console.log(greet('Developer'));`);
 </script>
 
 <div class="h-screen w-screen relative bg-gray-50">
+	<Button>Click me</Button>
 	<div bind:this={editorElement} class="h-full"></div>
 </div>
 
