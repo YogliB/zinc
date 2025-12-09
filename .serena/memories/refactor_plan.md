@@ -1,12 +1,14 @@
 Refactoring completed. The MCP server now uses the official rmcp SDK for better maintainability and compliance with the MCP specification.
 
 Changes made:
+
 - Updated Cargo.toml to include rmcp and schemars.
 - Rewrote main.rs to use rmcp's server framework.
 - Defined tools using rmcp-macros.
 - Maintained compatibility with existing agent_core calls.
 
 Next steps:
+
 - Test the refactored server.
 - Update any documentation if needed.
 
@@ -17,18 +19,21 @@ Note: The refactor uses the official rmcp SDK, which provides better protocol co
 The new implementation is more robust and follows the official MCP specification.
 
 Benefits:
+
 - Official SDK support.
 - Better error handling.
 - Easier to add new tools.
 - Compliance with MCP spec.
 
 Implementation details:
+
 - Used rmcp with server feature.
 - Used schemars for JSON schema generation.
 - Defined a ZincServer struct implementing ServerHandler.
 - Tools defined with #[tool] macro from rmcp-macros.
 
 Code changes:
+
 - Cargo.toml: Added rmcp = { version = "0.8.0", features = ["server"] }, schemars = "0.8", rmcp-macros = "0.8.0"
 - main.rs: Completely rewritten to use rmcp framework.
 

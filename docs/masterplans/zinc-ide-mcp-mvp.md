@@ -11,13 +11,13 @@
 
 > PRs: whole numbers, start at 1, sequential by dependencies.
 
-| PR  | Repo   | Status | Link | Notes |
-| --- | ------ | ------ | ---- | ----- |
-| 1   | zinc   | 🟢     | -    | MCP Tools and Agent Core (Rust) |
-| 2   | zinc   | ⏸️     | -    | MCP Server Binary |
-| 3   | zinc   | ⏸️     | -    | IDE Shell (Tauri + SvelteKit + CodeMirror) |
-| 4   | zinc   | ⏸️     | -    | IDE ↔ Agent Integration (Shared Tools) |
-| 5   | zinc   | ⏸️     | -    | Manual Wiring and Final Touches |
+| PR  | Repo | Status | Link | Notes                                      |
+| --- | ---- | ------ | ---- | ------------------------------------------ |
+| 1   | zinc | 🟢     | -    | MCP Tools and Agent Core (Rust)            |
+| 2   | zinc | ⏸️     | -    | MCP Server Binary                          |
+| 3   | zinc | ⏸️     | -    | IDE Shell (Tauri + SvelteKit + CodeMirror) |
+| 4   | zinc | ⏸️     | -    | IDE ↔ Agent Integration (Shared Tools)     |
+| 5   | zinc | ⏸️     | -    | Manual Wiring and Final Touches            |
 
 Status: 🟢 done · 🟡 in‑progress · 🟠 review · ⏸️ not‑started · 🔴 blocked · ⚫ canceled
 
@@ -29,14 +29,14 @@ Status: 🟢 done · 🟡 in‑progress · 🟠 review · ⏸️ not‑started �
 **Changes:**
 
 1. Create `agent-core` crate with tool interfaces and implementations — File: `crates/agent-core/src/lib.rs`
-    - Define structs: `ReadFileParams`, `WriteFileParams`, `ListFilesParams`, `RunCommandParams`
-    - Implement functions: `read_file`, `write_file`, `list_files`, `run_command` using std::fs and std::process
-    - deps/imports: standard Rust libs
+   - Define structs: `ReadFileParams`, `WriteFileParams`, `ListFilesParams`, `RunCommandParams`
+   - Implement functions: `read_file`, `write_file`, `list_files`, `run_command` using std::fs and std::process
+   - deps/imports: standard Rust libs
 
 2. Implement minimal `Agent` struct with OpenRouter integration — File: `crates/agent-core/src/lib.rs`
-    - Add Agent struct with config fields
-    - Implement `handle_message` with simple tool calling (Option B: use OpenRouter tools API, call Rust functions, return results)
-    - deps/imports: reqwest for HTTP, serde for JSON
+   - Add Agent struct with config fields
+   - Implement `handle_message` with simple tool calling (Option B: use OpenRouter tools API, call Rust functions, return results)
+   - deps/imports: reqwest for HTTP, serde for JSON
 
 **Acceptance:**
 
@@ -55,10 +55,10 @@ Status: 🟢 done · 🟡 in‑progress · 🟠 review · ⏸️ not‑started �
 **Changes:**
 
 1. Create `mcp-server` binary crate — File: `crates/mcp-server/src/main.rs`
-    - Implement stdio loop for JSON-RPC-like requests
-    - Expose tools: read_file, write_file, list_files, run_command
-    - Call agent-core functions
-    - deps/imports: agent-core, tokio for async, serde_json
+   - Implement stdio loop for JSON-RPC-like requests
+   - Expose tools: read_file, write_file, list_files, run_command
+   - Call agent-core functions
+   - deps/imports: agent-core, tokio for async, serde_json
 
 **Acceptance:**
 
@@ -77,19 +77,19 @@ Status: 🟢 done · 🟡 in‑progress · 🟠 review · ⏸️ not‑started �
 **Changes:**
 
 1. Set up Tauri + SvelteKit project — File: `apps/zinc-ide/`
-    - Create structure with src-tauri and src
-    - Configure for desktop app
-    - deps/imports: tauri, sveltekit, codemirror6 wrapper
+   - Create structure with src-tauri and src
+   - Configure for desktop app
+   - deps/imports: tauri, sveltekit, codemirror6 wrapper
 
 2. Implement basic UI: editor and sidebar — File: `apps/zinc-ide/src/routes/+page.svelte`
-    - Main layout with CodeMirror editor and AI chat sidebar
-    - Buttons for open/save file
-    - deps/imports: svelte components, codemirror
+   - Main layout with CodeMirror editor and AI chat sidebar
+   - Buttons for open/save file
+   - deps/imports: svelte components, codemirror
 
 3. Add settings JSON handling — File: `apps/zinc-ide/src-tauri/src/main.rs`
-    - Tauri commands for load/save settings
-    - Settings struct for OpenRouter config
-    - deps/imports: serde, std::fs
+   - Tauri commands for load/save settings
+   - Settings struct for OpenRouter config
+   - deps/imports: serde, std::fs
 
 **Acceptance:**
 
@@ -109,16 +109,16 @@ Status: 🟢 done · 🟡 in‑progress · 🟠 review · ⏸️ not‑started �
 **Changes:**
 
 1. Integrate agent-core in Tauri backend — File: `apps/zinc-ide/src-tauri/src/main.rs`
-    - Add agent-core dependency
-    - Expose agent_message Tauri command
-    - Load settings, create Agent, call handle_message
-    - deps/imports: agent-core
+   - Add agent-core dependency
+   - Expose agent_message Tauri command
+   - Load settings, create Agent, call handle_message
+   - deps/imports: agent-core
 
 2. Wire frontend to agent — File: `apps/zinc-ide/src/routes/+page.svelte`
-    - Chat UI sends messages to Tauri command
-    - Display responses
-    - Respect AI enabled setting
-    - deps/imports: tauri invoke
+   - Chat UI sends messages to Tauri command
+   - Display responses
+   - Respect AI enabled setting
+   - deps/imports: tauri invoke
 
 **Acceptance:**
 
@@ -138,13 +138,13 @@ Status: 🟢 done · 🟡 in‑progress · 🟠 review · ⏸️ not‑started �
 **Changes:**
 
 1. Create project structure and settings — File: `settings.json`
-    - Place in project root or config dir
-    - Default JSON as specified
+   - Place in project root or config dir
+   - Default JSON as specified
 
 2. Wire dependencies and scripts — File: `Cargo.toml`, `package.json`
-    - Ensure agent-core shared between crates
-    - Scripts for running MCP and IDE
-    - deps/imports: adjust as needed
+   - Ensure agent-core shared between crates
+   - Scripts for running MCP and IDE
+   - deps/imports: adjust as needed
 
 **Acceptance:**
 
