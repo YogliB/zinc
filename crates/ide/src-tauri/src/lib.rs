@@ -1,5 +1,6 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
 use serde::{Deserialize, Serialize};
+use shared::Agent;
 use std::fs;
 use tauri::{AppHandle, Manager};
 
@@ -54,6 +55,19 @@ async fn save_settings(app: AppHandle, settings: Settings) -> Result<(), String>
     fs::write(&settings_path, content).map_err(|e| e.to_string())
 }
 
+#[tauri::command]
+async fn agent_message(app: AppHandle, message: String) -> Result<String, String> {
+    let settings = load_settings(app).await?;
+    if !settings.ai_enabled {
+        return Err("AI is disabled".to_string());
+    }
+    let agent = Agent::new(settings.api_key, settings.model);
+    agent
+        .handle_message(message)
+        .await
+        .map_err(|e| e.to_string())
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
@@ -63,7 +77,8 @@ pub fn run() {
             open_file,
             save_file,
             load_settings,
-            save_settings
+            save_settings,
+            agent_message
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

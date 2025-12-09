@@ -6,7 +6,7 @@ pre-commit:
             glob: '*.*'
             stage_fixed: true
         check-rust-format:
-            run: rustfmt {staged_files}
+            run: rustfmt --edition 2021 {staged_files}
             glob: '*.rs'
             stage_fixed: true
         check-rust-lint:
