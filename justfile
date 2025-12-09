@@ -25,8 +25,8 @@ lint:
 
 # Format code (Rust fmt + JS prettier)
 format:
+    bunx prettier --write .
     cargo fmt
-    cd crates/ide && npm run format
 
 # Full CI check (build, test, lint)
 check: build test lint

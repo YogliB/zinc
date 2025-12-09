@@ -1,4 +1,3 @@
-
 use reqwest::Client;
 
 #[derive(Debug)]
@@ -17,7 +16,10 @@ impl Agent {
         }
     }
 
-    pub async fn handle_message(&self, message: String) -> Result<String, Box<dyn std::error::Error>> {
+    pub async fn handle_message(
+        &self,
+        message: String,
+    ) -> Result<String, Box<dyn std::error::Error>> {
         let response = self.client
             .post("https://openrouter.ai/api/v1/chat/completions")
             .header("Authorization", format!("Bearer {}", self.openrouter_api_key))
@@ -94,7 +96,8 @@ impl Agent {
         if let Some(tool_calls) = response["choices"][0]["message"]["tool_calls"].as_array() {
             for tool_call in tool_calls {
                 let function_name = tool_call["function"]["name"].as_str().unwrap();
-                let args: serde_json::Value = serde_json::from_str(tool_call["function"]["arguments"].as_str().unwrap())?;
+                let args: serde_json::Value =
+                    serde_json::from_str(tool_call["function"]["arguments"].as_str().unwrap())?;
                 match function_name {
                     "read_file" => {
                         let params: crate::tools::ReadFileParams = serde_json::from_value(args)?;
@@ -122,6 +125,9 @@ impl Agent {
         }
 
         // If no tool call, return the content
-        Ok(response["choices"][0]["message"]["content"].as_str().unwrap_or("No response").to_string())
+        Ok(response["choices"][0]["message"]["content"]
+            .as_str()
+            .unwrap_or("No response")
+            .to_string())
     }
 }

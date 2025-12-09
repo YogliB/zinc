@@ -1,4 +1,4 @@
-pub mod tools;
 pub mod agent;
-pub use tools::*;
+pub mod tools;
 pub use agent::Agent;
+pub use tools::*;

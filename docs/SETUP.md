@@ -8,14 +8,14 @@ To run it:
 
 1. Build the server:
 
-   ```
-   cargo build --manifest-path crates/mcp-server/Cargo.toml
-   ```
+    ```
+    cargo build --manifest-path crates/mcp-server/Cargo.toml
+    ```
 
 2. Run with --exec flag:
-   ```
-   cargo run --manifest-path crates/mcp-server/Cargo.toml -- --exec
-   ```
+    ```
+    cargo run --manifest-path crates/mcp-server/Cargo.toml -- --exec
+    ```
 
 The server reads JSON-RPC requests from stdin and writes responses to stdout.
 
