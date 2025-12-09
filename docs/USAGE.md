@@ -41,3 +41,19 @@ The Zinc IDE includes an AI chat feature powered by OpenRouter, allowing you to 
 - The AI uses shared tools identical to the MCP server.
 - If AI is disabled in settings, chat sends will be blocked.
 - Errors (e.g., invalid API key, tool failures) will be displayed in alerts.
+
+## Opening Files
+
+The Zinc IDE allows you to open files from your file system for editing in the CodeMirror editor.
+
+### Usage
+
+1. Click the "Open File" button in the top toolbar.
+2. Use the file picker dialog to select a file.
+3. The file content will be loaded and displayed in the editor.
+
+### Notes
+
+- Files larger than 1MB cannot be opened to prevent performance issues.
+- If an error occurs (e.g., file not found, permission denied), an alert will be displayed.
+- Currently, only text files are supported for editing.

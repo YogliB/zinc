@@ -1,4 +1,5 @@
 // Learn more about Tauri commands at https://tauri.app/develop/calling-rust/
+use rfd::FileDialog;
 use serde::{Deserialize, Serialize};
 use shared::Agent;
 use std::fs;
@@ -18,7 +19,18 @@ fn greet(name: &str) -> String {
 
 #[tauri::command]
 fn open_file() -> Result<String, String> {
-    Ok("Dummy file content".to_string())
+    let file_path = FileDialog::new().pick_file();
+    match file_path {
+        Some(path) => {
+            let metadata = fs::metadata(&path).map_err(|e| e.to_string())?;
+            if metadata.len() > 1_000_000 {
+                return Err("File is too large (>1MB). Please select a smaller file.".to_string());
+            }
+            let content = fs::read_to_string(&path).map_err(|e| e.to_string())?;
+            Ok(content)
+        }
+        None => Err("No file selected".to_string()),
+    }
 }
 
 #[tauri::command]
@@ -32,7 +44,9 @@ async fn load_settings(app: AppHandle) -> Result<Settings, String> {
     std::fs::create_dir_all(&app_data_dir).map_err(|e| e.to_string())?;
     let settings_path = app_data_dir.join("settings.json");
     if settings_path.exists() {
-        let content = fs::read_to_string(&settings_path).map_err(|e| e.to_string())?;
+        let content = tokio::fs::read_to_string(&settings_path)
+            .await
+            .map_err(|e| e.to_string())?;
         serde_json::from_str(&content).map_err(|e| e.to_string())
     } else {
         let defaults = Settings {
@@ -41,7 +55,9 @@ async fn load_settings(app: AppHandle) -> Result<Settings, String> {
             ai_enabled: true,
         };
         let content = serde_json::to_string_pretty(&defaults).map_err(|e| e.to_string())?;
-        fs::write(&settings_path, &content).map_err(|e| e.to_string())?;
+        tokio::fs::write(&settings_path, &content)
+            .await
+            .map_err(|e| e.to_string())?;
         Ok(defaults)
     }
 }
@@ -52,7 +68,9 @@ async fn save_settings(app: AppHandle, settings: Settings) -> Result<(), String>
     std::fs::create_dir_all(&app_data_dir).map_err(|e| e.to_string())?;
     let settings_path = app_data_dir.join("settings.json");
     let content = serde_json::to_string_pretty(&settings).map_err(|e| e.to_string())?;
-    fs::write(&settings_path, content).map_err(|e| e.to_string())
+    tokio::fs::write(&settings_path, content)
+        .await
+        .map_err(|e| e.to_string())
 }
 
 #[tauri::command]

@@ -12,6 +12,10 @@
 - Use **closures** for encapsulation instead of private class members.
 - Return new data structures rather than modifying existing ones.
 
+## UI Design
+
+- Build the UI following atomic design principles: atoms, molecules, organisms, templates, and pages.
+
 ## Package Manager
 
 - Use bun for package management for create/ide
