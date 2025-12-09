@@ -24,3 +24,10 @@
 <div class="flex-1">
 	<SvelteCodeMirror bind:value={code} {extensions} class="h-full" />
 </div>
+SvelteCodeMirror
+
+<style>
+	:global(.cm-editor) {
+		height: 100%;
+	}
+</style>
