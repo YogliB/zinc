@@ -12,14 +12,6 @@
 - Use **closures** for encapsulation instead of private class members.
 - Return new data structures rather than modifying existing ones.
 
-## Dependencies
-
-- Use **npm as package manager** for dependency management and script execution.
-- Use **Vitest** for testing UI components.
-- Use **esbuild** for production bundling.
-- Use **Node.js** for production runtime.
-- Only use external dependencies when necessary alternatives are insufficient or unavailable.
-
 ## File Editing
 
 - **NEVER** edit config files unless specifically requested to. Forbidden files:
@@ -28,7 +20,7 @@
     - `tsconfig.json`
     - `tauri.conf.json`
     - `Cargo.toml`
-- **NEVER** disable eslint rules unless given a direct and clear instruction to do so
+- **NEVER** disable linting rules unless given a direct and clear instruction to do so
 
 ## Git Operations
 
@@ -47,9 +39,3 @@
     - **STOP** and alert the user about the need
     - **DO NOT** create the file unless explicitly approved by the user
     - Explain why existing files cannot accommodate the content
-
-## Test Structure
-
-- Test directories in packages must have only `unit/`, `integration/`, and `e2e/` subdirs (excluding `helpers/`).
-- Each package must have one `test` script per subdir in addition to a general `test` script.
-- CI must have separate test steps per package.
