@@ -23,3 +23,6 @@ lint:
 format:
     bunx prettier --write .
     cargo fmt
+
+format-ide:
+    cd crates/ide && bunx prettier --write .
