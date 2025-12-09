@@ -6,7 +6,7 @@ pre-commit:
             glob: '*.*'
             stage_fixed: true
         check-rust-format:
-            run: cargo fmt
+            run: rustfmt {staged_files}
             glob: '*.rs'
             stage_fixed: true
         check-rust-lint:
