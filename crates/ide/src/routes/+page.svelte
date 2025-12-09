@@ -23,42 +23,47 @@
 	let userInput = $state('');
 
 	async function openFile() {
+		if (typeof window === 'undefined' || !window.__TAURI__) return;
 		try {
 			code = await invoke('open_file');
 		} catch (e) {
-			alert('Error opening file: ' + e);
+			console.error('Error opening file:', e);
 		}
 	}
 
 	async function saveFile() {
+		if (typeof window === 'undefined' || !window.__TAURI__) return;
 		try {
 			await invoke('save_file', { content: code });
 		} catch (e) {
-			alert('Error saving file: ' + e);
+			console.error('Error saving file:', e);
 		}
 	}
 
 	async function loadSettings() {
+		if (typeof window === 'undefined' || !window.__TAURI__) return;
 		try {
 			settings = await invoke('load_settings');
 		} catch (e) {
-			alert('Error loading settings: ' + e);
+			console.error('Error loading settings:', e);
 		}
 	}
 
 	async function saveSettings() {
+		if (typeof window === 'undefined' || !window.__TAURI__) return;
 		try {
 			await invoke('save_settings', { settings });
 		} catch (e) {
-			alert('Error saving settings: ' + e);
+			console.error('Error saving settings:', e);
 		}
 	}
 
 	async function sendMessage() {
 		if (!settings.aiEnabled) {
-			alert('AI is disabled');
+			console.error('AI is disabled');
 			return;
 		}
+		if (typeof window === 'undefined' || !window.__TAURI__) return;
 		try {
 			const response = (await invoke('agent_message', {
 				message: userInput,
@@ -67,7 +72,7 @@
 			messages.push({ role: 'assistant', content: response });
 			userInput = '';
 		} catch (e) {
-			alert('Error sending message: ' + e);
+			console.error('Error sending message:', e);
 		}
 	}
 
@@ -79,17 +84,17 @@
 console.log('Hello, world!');
 
 function greet(name: string) {
-  return \`Hello, \${name}!\`;
+  return 'Hello, ' + name + '!';
 }
 
 console.log(greet('Developer'));`);
 </script>
 
 <IdeLayout>
-	<div class="flex-1 flex flex-col overflow-hidden resize-x min-w-0">
+	<div class="flex flex-col overflow-hidden">
 		<CodeEditor bind:code {openFile} {saveFile} />
 	</div>
-	<div class="w-1/3 bg-white border-l flex flex-col">
+	<div class="bg-white border-l flex flex-col">
 		<ChatPanel
 			{messages}
 			bind:userInput
