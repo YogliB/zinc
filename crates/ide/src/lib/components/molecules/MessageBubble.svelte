@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { P } from 'flowbite-svelte';
+
 	interface Props {
 		role: 'user' | 'assistant';
 		content: string;
@@ -11,5 +13,5 @@
 
 <div class="p-2 rounded {bgClass}">
 	<strong>{role}:</strong>
-	{content}
+	<P class="m-0">{content}</P>
 </div>

@@ -12,12 +12,22 @@
 		saveSettings: () => void;
 	}
 
-	let { settings = $bindable({ apiKey: '', model: '', aiEnabled: true }), loadSettings, saveSettings }: Props = $props();
+	let {
+		settings = $bindable({ apiKey: '', model: '', aiEnabled: true }),
+		loadSettings,
+		saveSettings,
+	}: Props = $props();
 
 	let modelOptions = [
-		{ value: 'anthropic/claude-3-haiku', label: 'anthropic/claude-3-haiku' },
+		{
+			value: 'anthropic/claude-3-haiku',
+			label: 'anthropic/claude-3-haiku',
+		},
 		{ value: 'openai/gpt-4o-mini', label: 'openai/gpt-4o-mini' },
-		{ value: 'meta-llama/llama-3.1-8b-instruct', label: 'meta-llama/llama-3.1-8b-instruct' },
+		{
+			value: 'meta-llama/llama-3.1-8b-instruct',
+			label: 'meta-llama/llama-3.1-8b-instruct',
+		},
 	];
 </script>
 
@@ -50,7 +60,9 @@
 		</div>
 		<ButtonGroup>
 			<Button onclick={loadSettings}>Load Settings</Button>
-			<Button variant="secondary" onclick={saveSettings}>Save Settings</Button>
+			<Button variant="secondary" onclick={saveSettings}
+				>Save Settings</Button
+			>
 		</ButtonGroup>
 	</form>
 </div>

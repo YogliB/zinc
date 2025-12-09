@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { Select } from 'flowbite-svelte';
+
 	interface Option {
 		value: string;
 		label: string;
@@ -11,10 +13,10 @@
 	}
 
 	let { value = $bindable(''), options, ...rest }: Props = $props();
+
+	let items = $derived(
+		options.map((opt) => ({ value: opt.value, name: opt.label })),
+	);
 </script>
 
-<select bind:value class="w-full p-2 border rounded" {...rest}>
-	{#each options as option (option.value)}
-		<option value={option.value}>{option.label}</option>
-	{/each}
-</select>
+<Select {items} bind:value {...rest} />

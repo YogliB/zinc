@@ -8,7 +8,7 @@
 		placeholder?: string;
 		inputType?: string;
 		options?: { value: string; label: string }[];
-		id?: string;
+		for?: string;
 		[key: string]: any;
 	}
 
@@ -19,18 +19,18 @@
 		placeholder = '',
 		inputType = 'text',
 		options = [],
-		id,
+		for: forId,
 		...rest
 	}: Props = $props();
 </script>
 
 <div>
-	<Label htmlFor={id}>
+	<Label for={forId}>
 		{label}
 	</Label>
 	{#if type === 'input'}
-		<Input bind:value {placeholder} type={inputType} {id} {...rest} />
+		<Input bind:value {placeholder} type={inputType} id={forId} {...rest} />
 	{:else if type === 'select'}
-		<Select bind:value {options} {id} {...rest} />
+		<Select bind:value {options} id={forId} {...rest} />
 	{/if}
 </div>

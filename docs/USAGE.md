@@ -1,20 +1,23 @@
 # Usage
 
-## Flowbite-Svelte Components
+## UI Components
 
-The zinc/ide project now includes the flowbite-svelte library, providing a collection of pre-built UI components based on Tailwind CSS and Flowbite. These components can be imported and used in Svelte pages for consistent styling and functionality.
+The zinc/ide project uses custom UI components built on top of the flowbite-svelte library, providing consistent styling and functionality based on Tailwind CSS and Flowbite. These components are available in the `$lib/components` directory and can be imported for use in Svelte pages.
 
 For example, to use a Button component:
 
 ```svelte
 <script>
-  import { Button } from 'flowbite-svelte';
+  import { Button } from '$lib/components/atoms';
 </script>
 
 <Button>Click me</Button>
+<Button variant="secondary">Secondary</Button>
 ```
 
-Refer to the [Flowbite Svelte Documentation](https://flowbite-svelte.com/) for a full list of available components and their usage.
+The components include atoms (Button, Input, Select, Label), molecules (FormField, MessageBubble, ButtonGroup), organisms (ChatPanel, SettingsPanel, CodeEditor), and templates (IdeLayout).
+
+Refer to the [Flowbite Svelte Documentation](https://flowbite-svelte.com/) for details on the underlying components and their props.
 
 ## Agent Chat
 

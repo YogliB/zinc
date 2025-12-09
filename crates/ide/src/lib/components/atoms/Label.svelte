@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { Label } from 'flowbite-svelte';
+
 	interface Props {
 		htmlFor?: string;
 		children: any;
@@ -12,6 +14,6 @@
 	}: Props = $props();
 </script>
 
-<label for={htmlFor} class={className}>
+<Label for={htmlFor} class={className}>
 	{@render children()}
-</label>
+</Label>

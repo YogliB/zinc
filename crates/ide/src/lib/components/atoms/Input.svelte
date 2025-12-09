@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { Input } from 'flowbite-svelte';
+
 	interface Props {
 		value?: string;
 		placeholder?: string;
@@ -14,10 +16,4 @@
 	}: Props = $props();
 </script>
 
-<input
-	bind:value
-	class="w-full p-2 border rounded"
-	{placeholder}
-	{type}
-	{...rest}
-/>
+<Input bind:value {placeholder} {type} {...rest} />

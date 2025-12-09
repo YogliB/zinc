@@ -1,4 +1,6 @@
 <script lang="ts">
+	import { Button } from 'flowbite-svelte';
+
 	interface Props {
 		variant?: 'primary' | 'secondary';
 		children: any;
@@ -7,13 +9,11 @@
 
 	let { variant = 'primary', children, ...rest }: Props = $props();
 
-	let classes = $derived(
-		variant === 'primary'
-			? 'px-4 py-2 bg-blue-500 text-white rounded hover:bg-blue-600'
-			: 'px-4 py-2 bg-gray-500 text-white rounded hover:bg-gray-600',
+	let color = $derived(
+		variant === 'primary' ? ('blue' as const) : ('alternative' as const),
 	);
 </script>
 
-<button class={classes} {...rest}>
+<Button {color} {...rest}>
 	{@render children()}
-</button>
+</Button>
