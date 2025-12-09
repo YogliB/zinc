@@ -16,7 +16,7 @@
 | 1   | zinc | 🟢     | -    | MCP Tools and Agent Core (Rust)            |
 | 2   | zinc | ⏸️     | -    | MCP Server Binary                          |
 | 3   | zinc | ⏸️     | -    | IDE Shell (Tauri + SvelteKit + CodeMirror) |
-| 4   | zinc | ⏸️     | -    | IDE ↔ Agent Integration (Shared Tools)     |
+| 4   | zinc | 🟢     | -    | IDE ↔ Agent Integration (Shared Tools)     |
 | 5   | zinc | ⏸️     | -    | Manual Wiring and Final Touches            |
 
 Status: 🟢 done · 🟡 in‑progress · 🟠 review · ⏸️ not‑started · 🔴 blocked · ⚫ canceled
@@ -101,7 +101,7 @@ Status: 🟢 done · 🟡 in‑progress · 🟠 review · ⏸️ not‑started �
 
 **Dependencies:** Blocked by None · Blocks PR4
 
-## PR4: IDE ↔ Agent Integration (Shared Tools) — ⏸️
+## PR4: IDE ↔ Agent Integration (Shared Tools) — 🟢
 
 **Repo:** zinc · **Link:** - · **ETA:** 4–6h dev + 1–2h review
 **Files:** `apps/zinc-ide/src-tauri/src/main.rs`, `apps/zinc-ide/src/routes/+page.svelte`
