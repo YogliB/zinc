@@ -8,11 +8,11 @@ export default defineConfig(async (configEnv) => {
 	return mergeConfig(baseConfig, {
 		test: {
 			browser: {
-				enabled: true,
-				headless: true,
-				provider: playwright,
-				instances: [{ browser: 'chromium' }],
-			},
+			enabled: true,
+			headless: true,
+			provider: playwright,
+			instances: [{ browser: 'chromium' }],
+		},
 			globals: true,
 			include: ['src/**/*.{test,spec}.{js,ts,jsx,tsx,svelte}'],
 			exclude: [
