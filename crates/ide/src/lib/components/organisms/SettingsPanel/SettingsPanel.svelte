@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { FormField, ButtonGroup } from '../molecules';
-	import { Button } from '../atoms';
+	import { FormField, ButtonGroup } from '$lib/components/molecules';
+	import { Button } from '$lib/components/atoms';
 
 	interface Props {
 		settings: {

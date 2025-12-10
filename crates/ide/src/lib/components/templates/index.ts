@@ -1,1 +1,1 @@
-export { default as IdeLayout } from './IdeLayout.svelte';
+export { IdeLayout } from './IdeLayout';

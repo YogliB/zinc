@@ -19,6 +19,32 @@ The components include atoms (Button, Input, Select, Label), molecules (FormFiel
 
 Refer to the [Flowbite Svelte Documentation](https://flowbite-svelte.com/) for details on the underlying components and their props.
 
+## Storybook
+
+The Zinc IDE uses Storybook for component development and testing. Storybook provides an isolated environment to view and interact with UI components.
+
+### Running Storybook
+
+To start Storybook:
+
+```bash
+cd crates/ide
+bun run storybook
+```
+
+This will launch Storybook at `http://localhost:6006` (or the next available port).
+
+### Component Stories
+
+Each component has dedicated stories showcasing different states and props. Stories are organized by atomic design levels:
+
+- **Atoms**: Basic components like Button, Input
+- **Molecules**: Composite components like FormField, MessageBubble
+- **Organisms**: Complex components like ChatPanel, CodeEditor
+- **Templates**: Layout components like IdeLayout
+
+Use Storybook to test component variations, check accessibility, and ensure consistent behavior before integrating into the main app.
+
 ## Agent Chat
 
 The Zinc IDE includes an AI chat feature powered by OpenRouter, allowing you to interact with an AI assistant that can perform file operations and run commands.

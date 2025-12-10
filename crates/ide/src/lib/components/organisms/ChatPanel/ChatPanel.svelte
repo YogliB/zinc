@@ -1,6 +1,6 @@
 <script lang="ts">
-	import { MessageBubble } from '../molecules';
-	import { Input, Button } from '../atoms';
+	import { MessageBubble } from '$lib/components/molecules';
+	import { Input, Button } from '$lib/components/atoms';
 
 	interface Message {
 		role: 'user' | 'assistant';

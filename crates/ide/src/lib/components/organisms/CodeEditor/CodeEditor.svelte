@@ -3,8 +3,8 @@
 	import { basicSetup } from '@codemirror/basic-setup';
 	import { javascript } from '@codemirror/lang-javascript';
 	import { oneDark } from '@codemirror/theme-one-dark';
-	import { Button } from '../atoms';
-	import { ButtonGroup } from '../molecules';
+	import { Button } from '$lib/components/atoms';
+	import { ButtonGroup } from '$lib/components/molecules';
 
 	interface Props {
 		code: string;

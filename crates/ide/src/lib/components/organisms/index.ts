@@ -1,3 +1,3 @@
-export { default as CodeEditor } from './CodeEditor.svelte';
-export { default as ChatPanel } from './ChatPanel.svelte';
-export { default as SettingsPanel } from './SettingsPanel.svelte';
+export { CodeEditor } from './CodeEditor';
+export { ChatPanel } from './ChatPanel';
+export { SettingsPanel } from './SettingsPanel';

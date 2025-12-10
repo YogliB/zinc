@@ -1,5 +1,5 @@
 <script lang="ts">
-	import { Label, Input, Select } from '../atoms';
+	import { Label, Input, Select } from '$lib/components/atoms';
 
 	interface Props {
 		label: string;
@@ -25,7 +25,7 @@
 </script>
 
 <div>
-	<Label for={forId}>
+	<Label htmlFor={forId}>
 		{label}
 	</Label>
 	{#if type === 'input'}

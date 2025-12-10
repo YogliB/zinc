@@ -1,3 +1,3 @@
-export { default as FormField } from './FormField.svelte';
-export { default as MessageBubble } from './MessageBubble.svelte';
-export { default as ButtonGroup } from './ButtonGroup.svelte';
+export { FormField } from './FormField';
+export { MessageBubble } from './MessageBubble';
+export { ButtonGroup } from './ButtonGroup';

@@ -26,3 +26,6 @@ format:
 
 format-ide:
     cd crates/ide && bunx prettier --write .
+
+storybook:
+    cd crates/ide && bun run storybook

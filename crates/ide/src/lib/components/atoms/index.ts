@@ -1,4 +1,4 @@
-export { default as Button } from './Button.svelte';
-export { default as Input } from './Input.svelte';
-export { default as Select } from './Select.svelte';
-export { default as Label } from './Label.svelte';
+export { Button } from './Button';
+export { Input } from './Input';
+export { Label } from './Label';
+export { Select } from './Select';
