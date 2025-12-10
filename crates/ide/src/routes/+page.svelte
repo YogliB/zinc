@@ -8,6 +8,7 @@
 		SettingsPanel,
 		FileTree,
 	} from '../lib/components/organisms';
+	import { Button } from '$lib/components/atoms';
 
 	interface Message {
 		role: 'user' | 'assistant';
@@ -33,28 +34,39 @@
 	let currentFolderPath = $state<string>('');
 
 	async function openFolder() {
-		if (typeof window === 'undefined' || !window.__TAURI__) return;
+		alert('openFolder called');
+		if (typeof window === 'undefined' || !window.__TAURI__) {
+			alert('Tauri not available for openFolder');
+			return;
+		}
 		try {
 			const path = (await invoke('open_folder')) as string;
-			console.log('Folder opened:', path);
+			alert('Folder opened: ' + path);
 			const nodes = (await invoke('read_directory', {
 				path,
 			})) as FileNode[];
 			folderNodes = nodes;
 			currentFolderPath = path;
+			alert('Directory read successfully, nodes: ' + nodes.length);
 		} catch (e) {
 			console.error('Error opening folder:', e);
 		}
 	}
 
 	function handleFileSelect(path: string) {
+		alert('File selected: ' + path);
 		// no-op for now
 	}
 
 	async function openFile() {
-		if (typeof window === 'undefined' || !window.__TAURI__) return;
+		alert('openFile called');
+		if (typeof window === 'undefined' || !window.__TAURI__) {
+			alert('Tauri not available for openFile');
+			return;
+		}
 		try {
 			code = await invoke('open_file');
+			alert('File opened successfully');
 		} catch (e) {
 			console.error('Error opening file:', e);
 		}
@@ -125,10 +137,10 @@ console.log(greet('Developer'));`);
 	{/snippet}
 	{#snippet main()}
 		<div class="flex flex-col overflow-hidden">
-			<button
+			<Button
 				onclick={openFolder}
 				class="mb-2 p-2 bg-blue-500 text-white rounded"
-				>Open Folder</button
+				>Open Folder</Button
 			>
 			<CodeEditor bind:code {openFile} {saveFile} />
 		</div>
