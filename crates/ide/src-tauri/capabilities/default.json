@@ -3,5 +3,13 @@
 	"identifier": "default",
 	"description": "Capability for the main window",
 	"windows": ["main"],
-	"permissions": ["core:default", "opener:default"]
+	"permissions": [
+		"core:default",
+		"opener:default",
+		"fs:allow-read-file",
+		"fs:allow-read-dir",
+		"fs:allow-write-file",
+		"fs:allow-app-data-dir",
+		"dialog:allow-open"
+	]
 }

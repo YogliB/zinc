@@ -34,20 +34,13 @@
 	let currentFolderPath = $state<string>('');
 
 	async function openFolder() {
-		alert('openFolder called');
-		if (typeof window === 'undefined' || !window.__TAURI__) {
-			alert('Tauri not available for openFolder');
-			return;
-		}
 		try {
 			const path = (await invoke('open_folder')) as string;
-			alert('Folder opened: ' + path);
 			const nodes = (await invoke('read_directory', {
 				path,
 			})) as FileNode[];
 			folderNodes = nodes;
 			currentFolderPath = path;
-			alert('Directory read successfully, nodes: ' + nodes.length);
 		} catch (e) {
 			console.error('Error opening folder:', e);
 		}
@@ -59,21 +52,14 @@
 	}
 
 	async function openFile() {
-		alert('openFile called');
-		if (typeof window === 'undefined' || !window.__TAURI__) {
-			alert('Tauri not available for openFile');
-			return;
-		}
 		try {
 			code = await invoke('open_file');
-			alert('File opened successfully');
 		} catch (e) {
 			console.error('Error opening file:', e);
 		}
 	}
 
 	async function saveFile() {
-		if (typeof window === 'undefined' || !window.__TAURI__) return;
 		try {
 			await invoke('save_file', { content: code });
 		} catch (e) {
@@ -82,7 +68,6 @@
 	}
 
 	async function loadSettings() {
-		if (typeof window === 'undefined' || !window.__TAURI__) return;
 		try {
 			settings = await invoke('load_settings');
 		} catch (e) {
@@ -91,7 +76,6 @@
 	}
 
 	async function saveSettings() {
-		if (typeof window === 'undefined' || !window.__TAURI__) return;
 		try {
 			await invoke('save_settings', { settings });
 		} catch (e) {
@@ -104,7 +88,6 @@
 			console.error('AI is disabled');
 			return;
 		}
-		if (typeof window === 'undefined' || !window.__TAURI__) return;
 		try {
 			const response = (await invoke('agent_message', {
 				message: userInput,
