@@ -1,5 +1,6 @@
 /// <reference types="vitest" />
 import { defineConfig, mergeConfig } from 'vitest/config';
+import { playwright } from '@vitest/browser-playwright';
 import viteConfig from './vite.config.js';
 
 export default defineConfig(async (configEnv) => {
@@ -9,10 +10,9 @@ export default defineConfig(async (configEnv) => {
 			browser: {
 				enabled: true,
 				headless: true,
-				provider: 'playwright',
-				name: 'chromium',
+				provider: playwright,
+				instances: [{ browser: 'chromium' }],
 			},
-			environment: 'browser',
 			globals: true,
 			include: ['src/**/*.{test,spec}.{js,ts,jsx,tsx,svelte}'],
 			exclude: [
