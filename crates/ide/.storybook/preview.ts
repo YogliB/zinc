@@ -1,8 +1,10 @@
 import '../src/app.css';
 
 import type { Preview } from '@storybook/sveltekit';
+import StorybookContainer from './StorybookContainer.svelte';
 
 const preview: Preview = {
+	decorators: [() => ({ Component: StorybookContainer })],
 	parameters: {
 		controls: {
 			matchers: {
