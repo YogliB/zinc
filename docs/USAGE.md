@@ -86,3 +86,19 @@ The Zinc IDE allows you to open files from your file system for editing in the C
 - Files larger than 1MB cannot be opened to prevent performance issues.
 - If an error occurs (e.g., file not found, permission denied), an alert will be displayed.
 - Currently, only text files are supported for editing.
+
+## Opening Folders
+
+The Zinc IDE allows you to open folders to view their structure in a file tree sidebar on the left.
+
+### Usage
+
+1. Click the "Open Folder" button in the main content area.
+2. Use the folder picker dialog to select a folder.
+3. The folder's file tree will be displayed in the left sidebar, showing folders and files recursively.
+
+### Notes
+
+- Selecting items in the file tree does not open files yet.
+- If an error occurs during folder opening or reading, it will be logged to the console.
+- The layout adjusts to accommodate the file tree in the left sidebar.

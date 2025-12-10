@@ -3,6 +3,7 @@ use rfd::FileDialog;
 use serde::{Deserialize, Serialize};
 use shared::Agent;
 use std::fs;
+use std::path;
 use tauri::{AppHandle, Manager};
 
 #[derive(Serialize, Deserialize)]
@@ -12,9 +13,58 @@ pub struct Settings {
     pub ai_enabled: bool,
 }
 
+#[derive(Serialize, Deserialize)]
+pub struct FileNode {
+    pub name: String,
+    pub r#type: String,
+    pub children: Option<Vec<FileNode>>,
+    pub path: String,
+}
+
 #[tauri::command]
 fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Rust!", name)
+}
+
+#[tauri::command]
+fn open_folder() -> Result<String, String> {
+    let folder_path = FileDialog::new().pick_folder();
+    match folder_path {
+        Some(path) => Ok(path.to_string_lossy().to_string()),
+        None => Err("No folder selected".to_string()),
+    }
+}
+
+#[tauri::command]
+fn read_directory(path: String) -> Result<Vec<FileNode>, String> {
+    fn build_tree(dir_path: &path::Path) -> Result<Vec<FileNode>, String> {
+        let mut nodes = Vec::new();
+        for entry in fs::read_dir(dir_path).map_err(|e| e.to_string())? {
+            let entry = entry.map_err(|e| e.to_string())?;
+            let path = entry.path();
+            let name = path.file_name().unwrap().to_string_lossy().to_string();
+            let node_path = path.to_string_lossy().to_string();
+            if path.is_dir() {
+                let children = build_tree(&path)?;
+                nodes.push(FileNode {
+                    name,
+                    r#type: "folder".to_string(),
+                    children: Some(children),
+                    path: node_path,
+                });
+            } else {
+                nodes.push(FileNode {
+                    name,
+                    r#type: "file".to_string(),
+                    children: None,
+                    path: node_path,
+                });
+            }
+        }
+        Ok(nodes)
+    }
+    let root_path = path::Path::new(&path);
+    build_tree(root_path)
 }
 
 #[tauri::command]
@@ -96,7 +146,9 @@ pub fn run() {
             save_file,
             load_settings,
             save_settings,
-            agent_message
+            agent_message,
+            open_folder,
+            read_directory
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

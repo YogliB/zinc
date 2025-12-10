@@ -6,11 +6,19 @@
 		CodeEditor,
 		ChatPanel,
 		SettingsPanel,
+		FileTree,
 	} from '../lib/components/organisms';
 
 	interface Message {
 		role: 'user' | 'assistant';
 		content: string;
+	}
+
+	interface FileNode {
+		name: string;
+		type: 'file' | 'folder';
+		children?: FileNode[];
+		path: string;
 	}
 
 	let settings = $state({
@@ -21,6 +29,27 @@
 
 	let messages = $state<Message[]>([]);
 	let userInput = $state('');
+	let folderNodes = $state<FileNode[]>([]);
+	let currentFolderPath = $state<string>('');
+
+	async function openFolder() {
+		if (typeof window === 'undefined' || !window.__TAURI__) return;
+		try {
+			const path = (await invoke('open_folder')) as string;
+			console.log('Folder opened:', path);
+			const nodes = (await invoke('read_directory', {
+				path,
+			})) as FileNode[];
+			folderNodes = nodes;
+			currentFolderPath = path;
+		} catch (e) {
+			console.error('Error opening folder:', e);
+		}
+	}
+
+	function handleFileSelect(path: string) {
+		// no-op for now
+	}
 
 	async function openFile() {
 		if (typeof window === 'undefined' || !window.__TAURI__) return;
@@ -91,18 +120,30 @@ console.log(greet('Developer'));`);
 </script>
 
 <IdeLayout>
-	<div class="flex flex-col overflow-hidden">
-		<CodeEditor bind:code {openFile} {saveFile} />
-	</div>
-	<div class="bg-white border-l flex flex-col">
-		<ChatPanel
-			{messages}
-			bind:userInput
-			{sendMessage}
-			aiEnabled={settings.aiEnabled}
-		/>
-		<SettingsPanel bind:settings {loadSettings} {saveSettings} />
-	</div>
+	{#snippet leftSidebar()}
+		<FileTree nodes={folderNodes} onSelect={handleFileSelect} />
+	{/snippet}
+	{#snippet main()}
+		<div class="flex flex-col overflow-hidden">
+			<button
+				onclick={openFolder}
+				class="mb-2 p-2 bg-blue-500 text-white rounded"
+				>Open Folder</button
+			>
+			<CodeEditor bind:code {openFile} {saveFile} />
+		</div>
+	{/snippet}
+	{#snippet rightSidebar()}
+		<div class="bg-white border-l flex flex-col">
+			<ChatPanel
+				{messages}
+				bind:userInput
+				{sendMessage}
+				aiEnabled={settings.aiEnabled}
+			/>
+			<SettingsPanel bind:settings {loadSettings} {saveSettings} />
+		</div>
+	{/snippet}
 </IdeLayout>
 
 <style>
