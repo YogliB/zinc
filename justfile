@@ -8,10 +8,10 @@ test:
 
 dev:
     cargo run --package mcp &
-    cd crates/ide && bun tauri dev
+    cd crates/ide && bun run tauri dev
 
 dev-ide:
-    cd crates/ide && bun tauri dev
+    cd crates/ide && bun run tauri dev
 
 clean:
     cargo clean
