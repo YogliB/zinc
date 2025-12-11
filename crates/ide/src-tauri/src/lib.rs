@@ -4,7 +4,12 @@ use serde::{Deserialize, Serialize};
 use shared::Agent;
 use std::fs;
 use std::path;
-use tauri::{AppHandle, Manager};
+use std::time::Instant;
+
+use tauri::{AppHandle, Emitter, Manager};
+
+static mut LAST_FOLDER: Option<Instant> = None;
+static mut LAST_FILE: Option<Instant> = None;
 use tauri_plugin_global_shortcut::{Code, GlobalShortcutExt, Modifiers, Shortcut};
 
 #[derive(Serialize, Deserialize)]
@@ -157,21 +162,35 @@ pub fn run() {
         .plugin(tauri_plugin_fs::init())
         .plugin(
             tauri_plugin_global_shortcut::Builder::new()
-                .with_handler(|_, shortcut: &Shortcut, _| {
+                .with_handler(|app, shortcut: &Shortcut, _| {
                     let modifiers = if cfg!(target_os = "macos") {
                         Modifiers::SUPER
                     } else {
                         Modifiers::CONTROL
                     };
                     if shortcut.key == Code::KeyO && shortcut.mods == modifiers {
-                        if let Err(e) = open_folder_impl() {
-                            eprintln!("Error opening folder via shortcut: {}", e);
+                        unsafe {
+                            let now = Instant::now();
+                            if let Some(last) = LAST_FOLDER {
+                                if now.duration_since(last).as_millis() < 500 {
+                                    return;
+                                }
+                            }
+                            app.emit("open-folder", ()).unwrap();
+                            LAST_FOLDER = Some(now);
                         }
                     } else if shortcut.key == Code::KeyO
                         && shortcut.mods == (modifiers | Modifiers::SHIFT)
                     {
-                        if let Err(e) = open_file_impl() {
-                            eprintln!("Error opening file via shortcut: {}", e);
+                        unsafe {
+                            let now = Instant::now();
+                            if let Some(last) = LAST_FILE {
+                                if now.duration_since(last).as_millis() < 500 {
+                                    return;
+                                }
+                            }
+                            app.emit("open-file", ()).unwrap();
+                            LAST_FILE = Some(now);
                         }
                     }
                 })

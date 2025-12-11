@@ -1,6 +1,7 @@
 <script lang="ts">
 	import { onMount } from 'svelte';
 	import { invoke } from '@tauri-apps/api/core';
+	import { listen } from '@tauri-apps/api/event';
 	import { IdeLayout } from '../lib/components/templates';
 	import {
 		CodeEditor,
@@ -33,6 +34,8 @@
 	let userInput = $state('');
 	let folderNodes = $state<FileNode[]>([]);
 	let currentFolderPath = $state<string>('');
+	let openingFolder = $state(false);
+	let openingFile = $state(false);
 
 	async function openFolder() {
 		try {
@@ -101,8 +104,28 @@
 		}
 	}
 
-	onMount(() => {
+	onMount(async () => {
 		loadSettings();
+		await listen('open-folder', async () => {
+			if (!openingFolder) {
+				openingFolder = true;
+				try {
+					await openFolder();
+				} finally {
+					openingFolder = false;
+				}
+			}
+		});
+		await listen('open-file', async () => {
+			if (!openingFile) {
+				openingFile = true;
+				try {
+					await openFile();
+				} finally {
+					openingFile = false;
+				}
+			}
+		});
 	});
 
 	let code = $state(`// Welcome to Zinc IDE
