@@ -1,10 +1,13 @@
 build:
     cargo build
-    cd crates/ide && npm run build
+    cd crates/ide && bun run build
 
 test:
     cargo test
-    cd crates/ide && npm test
+    cd crates/ide && bun run test
+
+test-ide-ui:
+    cd crates/ide && bun run test
 
 dev:
     cargo run --package mcp &
