@@ -1,12 +1,6 @@
 <script lang="ts">
 	import { IdeLayout } from '../../templates';
-	import {
-		CodeEditor,
-		ChatPanel,
-		SettingsPanel,
-		FileTree,
-	} from '../index';
-	import { Button } from '../../atoms';
+	import { CodeEditor, ChatPanel, SettingsPanel, FileTree } from '../index';
 
 	interface Message {
 		role: 'user' | 'assistant';
@@ -53,17 +47,10 @@
 
 <IdeLayout>
 	{#snippet leftSidebar()}
-		<FileTree nodes={folderNodes} onSelect={onSelect} />
+		<FileTree nodes={folderNodes} {onSelect} />
 	{/snippet}
 	{#snippet main()}
-		<div class="flex flex-col overflow-hidden">
-			<Button
-				onclick={onOpenFolder}
-				class="mb-2 p-2 bg-blue-500 text-white rounded"
-				>Open Folder</Button
-			>
-			<CodeEditor bind:code {openFile} {saveFile} />
-		</div>
+		<CodeEditor bind:code {openFile} {saveFile} />
 	{/snippet}
 	{#snippet rightSidebar()}
 		<div class="bg-white border-l flex flex-col">
