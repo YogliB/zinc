@@ -4,6 +4,7 @@
 	import { listen } from '@tauri-apps/api/event';
 	import { IdeWorkspace } from '../lib/components/organisms';
 	import { WelcomeScreen } from '$lib/components/molecules';
+	import { tick } from 'svelte';
 
 	interface Message {
 		role: 'user' | 'assistant';
@@ -30,6 +31,7 @@
 	let isMac = $state(false);
 	let openingFolder = $state(false);
 	let openingFile = $state(false);
+	let code = $state('');
 
 	async function openFolder() {
 		if (openingFolder) return;
@@ -41,7 +43,7 @@
 			})) as FileNode[];
 			folderNodes = nodes;
 			currentFolderPath = path;
-			console.log('currentFolderPath', currentFolderPath);
+			await tick();
 		} catch (e) {
 			console.error('Error opening folder:', e);
 		} finally {
@@ -132,15 +134,8 @@
 			window.removeEventListener('keydown', handleKeydown);
 		};
 	});
-
-	let code = $state('');
 </script>
 
-<div
-	style="background: lightblue; padding: 5px; border: 1px solid black; margin-bottom: 10px;"
->
-	{currentFolderPath}
-</div>
 {#if currentFolderPath || code}
 	<IdeWorkspace
 		{folderNodes}
