@@ -1,6 +1,8 @@
 import { describe, it, expect, vi } from 'vitest';
 import { mount, unmount } from 'svelte';
 import { fireEvent } from '@testing-library/svelte';
+import { tick } from 'svelte';
+
 import FileTree from './FileTree.svelte';
 
 interface FileNode {
@@ -123,7 +125,7 @@ describe('FileTree', () => {
 		document.body.removeChild(container);
 	});
 
-	it('toggles folder open/close on summary click', () => {
+	it('toggles folder open/close on click', async () => {
 		const onSelect = vi.fn();
 		const nodes: FileNode[] = [
 			{
@@ -146,18 +148,24 @@ describe('FileTree', () => {
 			target: container,
 			props: { nodes, onSelect },
 		});
-		const summary = container.querySelector(
-			'[data-testid="file-tree-folder-folder1"] summary',
+		const folderDiv = container.querySelector(
+			'[data-testid="file-tree-folder-folder1"]',
 		) as HTMLElement;
-		const details = summary.closest('details') as HTMLDetailsElement;
-		expect(details.open).toBe(false);
-		summary.click();
-		expect(details.open).toBe(true);
-		summary.click();
-		expect(details.open).toBe(false);
+		// Initially closed, no children div
+		expect(container.querySelector('.ml-4')).toBeNull();
+		folderDiv.click();
+		await tick();
+		// Now children div should be present
+		expect(container.querySelector('.ml-4')).toBeTruthy();
+		folderDiv.click();
+		await tick();
+		// Closed again
+		expect(container.querySelector('.ml-4')).toBeNull();
 		unmount(component);
 		document.body.removeChild(container);
 	});
+
+
 
 	it('selects file on click', () => {
 		const onSelect = vi.fn();
