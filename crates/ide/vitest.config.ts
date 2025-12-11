@@ -1,25 +1,11 @@
-/// <reference types="vitest" />
-import { defineConfig, mergeConfig } from 'vitest/config';
-import { playwright } from '@vitest/browser-playwright';
-import viteConfig from './vite.config.js';
+import { defineConfig } from 'vitest/config';
+import { sveltekit } from '@sveltejs/kit/vite';
+import { svelteTesting } from '@testing-library/svelte/vite';
 
-export default defineConfig(async (configEnv) => {
-	const baseConfig = await viteConfig(configEnv);
-	return mergeConfig(baseConfig, {
-		test: {
-			browser: {
-			enabled: true,
-			headless: true,
-			provider: playwright,
-			instances: [{ browser: 'chromium' }],
-		},
-			globals: true,
-			include: ['src/**/*.{test,spec}.{js,ts,jsx,tsx,svelte}'],
-			exclude: [
-				'**/node_modules/**',
-				'**/dist/**',
-				'**/.{idea,git,cache,output,temp}/**',
-			],
-		},
-	});
+export default defineConfig({
+	plugins: [sveltekit(), svelteTesting()],
+	test: {
+		environment: 'jsdom',
+		setupFiles: ['./vitest-setup.js'],
+	},
 });
