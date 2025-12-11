@@ -105,9 +105,9 @@ The Zinc IDE allows you to open folders to view their structure in a file tree s
 
 ## Keyboard Shortcuts
 
-The Zinc IDE supports global keyboard shortcuts for quick access to common actions.
+The Zinc IDE supports keyboard shortcuts for quick access to common actions.
 
 - **Open Folder**: Cmd+O (macOS) / Ctrl+O (Windows/Linux)
 - **Open File**: Cmd+Shift+O (macOS) / Ctrl+Shift+O (Windows/Linux)
 
-These shortcuts work even when the app is not focused, opening the respective dialogs directly.
+These shortcuts only work when the app is in focus.

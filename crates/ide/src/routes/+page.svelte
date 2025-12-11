@@ -27,10 +27,13 @@
 	let userInput = $state('');
 	let folderNodes = $state<FileNode[]>([]);
 	let currentFolderPath = $state<string>('');
+	let isMac = $state(false);
 	let openingFolder = $state(false);
 	let openingFile = $state(false);
 
 	async function openFolder() {
+		if (openingFolder) return;
+		openingFolder = true;
 		try {
 			const path = (await invoke('open_folder')) as string;
 			const nodes = (await invoke('read_directory', {
@@ -40,6 +43,8 @@
 			currentFolderPath = path;
 		} catch (e) {
 			console.error('Error opening folder:', e);
+		} finally {
+			openingFolder = false;
 		}
 	}
 
@@ -49,10 +54,14 @@
 	}
 
 	async function openFile() {
+		if (openingFile) return;
+		openingFile = true;
 		try {
 			code = await invoke('open_file');
 		} catch (e) {
 			console.error('Error opening file:', e);
+		} finally {
+			openingFile = false;
 		}
 	}
 
@@ -80,6 +89,19 @@
 		}
 	}
 
+	function handleKeydown(event: KeyboardEvent) {
+		const isCmdOrCtrl = isMac ? event.metaKey : event.ctrlKey;
+		if (isCmdOrCtrl && event.key === 'o' && !event.shiftKey) {
+			console.log('Shortcut: Open folder');
+			event.preventDefault();
+			openFolder();
+		} else if (isCmdOrCtrl && event.key === 'o' && event.shiftKey) {
+			console.log('Shortcut: Open file');
+			event.preventDefault();
+			openFile();
+		}
+	}
+
 	async function sendMessage() {
 		if (!settings.aiEnabled) {
 			console.error('AI is disabled');
@@ -99,26 +121,12 @@
 
 	onMount(async () => {
 		loadSettings();
-		await listen('open-folder', async () => {
-			if (!openingFolder) {
-				openingFolder = true;
-				try {
-					await openFolder();
-				} finally {
-					openingFolder = false;
-				}
-			}
-		});
-		await listen('open-file', async () => {
-			if (!openingFile) {
-				openingFile = true;
-				try {
-					await openFile();
-				} finally {
-					openingFile = false;
-				}
-			}
-		});
+		const os = (await invoke('get_os')) as string;
+		isMac = os === 'macos';
+		window.addEventListener('keydown', handleKeydown);
+		return () => {
+			window.removeEventListener('keydown', handleKeydown);
+		};
 	});
 
 	let code = $state(`// Welcome to Zinc IDE
@@ -132,9 +140,26 @@ console.log(greet('Developer'));`);
 </script>
 
 {#if currentFolderPath}
-<IdeWorkspace {folderNodes} {messages} bind:userInput bind:settings bind:code onSelect={handleFileSelect} onOpenFolder={openFolder} {openFile} {saveFile} {sendMessage} {loadSettings} {saveSettings} />
+	<IdeWorkspace
+		{folderNodes}
+		{messages}
+		bind:userInput
+		bind:settings
+		bind:code
+		onSelect={handleFileSelect}
+		onOpenFolder={openFolder}
+		{openFile}
+		{saveFile}
+		{sendMessage}
+		{loadSettings}
+		{saveSettings}
+	/>
 {:else}
-<WelcomeScreen onOpenFolder={openFolder} onOpenFile={openFile} version="v0.1.0" />
+	<WelcomeScreen
+		onOpenFolder={openFolder}
+		onOpenFile={openFile}
+		version="v0.1.0"
+	/>
 {/if}
 
 <style>

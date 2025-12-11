@@ -4,13 +4,8 @@ use serde::{Deserialize, Serialize};
 use shared::Agent;
 use std::fs;
 use std::path;
-use std::time::Instant;
 
-use tauri::{AppHandle, Emitter, Manager};
-
-static mut LAST_FOLDER: Option<Instant> = None;
-static mut LAST_FILE: Option<Instant> = None;
-use tauri_plugin_global_shortcut::{Code, GlobalShortcutExt, Modifiers, Shortcut};
+use tauri::{AppHandle, Manager};
 
 #[derive(Serialize, Deserialize)]
 pub struct Settings {
@@ -165,59 +160,7 @@ pub fn run() {
         )
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_fs::init())
-        .plugin(
-            tauri_plugin_global_shortcut::Builder::new()
-                .with_handler(|app, shortcut: &Shortcut, _| {
-                    let modifiers = if cfg!(target_os = "macos") {
-                        Modifiers::SUPER
-                    } else {
-                        Modifiers::CONTROL
-                    };
-                    if shortcut.key == Code::KeyO && shortcut.mods == modifiers {
-                        unsafe {
-                            let now = Instant::now();
-                            if let Some(last) = LAST_FOLDER {
-                                if now.duration_since(last).as_millis() < 500 {
-                                    return;
-                                }
-                            }
-                            app.emit("open-folder", ()).unwrap();
-                            LAST_FOLDER = Some(now);
-                        }
-                    } else if shortcut.key == Code::KeyO
-                        && shortcut.mods == (modifiers | Modifiers::SHIFT)
-                    {
-                        unsafe {
-                            let now = Instant::now();
-                            if let Some(last) = LAST_FILE {
-                                if now.duration_since(last).as_millis() < 500 {
-                                    return;
-                                }
-                            }
-                            app.emit("open-file", ()).unwrap();
-                            LAST_FILE = Some(now);
-                        }
-                    }
-                })
-                .build(),
-        )
-        .setup(|app| {
-            let modifiers = if cfg!(target_os = "macos") {
-                Modifiers::SUPER
-            } else {
-                Modifiers::CONTROL
-            };
-
-            // Register Cmd+O / Ctrl+O for open folder
-            let open_folder_shortcut = Shortcut::new(Some(modifiers), Code::KeyO);
-            app.global_shortcut().register(open_folder_shortcut)?;
-
-            // Register Cmd+Shift+O / Ctrl+Shift+O for open file
-            let open_file_shortcut = Shortcut::new(Some(modifiers | Modifiers::SHIFT), Code::KeyO);
-            app.global_shortcut().register(open_file_shortcut)?;
-
-            Ok(())
-        })
+        .setup(|_| Ok(()))
         .invoke_handler(tauri::generate_handler![
             greet,
             open_file,
