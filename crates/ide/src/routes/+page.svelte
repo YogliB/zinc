@@ -123,23 +123,19 @@
 		loadSettings();
 		const os = (await invoke('get_os')) as string;
 		isMac = os === 'macos';
+	});
+
+	$effect(() => {
 		window.addEventListener('keydown', handleKeydown);
 		return () => {
 			window.removeEventListener('keydown', handleKeydown);
 		};
 	});
 
-	let code = $state(`// Welcome to Zinc IDE
-console.log('Hello, world!');
-
-function greet(name: string) {
-  return 'Hello, ' + name + '!';
-}
-
-console.log(greet('Developer'));`);
+	let code = $state('');
 </script>
 
-{#if currentFolderPath}
+{#if currentFolderPath || code}
 	<IdeWorkspace
 		{folderNodes}
 		{messages}
