@@ -20,7 +20,12 @@
 	let processedNodes: FileNode[] = $derived(
 		nodes
 			?.filter((node) => node.name !== '.git')
-			.sort((a, b) => (a.type === 'folder' ? -1 : 1)) || [],
+			.sort((a, b) => {
+				if (a.type !== b.type) {
+					return a.type === 'folder' ? -1 : 1;
+				}
+				return a.name.localeCompare(b.name);
+			}) || [],
 	);
 </script>
 
@@ -28,7 +33,10 @@
 	<SvelteVirtualList items={processedNodes}>
 		{#snippet renderItem(node)}
 			{#if node.type === 'folder'}
-				<details open={openFolders.has(node.path)}>
+				<details
+					data-testid={`file-tree-folder-${node.name}`}
+					open={openFolders.has(node.path)}
+				>
 					<summary
 						class="flex items-center gap-2 py-1 px-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer list-none"
 						onclick={(e) => {
@@ -41,7 +49,9 @@
 						}}
 					>
 						<FolderOutline class="w-4 h-4 text-blue-500" />
-						<span class="text-sm">{node.name}</span>
+						<span class="text-sm" data-testid="file-tree-item-name"
+							>{node.name}</span
+						>
 					</summary>
 					<div class="ml-4">
 						{#if node.children && node.children.length > 0 && openFolders.has(node.path)}
@@ -51,6 +61,7 @@
 				</details>
 			{:else}
 				<div
+					data-testid={`file-tree-file-${node.name}`}
 					class="flex items-center gap-2 py-1 px-2 hover:bg-gray-100 dark:hover:bg-gray-700 cursor-pointer rounded"
 					role="button"
 					tabindex="0"
@@ -61,7 +72,9 @@
 					}}
 				>
 					<FileOutline class="w-4 h-4 text-gray-500" />
-					<span class="text-sm">{node.name}</span>
+					<span class="text-sm" data-testid="file-tree-item-name"
+						>{node.name}</span
+					>
 				</div>
 			{/if}
 		{/snippet}

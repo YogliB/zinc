@@ -1,5 +1,6 @@
 import { describe, it, expect, vi } from 'vitest';
 import { mount, unmount } from 'svelte';
+import { fireEvent } from '@testing-library/svelte';
 import FileTree from './FileTree.svelte';
 
 interface FileNode {
@@ -12,12 +13,18 @@ interface FileNode {
 describe('FileTree', () => {
 	it('renders empty nodes', () => {
 		const onSelect = vi.fn();
+		const container = document.createElement('div');
+		container.style.height = '400px';
+		document.body.appendChild(container);
 		const component = mount(FileTree, {
-			target: document.body,
+			target: container,
 			props: { nodes: [], onSelect },
 		});
-		expect(document.querySelector('button')).toBeNull();
+		expect(
+			container.querySelector('[data-testid^="file-tree-file"]'),
+		).toBeNull();
 		unmount(component);
+		document.body.removeChild(container);
 	});
 
 	it('renders single file node', () => {
@@ -25,13 +32,21 @@ describe('FileTree', () => {
 		const nodes: FileNode[] = [
 			{ name: 'test.txt', type: 'file', path: '/test.txt' },
 		];
+		const container = document.createElement('div');
+		container.style.height = '400px';
+		document.body.appendChild(container);
 		const component = mount(FileTree, {
-			target: document.body,
+			target: container,
 			props: { nodes, onSelect },
 		});
-		expect(document.body.textContent).toContain('test.txt');
-		expect(document.querySelector('button')?.textContent).toBe('test.txt');
+		expect(container.textContent).toContain('test.txt');
+		expect(
+			container.querySelector(
+				'[data-testid="file-tree-file-test.txt"] [data-testid="file-tree-item-name"]',
+			)?.textContent,
+		).toBe('test.txt');
 		unmount(component);
+		document.body.removeChild(container);
 	});
 
 	it('renders single folder node', () => {
@@ -39,15 +54,21 @@ describe('FileTree', () => {
 		const nodes: FileNode[] = [
 			{ name: 'folder1', type: 'folder', path: '/folder1' },
 		];
+		const container = document.createElement('div');
+		container.style.height = '400px';
+		document.body.appendChild(container);
 		const component = mount(FileTree, {
-			target: document.body,
+			target: container,
 			props: { nodes, onSelect },
 		});
-		expect(document.body.textContent).toContain('folder1');
+		expect(container.textContent).toContain('folder1');
 		// Details should be closed by default
-		const details = document.querySelector('details');
+		const details = container.querySelector(
+			'[data-testid="file-tree-folder-folder1"]',
+		);
 		expect(details).not.toHaveAttribute('open');
 		unmount(component);
+		document.body.removeChild(container);
 	});
 	it('renders mixed files and folders', () => {
 		const onSelect = vi.fn();
@@ -56,20 +77,23 @@ describe('FileTree', () => {
 			{ name: 'file1.txt', type: 'file', path: '/file1.txt' },
 			{ name: 'folder2', type: 'folder', path: '/folder2' },
 		];
+		const container = document.createElement('div');
+		container.style.height = '400px';
+		document.body.appendChild(container);
 		const component = mount(FileTree, {
-			target: document.body,
+			target: container,
 			props: { nodes, onSelect },
 		});
-		expect(document.body.textContent).toContain('folder1');
-		expect(document.body.textContent).toContain('folder2');
-		expect(document.body.textContent).toContain('file1.txt');
+		expect(container.textContent).toContain('folder1');
+		expect(container.textContent).toContain('folder2');
+		expect(container.textContent).toContain('file1.txt');
 		// Folders should appear before files due to sorting
-		const container = document.querySelector('div[style*="height: 100%"]');
-		const texts = Array.from(container!.querySelectorAll('span')).map(
-			(span) => span.textContent,
-		);
+		const texts = Array.from(
+			container.querySelectorAll('[data-testid="file-tree-item-name"]'),
+		).map((span) => span.textContent);
 		expect(texts).toEqual(['folder1', 'folder2', 'file1.txt']);
 		unmount(component);
+		document.body.removeChild(container);
 	});
 
 	it('filters out .git folder', () => {
@@ -79,14 +103,24 @@ describe('FileTree', () => {
 			{ name: '.git', type: 'folder', path: '/.git' },
 			{ name: 'file1.txt', type: 'file', path: '/file1.txt' },
 		];
+		const container = document.createElement('div');
+		container.style.height = '400px';
+		document.body.appendChild(container);
 		const component = mount(FileTree, {
-			target: document.body,
+			target: container,
 			props: { nodes, onSelect },
 		});
-		expect(document.body.textContent).toContain('folder1');
-		expect(document.body.textContent).toContain('file1.txt');
-		expect(document.body.textContent).not.toContain('.git');
+		expect(
+			container.querySelector('[data-testid="file-tree-folder-folder1"]'),
+		).toBeTruthy();
+		expect(
+			container.querySelector('[data-testid="file-tree-file-file1.txt"]'),
+		).toBeTruthy();
+		expect(
+			container.querySelector('[data-testid="file-tree-folder-.git"]'),
+		).toBeNull();
 		unmount(component);
+		document.body.removeChild(container);
 	});
 
 	it('toggles folder open/close on summary click', () => {
@@ -105,11 +139,16 @@ describe('FileTree', () => {
 				],
 			},
 		];
+		const container = document.createElement('div');
+		container.style.height = '400px';
+		document.body.appendChild(container);
 		const component = mount(FileTree, {
-			target: document.body,
+			target: container,
 			props: { nodes, onSelect },
 		});
-		const summary = document.querySelector('summary') as HTMLElement;
+		const summary = container.querySelector(
+			'[data-testid="file-tree-folder-folder1"] summary',
+		) as HTMLElement;
 		const details = summary.closest('details') as HTMLDetailsElement;
 		expect(details.open).toBe(false);
 		summary.click();
@@ -117,6 +156,7 @@ describe('FileTree', () => {
 		summary.click();
 		expect(details.open).toBe(false);
 		unmount(component);
+		document.body.removeChild(container);
 	});
 
 	it('selects file on click', () => {
@@ -124,16 +164,20 @@ describe('FileTree', () => {
 		const nodes: FileNode[] = [
 			{ name: 'file1.txt', type: 'file', path: '/file1.txt' },
 		];
+		const container = document.createElement('div');
+		container.style.height = '400px';
+		document.body.appendChild(container);
 		const component = mount(FileTree, {
-			target: document.body,
+			target: container,
 			props: { nodes, onSelect },
 		});
-		const fileButton = document.querySelector(
-			'button',
-		) as HTMLButtonElement;
+		const fileButton = container.querySelector(
+			'[data-testid="file-tree-file-file1.txt"]',
+		) as HTMLElement;
 		fileButton.click();
 		expect(onSelect).toHaveBeenCalledWith('/file1.txt');
 		unmount(component);
+		document.body.removeChild(container);
 	});
 
 	it('selects file on Enter key', () => {
@@ -141,18 +185,20 @@ describe('FileTree', () => {
 		const nodes: FileNode[] = [
 			{ name: 'file1.txt', type: 'file', path: '/file1.txt' },
 		];
+		const container = document.createElement('div');
+		container.style.height = '400px';
+		document.body.appendChild(container);
 		const component = mount(FileTree, {
-			target: document.body,
+			target: container,
 			props: { nodes, onSelect },
 		});
-		const fileButton = document.querySelector(
-			'button',
-		) as HTMLButtonElement;
-		fileButton.dispatchEvent(
-			new KeyboardEvent('keydown', { key: 'Enter' }),
-		);
+		const fileButton = container.querySelector(
+			'[data-testid="file-tree-file-file1.txt"]',
+		) as HTMLElement;
+		fireEvent.keyDown(fileButton, { key: 'Enter' });
 		expect(onSelect).toHaveBeenCalledWith('/file1.txt');
 		unmount(component);
+		document.body.removeChild(container);
 	});
 
 	it('selects file on Space key', () => {
@@ -160,16 +206,20 @@ describe('FileTree', () => {
 		const nodes: FileNode[] = [
 			{ name: 'file1.txt', type: 'file', path: '/file1.txt' },
 		];
+		const container = document.createElement('div');
+		container.style.height = '400px';
+		document.body.appendChild(container);
 		const component = mount(FileTree, {
-			target: document.body,
+			target: container,
 			props: { nodes, onSelect },
 		});
-		const fileButton = document.querySelector(
-			'button',
-		) as HTMLButtonElement;
-		fileButton.dispatchEvent(new KeyboardEvent('keydown', { key: ' ' }));
+		const fileButton = container.querySelector(
+			'[data-testid="file-tree-file-file1.txt"]',
+		) as HTMLElement;
+		fireEvent.keyDown(fileButton, { key: ' ' });
 		expect(onSelect).toHaveBeenCalledWith('/file1.txt');
 		unmount(component);
+		document.body.removeChild(container);
 	});
 
 	it('renders large node list', () => {
@@ -179,15 +229,24 @@ describe('FileTree', () => {
 			type: i % 2 === 0 ? 'folder' : 'file',
 			path: `/${i % 2 === 0 ? `folder${i}` : `file${i}.txt`}`,
 		}));
+		const container = document.createElement('div');
+		container.style.height = '400px';
+		document.body.appendChild(container);
 		const component = mount(FileTree, {
-			target: document.body,
+			target: container,
 			props: { nodes, onSelect },
 		});
 		// Check that some items are rendered (virtual list handles large lists)
-		expect(document.querySelectorAll('span').length).toBeGreaterThan(0);
+		expect(
+			container.querySelectorAll('[data-testid="file-tree-item-name"]')
+				.length,
+		).toBeGreaterThan(0);
 		// Folders first due to sorting
-		const firstSpan = document.querySelector('span');
+		const firstSpan = container.querySelector(
+			'[data-testid="file-tree-item-name"]',
+		);
 		expect(firstSpan?.textContent).toMatch(/^folder/);
 		unmount(component);
+		document.body.removeChild(container);
 	});
 });
