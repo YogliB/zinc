@@ -9,6 +9,7 @@
 		FileTree,
 	} from '../lib/components/organisms';
 	import { Button } from '$lib/components/atoms';
+	import { WelcomeScreen } from '$lib/components/molecules';
 
 	interface Message {
 		role: 'user' | 'assistant';
@@ -114,6 +115,7 @@ function greet(name: string) {
 console.log(greet('Developer'));`);
 </script>
 
+{#if currentFolderPath}
 <IdeLayout>
 	{#snippet leftSidebar()}
 		<FileTree nodes={folderNodes} onSelect={handleFileSelect} />
@@ -140,6 +142,9 @@ console.log(greet('Developer'));`);
 		</div>
 	{/snippet}
 </IdeLayout>
+{:else}
+<WelcomeScreen onOpenFolder={openFolder} onOpenFile={openFile} version="v0.1.0" />
+{/if}
 
 <style>
 </style>
