@@ -102,3 +102,12 @@ The Zinc IDE allows you to open folders to view their structure in a file tree s
 - Selecting items in the file tree does not open files yet.
 - If an error occurs during folder opening or reading, it will be logged to the console.
 - The layout adjusts to accommodate the file tree in the left sidebar.
+
+## Keyboard Shortcuts
+
+The Zinc IDE supports global keyboard shortcuts for quick access to common actions.
+
+- **Open Folder**: Cmd+O (macOS) / Ctrl+O (Windows/Linux)
+- **Open File**: Cmd+Shift+O (macOS) / Ctrl+Shift+O (Windows/Linux)
+
+These shortcuts work even when the app is not focused, opening the respective dialogs directly.

@@ -5,6 +5,7 @@ use shared::Agent;
 use std::fs;
 use std::path;
 use tauri::{AppHandle, Manager};
+use tauri_plugin_global_shortcut::{Code, GlobalShortcutExt, Modifiers, Shortcut};
 
 #[derive(Serialize, Deserialize)]
 pub struct Settings {
@@ -26,13 +27,17 @@ fn greet(name: &str) -> String {
     format!("Hello, {}! You've been greeted from Rust!", name)
 }
 
-#[tauri::command]
-fn open_folder() -> Result<String, String> {
+fn open_folder_impl() -> Result<String, String> {
     let folder_path = FileDialog::new().pick_folder();
     match folder_path {
         Some(path) => Ok(path.to_string_lossy().to_string()),
         None => Err("No folder selected".to_string()),
     }
+}
+
+#[tauri::command]
+fn open_folder() -> Result<String, String> {
+    open_folder_impl()
 }
 
 #[tauri::command]
@@ -67,8 +72,7 @@ fn read_directory(path: String) -> Result<Vec<FileNode>, String> {
     build_tree(root_path)
 }
 
-#[tauri::command]
-fn open_file() -> Result<String, String> {
+fn open_file_impl() -> Result<String, String> {
     let file_path = FileDialog::new().pick_file();
     match file_path {
         Some(path) => {
@@ -81,6 +85,11 @@ fn open_file() -> Result<String, String> {
         }
         None => Err("No file selected".to_string()),
     }
+}
+
+#[tauri::command]
+fn open_file() -> Result<String, String> {
+    open_file_impl()
 }
 
 #[tauri::command]
@@ -136,11 +145,55 @@ async fn agent_message(app: AppHandle, message: String) -> Result<String, String
         .map_err(|e| e.to_string())
 }
 
+#[tauri::command]
+fn get_os() -> String {
+    std::env::consts::OS.to_string()
+}
+
 #[cfg_attr(mobile, tauri::mobile_entry_point)]
 pub fn run() {
     tauri::Builder::default()
         .plugin(tauri_plugin_opener::init())
         .plugin(tauri_plugin_fs::init())
+        .plugin(
+            tauri_plugin_global_shortcut::Builder::new()
+                .with_handler(|_, shortcut: &Shortcut, _| {
+                    let modifiers = if cfg!(target_os = "macos") {
+                        Modifiers::SUPER
+                    } else {
+                        Modifiers::CONTROL
+                    };
+                    if shortcut.key == Code::KeyO && shortcut.mods == modifiers {
+                        if let Err(e) = open_folder_impl() {
+                            eprintln!("Error opening folder via shortcut: {}", e);
+                        }
+                    } else if shortcut.key == Code::KeyO
+                        && shortcut.mods == (modifiers | Modifiers::SHIFT)
+                    {
+                        if let Err(e) = open_file_impl() {
+                            eprintln!("Error opening file via shortcut: {}", e);
+                        }
+                    }
+                })
+                .build(),
+        )
+        .setup(|app| {
+            let modifiers = if cfg!(target_os = "macos") {
+                Modifiers::SUPER
+            } else {
+                Modifiers::CONTROL
+            };
+
+            // Register Cmd+O / Ctrl+O for open folder
+            let open_folder_shortcut = Shortcut::new(Some(modifiers), Code::KeyO);
+            app.global_shortcut().register(open_folder_shortcut)?;
+
+            // Register Cmd+Shift+O / Ctrl+Shift+O for open file
+            let open_file_shortcut = Shortcut::new(Some(modifiers | Modifiers::SHIFT), Code::KeyO);
+            app.global_shortcut().register(open_file_shortcut)?;
+
+            Ok(())
+        })
         .invoke_handler(tauri::generate_handler![
             greet,
             open_file,
@@ -149,7 +202,8 @@ pub fn run() {
             save_settings,
             agent_message,
             open_folder,
-            read_directory
+            read_directory,
+            get_os
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");
