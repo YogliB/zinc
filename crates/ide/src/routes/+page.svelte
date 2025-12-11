@@ -2,14 +2,7 @@
 	import { onMount } from 'svelte';
 	import { invoke } from '@tauri-apps/api/core';
 	import { listen } from '@tauri-apps/api/event';
-	import { IdeLayout } from '../lib/components/templates';
-	import {
-		CodeEditor,
-		ChatPanel,
-		SettingsPanel,
-		FileTree,
-	} from '../lib/components/organisms';
-	import { Button } from '$lib/components/atoms';
+	import { IdeWorkspace } from '../lib/components/organisms';
 	import { WelcomeScreen } from '$lib/components/molecules';
 
 	interface Message {
@@ -139,32 +132,7 @@ console.log(greet('Developer'));`);
 </script>
 
 {#if currentFolderPath}
-<IdeLayout>
-	{#snippet leftSidebar()}
-		<FileTree nodes={folderNodes} onSelect={handleFileSelect} />
-	{/snippet}
-	{#snippet main()}
-		<div class="flex flex-col overflow-hidden">
-			<Button
-				onclick={openFolder}
-				class="mb-2 p-2 bg-blue-500 text-white rounded"
-				>Open Folder</Button
-			>
-			<CodeEditor bind:code {openFile} {saveFile} />
-		</div>
-	{/snippet}
-	{#snippet rightSidebar()}
-		<div class="bg-white border-l flex flex-col">
-			<ChatPanel
-				{messages}
-				bind:userInput
-				{sendMessage}
-				aiEnabled={settings.aiEnabled}
-			/>
-			<SettingsPanel bind:settings {loadSettings} {saveSettings} />
-		</div>
-	{/snippet}
-</IdeLayout>
+<IdeWorkspace {folderNodes} {messages} bind:userInput bind:settings bind:code onSelect={handleFileSelect} onOpenFolder={openFolder} {openFile} {saveFile} {sendMessage} {loadSettings} {saveSettings} />
 {:else}
 <WelcomeScreen onOpenFolder={openFolder} onOpenFile={openFile} version="v0.1.0" />
 {/if}
