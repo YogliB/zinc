@@ -1,49 +1,44 @@
-# Agent Guidelines
-
 ## Code Style
 
-### Prefer Functional Programming
-
-- Use **pure functions** over classes and methods.
-- Favor **composition** over inheritance.
-- Use **immutable data** — avoid mutating state.
-- Prefer **higher-order functions** (`map`, `filter`, `reduce`) over loops.
-- Avoid `class` syntax unless interfacing with APIs that require it.
-- Use **closures** for encapsulation instead of private class members.
-- Return new data structures rather than modifying existing ones.
+- Prefer **functional programming**:
+    - Use **pure functions**, **composition**, and **immutable data**.
+    - Favor `map`, `filter`, `reduce` over loops.
+    - Avoid `class` syntax unless required by external APIs.
+    - Use **closures** for encapsulation.
+    - Always return new data structures.
 
 ## UI Design
 
-- Build the UI following atomic design principles: atoms, molecules, organisms, templates, and pages.
+- Follow **Atomic Design** principles: atoms → molecules → organisms → templates → pages.  
+  [Reference](https://bradfrost.com/blog/post/atomic-web-design/)
+
+## Technologies
+
+- **IDE App**: SvelteKit, Tauri, TailwindCSS, Flowbite, Vitest, Storybook.
+- Every component must include **stories** (Storybook) and **tests** (Vitest).
 
 ## Package Manager
 
-- Use bun for package management for create/ide
+- Use **bun** for IDE app (`create/ide`).
 
 ## File Editing
 
-- **NEVER** edit config files unless specifically requested to. Forbidden files:
-    - `eslint.config.mjs`
-    - `knip.json`
-    - `tsconfig.json`
-    - `tauri.conf.json`
-    - `Cargo.toml`
-- **NEVER** disable linting rules unless given a direct and clear instruction to do so
+- **Do NOT edit** config files unless explicitly instructed:
+    - `eslint.config.mjs`, `knip.json`, `tsconfig.json`, `tauri.conf.json`, `Cargo.toml`, `vite.config.ts`, `vitest.config.ts`
+- Never disable linting rules without direct approval.
 
 ## Git Operations
 
-- **NEVER** use `--no-verify` flag when committing or pushing to git
-- Pre-commit and pre-push hooks exist for a reason and must not be bypassed
-- If hooks fail, fix the underlying issues rather than skipping validation
+- Never use `--no-verify` when committing/pushing.
+- Fix hook failures instead of bypassing them.
 
-## Documentation Structure
+## Documentation
 
-- **NEVER** create new documentation files in the project root or `docs/` folder.
-- The following documentation files are **sacred** and must be preserved:
+- Do NOT create new docs in root or `docs/`.
+- Preserve these files:
     - **Root**: `AGENTS.md`, `README.md`
     - **docs/**: `ARCHITECTURE.md`, `CONTRIBUTING.md`, `README.md`, `SECURITY.md`, `SETUP.md`, `USAGE.md`
-- All documentation must be added to existing files only.
-- If you are 99% certain a new documentation file must be created:
-    - **STOP** and alert the user about the need
-    - **DO NOT** create the file unless explicitly approved by the user
-    - Explain why existing files cannot accommodate the content
+- Add content only to existing files.
+- If new doc seems necessary:
+    - STOP and alert the user.
+    - Explain why existing files cannot accommodate it.
