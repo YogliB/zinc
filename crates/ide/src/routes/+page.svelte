@@ -41,6 +41,7 @@
 			})) as FileNode[];
 			folderNodes = nodes;
 			currentFolderPath = path;
+			console.log('currentFolderPath', currentFolderPath);
 		} catch (e) {
 			console.error('Error opening folder:', e);
 		} finally {
@@ -135,6 +136,11 @@
 	let code = $state('');
 </script>
 
+<div
+	style="background: lightblue; padding: 5px; border: 1px solid black; margin-bottom: 10px;"
+>
+	{currentFolderPath}
+</div>
 {#if currentFolderPath || code}
 	<IdeWorkspace
 		{folderNodes}
