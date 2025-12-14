@@ -17,13 +17,13 @@ function App() {
 			<h1>Welcome to Tauri + Preact</h1>
 
 			<div class="row">
-				<a href="https://vite.dev" target="_blank">
+				<a href="https://vite.dev" target="_blank" rel="noreferrer">
 					<img src="/vite.svg" class="logo vite" alt="Vite logo" />
 				</a>
-				<a href="https://tauri.app" target="_blank">
+				<a href="https://tauri.app" target="_blank" rel="noreferrer">
 					<img src="/tauri.svg" class="logo tauri" alt="Tauri logo" />
 				</a>
-				<a href="https://preactjs.com" target="_blank">
+				<a href="https://preactjs.com" target="_blank" rel="noreferrer">
 					<img
 						src={preactLogo}
 						class="logo preact"
