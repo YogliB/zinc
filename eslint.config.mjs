@@ -10,7 +10,7 @@ import preact from 'eslint-config-preact';
 
 export default defineConfig(
 	{
-		ignores: ['eslint.config.mjs', 'vite.config.ts'],
+		ignores: ['eslint.config.mjs', 'vite.config.ts', 'vitest.config.ts'],
 	},
 	eslint.configs.recommended,
 	tseslint.configs.strict,
