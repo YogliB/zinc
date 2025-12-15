@@ -1,10 +1,10 @@
 ---
 id: task-008
 title: Create Folder and File Icon Atoms
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-12-15 20:48'
-updated_date: '2025-12-15 20:51'
+updated_date: '2025-12-15 20:59'
 labels: []
 dependencies: []
 ---
