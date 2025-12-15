@@ -16,6 +16,7 @@ export default defineConfig(
 			'vite.config.ts',
 			'vitest.config.ts',
 			'**/.storybook/**',
+			'src-tauri/**',
 		],
 	},
 	eslint.configs.recommended,
