@@ -1,10 +1,10 @@
 ---
 id: task-007
 title: Design File Tree Component Structure
-status: In Progress
+status: Done
 assignee: []
 created_date: '2025-12-15 20:48'
-updated_date: '2025-12-15 20:56'
+updated_date: '2025-12-15 20:58'
 labels: []
 dependencies: []
 ---
