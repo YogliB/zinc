@@ -1,7 +1,7 @@
 ---
 id: task-021
 title: Add tests for CodeEditor component
-status: In Progress
+status: Done
 assignee: []
 created_date: '2025-12-15 21:19'
 updated_date: '2025-12-15 21:27'
