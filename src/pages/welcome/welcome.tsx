@@ -1,7 +1,12 @@
 import { Button } from '../../atoms';
 import { FolderOpen } from 'lucide-react';
+import { Kbd } from '../../components/ui/kbd';
 
-export function WelcomePage() {
+interface WelcomePageProps {
+	os: 'mac' | 'windows' | 'linux';
+}
+
+export function WelcomePage({ os }: WelcomePageProps) {
 	const handleOpenProject = () => {
 		console.log('Open project clicked');
 	};
@@ -27,8 +32,17 @@ export function WelcomePage() {
 					</Button>
 				</div>
 				<p className="text-muted-foreground text-sm">
-					Tip: Press Cmd+O (Mac) or Ctrl+O (Windows/Linux) to open a
-					project.
+					Tip: Press{' '}
+					{os === 'mac' ? (
+						<>
+							<Kbd>⌘</Kbd> <Kbd>O</Kbd>
+						</>
+					) : (
+						<>
+							<Kbd>Ctrl</Kbd> <Kbd>O</Kbd>
+						</>
+					)}{' '}
+					to open a project.
 				</p>
 			</div>
 		</div>
