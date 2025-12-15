@@ -1,10 +1,10 @@
 ---
 id: task-005
 title: Display hint about using keyboard shortcuts on welcome page
-status: In Progress
+status: Done
 assignee: []
 created_date: '2025-12-15 20:34'
-updated_date: '2025-12-15 20:34'
+updated_date: '2025-12-15 20:35'
 labels: []
 dependencies: []
 ---
