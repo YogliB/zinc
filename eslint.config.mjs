@@ -8,6 +8,7 @@ import sonarjs from 'eslint-plugin-sonarjs';
 import importPlugin from 'eslint-plugin-import';
 import preact from 'eslint-config-preact';
 import storybook from 'eslint-plugin-storybook';
+import unicorn from 'eslint-plugin-unicorn';
 
 export default defineConfig(
 	{
@@ -34,6 +35,7 @@ export default defineConfig(
 	tseslint.configs.strict,
 	tseslint.configs.stylistic,
 	sonarjs.configs.recommended,
+	unicorn.configs.recommended,
 	importPlugin.flatConfigs.recommended,
 	importPlugin.flatConfigs.typescript,
 	...preact,
