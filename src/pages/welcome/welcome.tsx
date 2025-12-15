@@ -1,3 +1,5 @@
+import { Button } from '@/components/ui/button';
+
 export function WelcomePage() {
 	const handleOpenProject = () => {
 		console.log('Open project clicked');
@@ -5,10 +7,6 @@ export function WelcomePage() {
 
 	const handleNewProject = () => {
 		console.log('New project clicked');
-	};
-
-	const handleSettings = () => {
-		console.log('Settings clicked');
 	};
 
 	return (
@@ -22,24 +20,21 @@ export function WelcomePage() {
 					developers.
 				</p>
 				<div className="space-y-4">
-					<button
+					<Button
 						onClick={handleOpenProject}
-						className="bg-primary text-primary-foreground hover:bg-primary/90 h-10 w-48 rounded-md px-6"
+						size="lg"
+						className="w-48"
 					>
 						Open Project
-					</button>
-					<button
+					</Button>
+					<Button
 						onClick={handleNewProject}
-						className="bg-background hover:bg-accent hover:text-accent-foreground h-10 w-48 rounded-md border px-6 shadow-xs"
+						variant="outline"
+						size="lg"
+						className="w-48"
 					>
 						New Project
-					</button>
-					<button
-						onClick={handleSettings}
-						className="hover:bg-accent hover:text-accent-foreground h-10 w-48 rounded-md px-6"
-					>
-						Settings
-					</button>
+					</Button>
 				</div>
 			</div>
 		</div>
