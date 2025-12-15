@@ -23,6 +23,7 @@
 
 ## Tooling
 
+- Use **bun** as the package manager.
 - Do **not** modify ESLint or Vite configs without explicit permission.
 
 ## Testing
