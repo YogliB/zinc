@@ -37,7 +37,8 @@ export function WelcomePage() {
 					</Button>
 				</div>
 				<p className="text-muted-foreground text-sm">
-					Tip: Use keyboard shortcuts for faster navigation.
+					Tip: Press Ctrl+O to open a project or Ctrl+N for a new
+					project.
 				</p>
 			</div>
 		</div>
