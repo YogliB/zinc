@@ -18,6 +18,8 @@
 	},
 	"dependencies": {
 		"@eslint/js": "9.39.2",
+		"@preact/signals": "2.5.1",
+		"@radix-ui/react-collapsible": "1.1.12",
 		"@radix-ui/react-slot": "1.2.4",
 		"@tauri-apps/api": "2",
 		"@tauri-apps/plugin-log": "~2",

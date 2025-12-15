@@ -11,6 +11,7 @@ import storybook from 'eslint-plugin-storybook';
 
 export default defineConfig(
 	{
+		files: ['**/*.ts', '**/*.tsx'],
 		ignores: [
 			'eslint.config.mjs',
 			'vite.config.ts',
@@ -18,6 +19,16 @@ export default defineConfig(
 			'**/.storybook/**',
 			'src-tauri/**',
 		],
+		languageOptions: {
+			parser: tseslint.parser,
+			parserOptions: {
+				ecmaVersion: 'latest',
+				sourceType: 'module',
+				ecmaFeatures: {
+					jsx: true,
+				},
+			},
+		},
 	},
 	eslint.configs.recommended,
 	tseslint.configs.strict,
