@@ -1,10 +1,10 @@
 ---
 id: task-017
 title: Install react-codemirror dependency
-status: To Do
+status: In Progress
 assignee: []
 created_date: '2025-12-15 21:19'
-updated_date: '2025-12-15 21:22'
+updated_date: '2025-12-15 21:24'
 labels: []
 dependencies: []
 ---
