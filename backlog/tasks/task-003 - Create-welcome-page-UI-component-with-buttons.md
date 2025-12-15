@@ -1,10 +1,10 @@
 ---
 id: task-003
 title: Create welcome page UI component with buttons
-status: In Progress
+status: Done
 assignee: []
 created_date: '2025-12-15 19:59'
-updated_date: '2025-12-15 20:09'
+updated_date: '2025-12-15 20:14'
 labels: []
 dependencies: []
 ---
