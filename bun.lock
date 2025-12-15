@@ -24,6 +24,7 @@
         "@tailwindcss/vite": "4.1.18",
         "@tauri-apps/cli": "2",
         "@types/react": "19.2.7",
+        "backlog.md": "1.27.1",
         "eslint-config-preact": "2.0.0",
         "eslint-config-prettier": "10.1.8",
         "eslint-plugin-import": "2.32.0",
@@ -419,6 +420,18 @@
     "available-typed-arrays": ["available-typed-arrays@1.0.7", "", { "dependencies": { "possible-typed-array-names": "^1.0.0" } }, "sha512-wvUjBtSGN7+7SjNpq/9M2Tg350UZD3q62IFZLbRAR1bSMlCo1ZaeW+BJ+D090e4hIIZLBcTDWe4Mh4jvUDajzQ=="],
 
     "babel-plugin-transform-hook-names": ["babel-plugin-transform-hook-names@1.0.2", "", { "peerDependencies": { "@babel/core": "^7.12.10" } }, "sha512-5gafyjyyBTTdX/tQQ0hRgu4AhNHG/hqWi0ZZmg2xvs2FgRkJXzDNKBZCyoYqgFkovfDrgM8OoKg8karoUvWeCw=="],
+
+    "backlog.md": ["backlog.md@1.27.1", "https://cyberark.jfrog.io/artifactory/api/npm/everest-npm-virtual/backlog.md/-/backlog.md-1.27.1.tgz", { "optionalDependencies": { "backlog.md-darwin-arm64": "1.27.1", "backlog.md-darwin-x64": "1.27.1", "backlog.md-linux-arm64": "1.27.1", "backlog.md-linux-x64": "1.27.1", "backlog.md-windows-x64": "1.27.1" }, "bin": { "backlog": "cli.js" } }, "sha512-4cCcremtoV4LtH6Q1C8wAkFnGkFTk4nN+44OKkszkMD2GKwU/mpUu4ZFQVx9VCcVcGDFhTamtkOxOb4FJ1Fc7w=="],
+
+    "backlog.md-darwin-arm64": ["backlog.md-darwin-arm64@1.27.1", "https://cyberark.jfrog.io/artifactory/api/npm/everest-npm-virtual/backlog.md-darwin-arm64/-/backlog.md-darwin-arm64-1.27.1.tgz", { "os": "darwin", "cpu": "arm64" }, "sha512-qn3vjdhiViYVKnRbOcinel/M8AGr3uSHE7fZ7ovY5n0sDCyL83AAdt4+xCHwp0Q428JWcIRGAor4Oru2YUDcCA=="],
+
+    "backlog.md-darwin-x64": ["backlog.md-darwin-x64@1.27.1", "https://cyberark.jfrog.io/artifactory/api/npm/everest-npm-virtual/backlog.md-darwin-x64/-/backlog.md-darwin-x64-1.27.1.tgz", { "os": "darwin", "cpu": "x64" }, "sha512-2Zzk4PuxFKQd6p9SMqoQCpzvzqq4SQyEDqjv2IG6XDMtD/nxkAVNsE2b6lpG3xXVNZ1es2NElo/A8bRKsmNxYw=="],
+
+    "backlog.md-linux-arm64": ["backlog.md-linux-arm64@1.27.1", "https://cyberark.jfrog.io/artifactory/api/npm/everest-npm-virtual/backlog.md-linux-arm64/-/backlog.md-linux-arm64-1.27.1.tgz", { "os": "linux", "cpu": "arm64" }, "sha512-R5J5+7aXAd7cyM4EEmWyuqUtzDy7BcdfxOOl+0mXSI/XWmQWfeal04/7aaWPoHo0qzma8lUcZf93QmkhQJNa0w=="],
+
+    "backlog.md-linux-x64": ["backlog.md-linux-x64@1.27.1", "https://cyberark.jfrog.io/artifactory/api/npm/everest-npm-virtual/backlog.md-linux-x64/-/backlog.md-linux-x64-1.27.1.tgz", { "os": "linux", "cpu": "x64" }, "sha512-+18lEgDOD9pMeSNEwsm1iT2DXMw6JSAlZKJYdBaKXoHfpbfmzxo5tnmJubpaO+AgN9nRADaVMP9xwpMyuJfeRw=="],
+
+    "backlog.md-windows-x64": ["backlog.md-windows-x64@1.27.1", "https://cyberark.jfrog.io/artifactory/api/npm/everest-npm-virtual/backlog.md-windows-x64/-/backlog.md-windows-x64-1.27.1.tgz", { "os": "win32", "cpu": "x64" }, "sha512-4rYFk2zWcWxlGToKBd6eNg1XFAC3ceQGKICegMLCreOpvJJ/bwjCgTwlDsgvrLEEUWtOz4Wm/X7/nH6YQs5m5g=="],
 
     "balanced-match": ["balanced-match@1.0.2", "", {}, "sha512-3oSeUO0TMV67hN1AmbXsK4yaqU7tjiHlbxRDZOpH0KW9+CeX4bRAaX0Anxt0tx2MrpRpWwQaPwIlISEJhYU5Pw=="],
 
