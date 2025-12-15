@@ -1,10 +1,10 @@
 ---
 id: task-022
 title: 'Run ESLint, TypeScript checks, and tests'
-status: In Progress
+status: Done
 assignee: []
 created_date: '2025-12-15 21:19'
-updated_date: '2025-12-15 21:27'
+updated_date: '2025-12-15 21:28'
 labels: []
 dependencies: []
 ---
