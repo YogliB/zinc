@@ -1,4 +1,4 @@
-import { Button } from '@/components/ui/button';
+import { Button } from '@/atoms';
 
 export function WelcomePage() {
 	const handleOpenProject = () => {
@@ -22,16 +22,13 @@ export function WelcomePage() {
 				<div className="space-y-4">
 					<Button
 						onClick={handleOpenProject}
-						size="lg"
-						className="w-48"
+						className="bg-primary text-primary-foreground hover:bg-primary/90 h-10 w-48 rounded-md px-6"
 					>
 						Open Project
 					</Button>
 					<Button
 						onClick={handleNewProject}
-						variant="outline"
-						size="lg"
-						className="w-48"
+						className="bg-background hover:bg-accent hover:text-accent-foreground h-10 w-48 rounded-md border px-6 shadow-xs"
 					>
 						New Project
 					</Button>
