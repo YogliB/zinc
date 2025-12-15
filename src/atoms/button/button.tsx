@@ -1,7 +1,7 @@
-export function Button({ children, className = '', ...props }) {
+import { Button as ShadcnButton } from '@/components/ui/button';
+
+export function Button({ className = '', ...props }) {
 	return (
-		<button className={`cursor-pointer ${className}`} {...props}>
-			{children}
-		</button>
+		<ShadcnButton className={`cursor-pointer ${className}`} {...props} />
 	);
 }
