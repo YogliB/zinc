@@ -4,9 +4,10 @@ title: Display hint about using keyboard shortcuts on welcome page
 status: Done
 assignee: []
 created_date: '2025-12-15 20:34'
-updated_date: '2025-12-15 20:35'
+updated_date: '2025-12-15 21:11'
 labels: []
 dependencies: []
+ordinal: 8000
 ---
 
 ## Implementation Plan

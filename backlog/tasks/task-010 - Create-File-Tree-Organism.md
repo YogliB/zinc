@@ -4,9 +4,10 @@ title: Create File Tree Organism
 status: Done
 assignee: []
 created_date: '2025-12-15 20:48'
-updated_date: '2025-12-15 21:00'
+updated_date: '2025-12-15 21:11'
 labels: []
 dependencies: []
+ordinal: 5000
 ---
 
 ## Implementation Plan

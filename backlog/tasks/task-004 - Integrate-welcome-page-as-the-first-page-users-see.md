@@ -4,9 +4,10 @@ title: Integrate welcome page as the first page users see
 status: Done
 assignee: []
 created_date: '2025-12-15 19:59'
-updated_date: '2025-12-15 20:14'
+updated_date: '2025-12-15 21:11'
 labels: []
 dependencies: []
+ordinal: 12000
 ---
 
 ## Implementation Plan
