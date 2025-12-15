@@ -1,12 +1,9 @@
-import { Button } from '@/atoms';
+import { Button } from '../../atoms';
+import { FolderOpen } from 'lucide-react';
 
 export function WelcomePage() {
 	const handleOpenProject = () => {
 		console.log('Open project clicked');
-	};
-
-	const handleNewProject = () => {
-		console.log('New project clicked');
 	};
 
 	return (
@@ -25,19 +22,12 @@ export function WelcomePage() {
 						size="lg"
 						className="w-48"
 					>
+						<FolderOpen className="mr-2 h-4 w-4" />
 						Open Project
-					</Button>
-					<Button
-						onClick={handleNewProject}
-						variant="outline"
-						size="lg"
-						className="w-48"
-					>
-						New Project
 					</Button>
 				</div>
 				<p className="text-muted-foreground text-sm">
-					Tip: Press Ctrl+O to open a project or Ctrl+N for a new
+					Tip: Press Cmd+O (Mac) or Ctrl+O (Windows/Linux) to open a
 					project.
 				</p>
 			</div>
