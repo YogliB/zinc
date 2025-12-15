@@ -28,13 +28,16 @@
 		"lucide-react": "0.561.0",
 		"preact": "10.25.1",
 		"tailwind-merge": "3.4.0",
-		"typescript-eslint": "8.49.0"
+		"typescript-eslint": "8.49.0",
+		"wouter-preact": "3.8.1"
 	},
 	"devDependencies": {
 		"@preact/preset-vite": "2.9.3",
 		"@storybook/preact-vite": "^10.1.8",
 		"@tailwindcss/vite": "4.1.18",
 		"@tauri-apps/cli": "2",
+		"@testing-library/jest-dom": "6.9.1",
+		"@testing-library/preact": "3.2.4",
 		"@types/react": "19.2.7",
 		"backlog.md": "1.27.1",
 		"eslint-config-preact": "2.0.0",
@@ -44,6 +47,7 @@
 		"eslint-plugin-sonarjs": "3.0.5",
 		"eslint-plugin-storybook": "^10.1.8",
 		"husky": "9.1.7",
+		"jsdom": "27.3.0",
 		"lint-staged": "16.2.7",
 		"prettier": "3.7.4",
 		"prettier-plugin-tailwindcss": "0.7.2",
