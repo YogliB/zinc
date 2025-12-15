@@ -1,10 +1,10 @@
 ---
 id: task-001
 title: Implement Welcome Page Feature
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-12-15 19:59'
-updated_date: '2025-12-15 20:07'
+updated_date: '2025-12-15 20:14'
 labels: []
 dependencies: []
 ---
