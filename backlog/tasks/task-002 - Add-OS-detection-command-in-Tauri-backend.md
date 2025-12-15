@@ -1,10 +1,10 @@
 ---
 id: task-002
 title: Add OS detection command in Tauri backend
-status: In Progress
+status: Done
 assignee: []
 created_date: '2025-12-15 19:59'
-updated_date: '2025-12-15 20:08'
+updated_date: '2025-12-15 20:14'
 labels: []
 dependencies: []
 ---
