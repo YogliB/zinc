@@ -3,10 +3,10 @@ id: task-028
 title: >-
     Run ESLint, TypeScript checks, and tests after moving directories and updating
     imports
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-12-16 13:05'
-updated_date: '2025-12-16 13:08'
+updated_date: '2025-12-16 14:06'
 labels: []
 dependencies:
     - task-027
