@@ -1,4 +1,4 @@
-import './App.css';
+import './app.css';
 
 import { untracked, useSignal } from '@preact/signals';
 import { Router, Route } from 'wouter-preact';

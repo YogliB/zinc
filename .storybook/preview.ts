@@ -1,4 +1,4 @@
-import '../src/App.css';
+import '../src/app.css';
 
 import type { Preview } from '@storybook/preact-vite';
 

@@ -6,12 +6,12 @@ import {
 	CollapsibleTrigger,
 } from '../../components/ui/collapsible';
 
-interface TreeItemProps {
+interface TreeItemProperties {
 	node: TreeNode;
 	level?: number;
 }
 
-export function TreeItem({ node, level = 0 }: TreeItemProps) {
+export function TreeItem({ node, level = 0 }: TreeItemProperties) {
 	return (
 		<div style={{ paddingLeft: `${level * 20}px` }}>
 			{node.type === 'folder' ? (

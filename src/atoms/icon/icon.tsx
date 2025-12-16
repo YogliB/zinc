@@ -1,11 +1,11 @@
 import { File, Folder } from 'lucide-react';
 
-interface IconProps {
+interface IconProperties {
 	type: 'file' | 'folder';
 	className?: string;
 }
 
-export function Icon({ type, className }: IconProps) {
+export function Icon({ type, className }: IconProperties) {
 	const IconComponent = type === 'folder' ? Folder : File;
 	return <IconComponent className={className} />;
 }

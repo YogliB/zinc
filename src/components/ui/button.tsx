@@ -38,7 +38,7 @@ function Button({
 	className,
 	variant = 'default',
 	size = 'default',
-	...props
+	...properties
 }: React.ComponentProps<'button'> & VariantProps<typeof buttonVariants>) {
 	return (
 		<button
@@ -46,7 +46,7 @@ function Button({
 			data-variant={variant}
 			data-size={size}
 			className={cn(buttonVariants({ variant, size, className }))}
-			{...props}
+			{...properties}
 		/>
 	);
 }

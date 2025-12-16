@@ -1,4 +1,4 @@
-import type { Meta, StoryObj } from '@storybook/preact';
+import type { Meta, StoryObj } from '@storybook/preact-vite';
 import { FileTree } from './file-tree';
 import { TreeNode } from '../../lib/types';
 

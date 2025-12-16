@@ -1,11 +1,11 @@
 import { TreeNode } from '../../lib/types';
 import { TreeItem } from '../../molecules';
 
-interface FileTreeProps {
+interface FileTreeProperties {
 	nodes: TreeNode[];
 }
 
-export function FileTree({ nodes }: FileTreeProps) {
+export function FileTree({ nodes }: FileTreeProperties) {
 	return (
 		<div>
 			{nodes.map((node) => (

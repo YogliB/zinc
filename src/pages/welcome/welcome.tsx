@@ -2,15 +2,15 @@ import { Button } from '../../atoms';
 import { FolderOpen } from 'lucide-react';
 import { Kbd } from '../../components/ui/kbd';
 
-interface WelcomePageProps {
+interface WelcomePageProperties {
 	os: 'mac' | 'windows' | 'linux';
 }
 
-export function WelcomePage({ os }: WelcomePageProps) {
-	const handleOpenProject = () => {
-		console.log('Open project clicked');
-	};
+const handleOpenProject = () => {
+	console.log('Open project clicked');
+};
 
+export function WelcomePage({ os }: WelcomePageProperties) {
 	return (
 		<div className="bg-background flex min-h-screen flex-col items-center justify-center">
 			<div className="space-y-8 text-center">
