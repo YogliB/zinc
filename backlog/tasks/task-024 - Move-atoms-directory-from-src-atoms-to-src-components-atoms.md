@@ -1,10 +1,10 @@
 ---
 id: task-024
 title: Move atoms directory from src/atoms to src/components/atoms
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-12-16 13:04'
-updated_date: '2025-12-16 13:07'
+updated_date: '2025-12-16 14:06'
 labels: []
 dependencies: []
 ---
