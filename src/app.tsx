@@ -17,6 +17,7 @@ function App() {
 				else osSignal.value = 'linux';
 			});
 		});
+		// eslint-disable-next-line react-hooks/exhaustive-deps
 	}, []);
 
 	return (
