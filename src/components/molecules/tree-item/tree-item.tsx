@@ -1,10 +1,10 @@
-import { TreeNode } from '../../lib/types';
+import { TreeNode } from '@/lib/types';
 import { Icon } from '../../atoms';
 import {
 	Collapsible,
 	CollapsibleContent,
 	CollapsibleTrigger,
-} from '../../components/ui/collapsible';
+} from '@/components/ui/collapsible';
 
 interface TreeItemProperties {
 	node: TreeNode;
@@ -21,7 +21,7 @@ export function TreeItem({ node, level = 0 }: TreeItemProperties) {
 						{node.name}
 					</CollapsibleTrigger>
 					<CollapsibleContent>
-						{node.children?.map((child) => (
+						{node.children?.map((child: TreeNode) => (
 							<TreeItem
 								key={child.name}
 								node={child}

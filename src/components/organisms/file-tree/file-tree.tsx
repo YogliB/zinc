@@ -1,4 +1,4 @@
-import { TreeNode } from '../../lib/types';
+import { TreeNode } from '@/lib/types';
 import { TreeItem } from '../../molecules';
 
 interface FileTreeProperties {

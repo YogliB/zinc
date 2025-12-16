@@ -1,4 +1,4 @@
-import { Button } from '../../atoms';
+import { Button } from '../../components/atoms';
 import { FolderOpen } from 'lucide-react';
 import { Kbd } from '../../components/ui/kbd';
 

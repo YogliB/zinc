@@ -1,6 +1,6 @@
 import type { Meta, StoryObj } from '@storybook/preact-vite';
 import { FileTree } from './file-tree';
-import { TreeNode } from '../../lib/types';
+import { TreeNode } from '@/lib/types';
 
 const sampleNodes: TreeNode[] = [
 	{

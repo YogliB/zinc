@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen } from '@testing-library/preact';
 import { FileTree } from './file-tree';
-import { TreeNode } from '../../lib/types';
+import { TreeNode } from '@/lib/types';
 
 const sampleNodes: TreeNode[] = [
 	{ name: 'file1.txt', type: 'file' },

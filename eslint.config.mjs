@@ -27,7 +27,7 @@ export default defineConfig([
 	importPlugin.flatConfigs.typescript,
 	// ...preact,
 	...storybook.configs['flat/recommended'],
-	// prettier,
+	prettier,
 	{
 		settings: {
 			'import/resolver': {

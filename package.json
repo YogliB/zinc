@@ -12,6 +12,7 @@
 		"preview": "vite preview",
 		"tauri": "tauri",
 		"typecheck": "tsc --noEmit",
+		"test": "vitest run",
 		"storybook": "storybook dev -p 6006",
 		"build-storybook": "storybook build",
 		"backlog": "backlog"

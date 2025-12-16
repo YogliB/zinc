@@ -1,7 +1,7 @@
 import { describe, it, expect } from 'vitest';
 import { render, screen, fireEvent } from '@testing-library/preact';
 import { TreeItem } from './tree-item';
-import { TreeNode } from '../../lib/types';
+import { TreeNode } from '@/lib/types';
 
 const sampleFile: TreeNode = {
 	name: 'example.txt',
