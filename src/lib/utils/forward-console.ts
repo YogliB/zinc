@@ -2,7 +2,7 @@ import { warn, debug, trace, info, error } from '@tauri-apps/plugin-log';
 
 function forwardConsole(
 	functionName: 'log' | 'debug' | 'info' | 'warn' | 'error',
-	logger: (message: string) => Promise<void>,
+	logger: () => Promise<void>,
 ) {
 	const original = console[functionName];
 	console[functionName] = (message) => {

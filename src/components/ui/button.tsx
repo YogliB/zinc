@@ -1,4 +1,5 @@
 import { cva, type VariantProps } from 'class-variance-authority';
+import type { ComponentProps } from 'react';
 
 import { cn } from '@/lib/utils';
 
@@ -39,7 +40,7 @@ function Button({
 	variant = 'default',
 	size = 'default',
 	...properties
-}: React.ComponentProps<'button'> & VariantProps<typeof buttonVariants>) {
+}: ComponentProps<'button'> & VariantProps<typeof buttonVariants>) {
 	return (
 		<button
 			data-slot="button"

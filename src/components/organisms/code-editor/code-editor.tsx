@@ -2,7 +2,7 @@ import CodeMirror from '@uiw/react-codemirror';
 
 export interface CodeEditorProperties {
 	value: string;
-	onChange: (value: string) => void;
+	onChange: () => void;
 }
 
 export function CodeEditor({ value, onChange }: CodeEditorProperties) {
