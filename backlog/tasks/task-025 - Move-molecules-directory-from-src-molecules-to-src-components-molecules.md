@@ -1,10 +1,10 @@
 ---
 id: task-025
 title: Move molecules directory from src/molecules to src/components/molecules
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-12-16 13:04'
-updated_date: '2025-12-16 13:07'
+updated_date: '2025-12-16 14:06'
 labels: []
 dependencies: []
 ---
