@@ -1,10 +1,10 @@
 ---
 id: task-027
 title: Update import paths in affected files after moving atomic directories
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-12-16 13:05'
-updated_date: '2025-12-16 13:07'
+updated_date: '2025-12-16 14:06'
 labels: []
 dependencies:
     - task-024
