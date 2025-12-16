@@ -7,10 +7,10 @@ fn greet(name: &str) -> String {
 }
 
 #[tauri::command]
-fn get_os() -> String {
+fn get_os() -> Result<String, String> {
     let os = std::env::consts::OS.to_string();
     log::info!("Detected OS: {}", os);
-    os
+    Ok(os)
 }
 
 #[cfg_attr(mobile, tauri::mobile_entry_point)]

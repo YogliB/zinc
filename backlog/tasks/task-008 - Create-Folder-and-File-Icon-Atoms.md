@@ -82,4 +82,4 @@ If lucide not available, use simple SVG icons.
 - Depth: 2
 - Cross-deps: 0
 - **Decision:** Proceed
-  <!-- SECTION:PLAN:END -->
+    <!-- SECTION:PLAN:END -->

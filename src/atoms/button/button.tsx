@@ -1,7 +1,10 @@
 import { Button as ShadcnButton } from '@/components/ui/button';
 
-export function Button({ className = '', ...props }) {
+export function Button({ className = '', ...properties }) {
 	return (
-		<ShadcnButton className={`cursor-pointer ${className}`} {...props} />
+		<ShadcnButton
+			className={`cursor-pointer ${className}`}
+			{...properties}
+		/>
 	);
 }

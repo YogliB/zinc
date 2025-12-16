@@ -89,4 +89,4 @@ Revert to previous entry point if integration fails
 - Depth: 2
 - Cross-deps: 1
 - **Decision:** Proceed
-  <!-- SECTION:PLAN:END -->
+    <!-- SECTION:PLAN:END -->

@@ -86,4 +86,4 @@ If recursive issues, implement iterative rendering.
 - Depth: 2
 - Cross-deps: 2
 - **Decision:** Proceed
-  <!-- SECTION:PLAN:END -->
+    <!-- SECTION:PLAN:END -->

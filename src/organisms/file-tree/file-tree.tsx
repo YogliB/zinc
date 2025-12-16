@@ -1,16 +1,16 @@
-import { TreeNode } from "../../lib/types";
-import { TreeItem } from "../../molecules";
+import { TreeNode } from '../../lib/types';
+import { TreeItem } from '../../molecules';
 
 interface FileTreeProps {
-  nodes: TreeNode[];
+	nodes: TreeNode[];
 }
 
 export function FileTree({ nodes }: FileTreeProps) {
-  return (
-    <div>
-      {nodes.map((node) => (
-        <TreeItem key={node.name} node={node} />
-      ))}
-    </div>
-  );
+	return (
+		<div>
+			{nodes.map((node) => (
+				<TreeItem key={node.name} node={node} />
+			))}
+		</div>
+	);
 }

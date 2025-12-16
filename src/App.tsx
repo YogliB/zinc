@@ -1,20 +1,23 @@
 import './App.css';
-import { useEffect } from 'preact/hooks';
-import { signal } from '@preact/signals';
+
+import { untracked, useSignal } from '@preact/signals';
 import { Router, Route } from 'wouter-preact';
 import { invoke } from '@tauri-apps/api/core';
 import { WelcomePage } from './pages';
+import { useEffect } from 'preact/hooks';
 
 function App() {
-	const osSignal = signal<'mac' | 'windows' | 'linux'>('linux');
+	const osSignal = useSignal<'mac' | 'windows' | 'linux'>('linux');
 
 	useEffect(() => {
-		(invoke('get_os') as Promise<string>).then((result) => {
-			if (result === 'macos') osSignal.value = 'mac';
-			else if (result === 'windows') osSignal.value = 'windows';
-			else osSignal.value = 'linux';
+		untracked(() => {
+			invoke('get_os').then((result) => {
+				if (result === 'macos') osSignal.value = 'mac';
+				else if (result === 'windows') osSignal.value = 'windows';
+				else osSignal.value = 'linux';
+			});
 		});
-	}, [osSignal]);
+	}, []);
 
 	return (
 		<Router>
