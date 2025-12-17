@@ -1,9 +1,9 @@
-/* eslint-disable no-unused-vars */
 import { TreeNode } from '@/lib/types';
 import { TreeItem } from '../../molecules';
 
 interface FileTreeProperties {
 	nodes: TreeNode[];
+	// eslint-disable-next-line no-unused-vars
 	onExpand?: (item: TreeNode) => void;
 }
 

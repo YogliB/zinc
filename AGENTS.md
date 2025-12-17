@@ -25,6 +25,7 @@
 
 - Use **bun** as the package manager.
 - Do **not** modify ESLint or Vite configs without explicit permission.
+- NEVER suppress ESLint rules unless given explicit permission from the user.
 
 ## Testing
 

@@ -1,4 +1,3 @@
-/* eslint-disable no-unused-vars */
 import { TreeNode } from '@/lib/types';
 import { Icon } from '../../atoms';
 import {
@@ -10,6 +9,7 @@ import {
 interface TreeItemProperties {
 	node: TreeNode;
 	level?: number;
+	// eslint-disable-next-line no-unused-vars
 	onExpand?: (item: TreeNode) => void;
 }
 
