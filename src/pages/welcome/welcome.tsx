@@ -15,6 +15,27 @@ export function WelcomePage({ os }: WelcomePageProperties) {
 	const folderPath = useSignal<string | undefined>();
 	const treeNodes = useSignal<TreeNode[]>([]);
 
+	const onExpand = async (node: TreeNode) => {
+		if (node.children && node.children.length > 0) return;
+		try {
+			const entries: {
+				name: string;
+				is_dir: boolean;
+				path: string;
+			}[] = await invoke('list_directory', { path: node.path });
+			const children: TreeNode[] = entries.map((entry) => ({
+				name: entry.name,
+				type: entry.is_dir ? 'folder' : 'file',
+				path: entry.path,
+				children: entry.is_dir ? [] : undefined,
+			}));
+			node.children = children;
+			treeNodes.value = [...treeNodes.value];
+		} catch (error) {
+			console.error('Failed to load folder contents:', error);
+		}
+	};
+
 	const handleOpenProject = async () => {
 		try {
 			const selected = await invoke('open_folder');
@@ -43,7 +64,7 @@ export function WelcomePage({ os }: WelcomePageProperties) {
 	if (folderPath.value) {
 		return (
 			<div className="p-4">
-				<FileTree nodes={treeNodes.value} />
+				<FileTree nodes={treeNodes.value} onExpand={onExpand} />
 			</div>
 		);
 	}
