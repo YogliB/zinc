@@ -1,10 +1,12 @@
 import { TreeNode } from '@/lib/types';
 import { TreeItem } from '../../molecules';
 
+// eslint-disable-next-line no-unused-vars
+type OnExpand = (TreeNode) => void;
+
 interface FileTreeProperties {
 	nodes: TreeNode[];
-	// eslint-disable-next-line no-unused-vars
-	onExpand?: (item: TreeNode) => void;
+	onExpand?: OnExpand;
 }
 
 export function FileTree({ nodes, onExpand }: FileTreeProperties) {
