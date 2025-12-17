@@ -1,16 +1,53 @@
 import { Button } from '../../components/atoms';
 import { FolderOpen } from 'lucide-react';
 import { Kbd } from '../../components/ui/kbd';
+import { useSignal } from '@preact/signals';
+
+import { invoke } from '@tauri-apps/api/core';
+import { FileTree } from '../../components/organisms';
+import { TreeNode } from '../../lib/types';
 
 interface WelcomePageProperties {
 	os: 'mac' | 'windows' | 'linux';
 }
 
-const handleOpenProject = () => {
-	console.log('Open project clicked');
-};
-
 export function WelcomePage({ os }: WelcomePageProperties) {
+	const folderPath = useSignal<string | undefined>();
+	const treeNodes = useSignal<TreeNode[]>([]);
+
+	const handleOpenProject = async () => {
+		try {
+			const selected = await invoke('open_folder');
+			if (selected) {
+				folderPath.value = (selected as string | null) || undefined;
+				const entries: {
+					name: string;
+					is_dir: boolean;
+					path: string;
+				}[] = await invoke('list_directory', {
+					path: selected as string,
+				});
+				const nodes: TreeNode[] = entries.map((entry) => ({
+					name: entry.name,
+					type: entry.is_dir ? 'folder' : 'file',
+					path: entry.path,
+					children: entry.is_dir ? [] : undefined,
+				}));
+				treeNodes.value = nodes;
+			}
+		} catch (error) {
+			console.error('Failed to open folder:', error);
+		}
+	};
+
+	if (folderPath.value) {
+		return (
+			<div className="p-4">
+				<FileTree nodes={treeNodes.value} />
+			</div>
+		);
+	}
+
 	return (
 		<div className="bg-background flex min-h-screen flex-col items-center justify-center">
 			<div className="space-y-8 text-center">
