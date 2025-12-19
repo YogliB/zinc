@@ -6,13 +6,12 @@ import {
 	CollapsibleTrigger,
 } from '@/components/ui/collapsible';
 
-// eslint-disable-next-line no-unused-vars
-type OnExpand = (node: TreeNode) => void;
-
 interface TreeItemProperties {
 	node: TreeNode;
 	level?: number;
-	onExpand?: OnExpand;
+	// eslint-disable-next-line no-unused-vars
+	onExpand?: (node: TreeNode) => void;
+	// eslint-disable-next-line no-unused-vars
 	onSelect?: (node: TreeNode) => void;
 }
 

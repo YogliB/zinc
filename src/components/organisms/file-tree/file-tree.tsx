@@ -3,6 +3,7 @@ import { TreeItem } from '../../molecules';
 
 // eslint-disable-next-line no-unused-vars
 type OnExpand = (node: TreeNode) => void;
+// eslint-disable-next-line no-unused-vars
 type OnSelect = (node: TreeNode) => void;
 
 interface FileTreeProperties {
