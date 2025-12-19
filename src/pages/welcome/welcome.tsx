@@ -2,10 +2,18 @@ import { Button } from '../../components/atoms';
 import { FolderOpen } from 'lucide-react';
 import { Kbd } from '../../components/ui/kbd';
 import { useSignal } from '@preact/signals';
+import { useGroupRef, usePanelRef } from 'react-resizable-panels';
 
 import { invoke } from '@tauri-apps/api/core';
-import { FileTree } from '../../components/organisms';
+import { FileTree, CodeEditor } from '../../components/organisms';
 import { TreeNode } from '../../lib/types';
+import {
+	ResizablePanelGroup,
+	ResizablePanel,
+	ResizableHandle,
+} from '../../components/ui/resizable';
+
+import { useEffect } from 'preact/hooks';
 
 interface WelcomePageProperties {
 	os: 'mac' | 'windows' | 'linux';
@@ -14,6 +22,24 @@ interface WelcomePageProperties {
 export function WelcomePage({ os }: WelcomePageProperties) {
 	const folderPath = useSignal<string | undefined>();
 	const treeNodes = useSignal<TreeNode[]>([]);
+	const editorValue = useSignal<string>('');
+
+	const groupReference = useGroupRef();
+	const fileTreeReference = usePanelRef();
+	const codeEditorReference = usePanelRef();
+
+	useEffect(() => {
+		if (
+			fileTreeReference.current &&
+			codeEditorReference.current &&
+			groupReference.current
+		)
+			fileTreeReference.current?.resize(50);
+		codeEditorReference.current?.resize(50);
+		groupReference.current?.setLayout({
+			'file-tree': 50,
+		});
+	}, [fileTreeReference, codeEditorReference, groupReference]);
 
 	const onExpand = async (node: TreeNode) => {
 		if (node.children && node.children.length > 0) return;
@@ -36,17 +62,33 @@ export function WelcomePage({ os }: WelcomePageProperties) {
 		}
 	};
 
+	const loadFile = async (path: string) => {
+		try {
+			const content = await invoke<string>('read_file', { path });
+			editorValue.value = content;
+		} catch (error) {
+			console.error('Failed to load file:', error);
+		}
+	};
+
+	const handleSelect = (node: TreeNode) => {
+		if (node.type === 'file' && node.path) {
+			loadFile(node.path);
+		}
+	};
+
 	const handleOpenProject = async () => {
 		try {
 			const selected = await invoke('open_folder');
 			if (selected) {
-				folderPath.value = (selected as string | null) || undefined;
+				const selectedPath = selected as string;
+				folderPath.value = selectedPath;
 				const entries: {
 					name: string;
 					is_dir: boolean;
 					path: string;
 				}[] = await invoke('list_directory', {
-					path: selected as string,
+					path: selectedPath,
 				});
 				const nodes: TreeNode[] = entries.map((entry) => ({
 					name: entry.name,
@@ -63,9 +105,26 @@ export function WelcomePage({ os }: WelcomePageProperties) {
 
 	if (folderPath.value) {
 		return (
-			<div className="p-4">
-				<FileTree nodes={treeNodes.value} onExpand={onExpand} />
-			</div>
+			<ResizablePanelGroup orientation="horizontal" className="h-screen">
+				<ResizablePanel id="file-tree" defaultSize={30}>
+					<div className="h-full overflow-auto p-4">
+						<FileTree
+							nodes={treeNodes.value}
+							onExpand={onExpand}
+							onSelect={handleSelect}
+						/>
+					</div>
+				</ResizablePanel>
+				<ResizableHandle withHandle />
+				<ResizablePanel id="code-editor" defaultSize={70}>
+					<div className="flex h-full">
+						<CodeEditor
+							value={editorValue.value}
+							onChange={(value) => (editorValue.value = value)}
+						/>
+					</div>
+				</ResizablePanel>
+			</ResizablePanelGroup>
 		);
 	}
 
