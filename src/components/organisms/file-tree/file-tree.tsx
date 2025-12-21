@@ -13,9 +13,17 @@ interface FileTreeProperties {
 }
 
 export function FileTree({ nodes, onExpand, onSelect }: FileTreeProperties) {
+	const folders = nodes
+		.filter((node) => node.type === 'folder' && node.name !== '.git')
+		.toSorted((a: TreeNode, b: TreeNode) => a.name.localeCompare(b.name));
+	const files = nodes
+		.filter((node) => node.type === 'file' && node.name !== '.git')
+		.toSorted((a: TreeNode, b: TreeNode) => a.name.localeCompare(b.name));
+	const processedNodes = [...folders, ...files];
+
 	return (
 		<div>
-			{nodes.map((item) => (
+			{processedNodes.map((item) => (
 				<TreeItem
 					key={item.name}
 					node={item}

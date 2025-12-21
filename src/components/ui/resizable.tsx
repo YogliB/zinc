@@ -26,7 +26,6 @@ function ResizablePanel({ ...properties }: React.ComponentProps<typeof Panel>) {
 function ResizableHandle({
 	withHandle,
 	className,
-	onDoubleClick,
 	...properties
 }: React.ComponentProps<typeof Separator> & {
 	withHandle?: boolean;
@@ -41,10 +40,7 @@ function ResizableHandle({
 			{...properties}
 		>
 			{withHandle && (
-				<div
-					className="bg-border z-10 flex h-4 w-3 cursor-pointer items-center justify-center rounded-xs border"
-					onDoubleClick={onDoubleClick}
-				>
+				<div className="bg-border z-10 flex h-4 w-3 cursor-pointer items-center justify-center rounded-xs border">
 					<GripVerticalIcon className="size-2.5" />
 				</div>
 			)}
