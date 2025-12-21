@@ -11,6 +11,7 @@ export function WelcomePage({ os }: WelcomePageProperties) {
 	const folderPath = useSignal<string | undefined>();
 	const treeNodes = useSignal<TreeNode[]>([]);
 	const editorValue = useSignal<string>('');
+	const selectedFilePath = useSignal<string | undefined>();
 
 	const onExpand = async (node: TreeNode) => {
 		if (node.children && node.children.length > 0) return;
@@ -37,6 +38,7 @@ export function WelcomePage({ os }: WelcomePageProperties) {
 		try {
 			const content = await invoke<string>('read_file', { path });
 			editorValue.value = content;
+			selectedFilePath.value = path;
 		} catch (error) {
 			console.error('Failed to load file:', error);
 		}

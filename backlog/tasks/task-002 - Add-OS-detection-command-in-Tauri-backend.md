@@ -84,4 +84,4 @@ Use hardcoded OS if detection fails
 - Depth: 1
 - Cross-deps: 0
 - **Decision:** Proceed
-    <!-- SECTION:PLAN:END -->
+  <!-- SECTION:PLAN:END -->

@@ -81,4 +81,4 @@ If data model is too complex, use simple object with name and type, and children
 - Depth: 2
 - Cross-deps: 0
 - **Decision:** Proceed
-    <!-- SECTION:PLAN:END -->
+  <!-- SECTION:PLAN:END -->

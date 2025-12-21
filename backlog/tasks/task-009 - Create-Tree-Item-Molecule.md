@@ -90,4 +90,4 @@ If Collapsible doesn't work, implement custom expand/collapse with CSS.
 - Depth: 2
 - Cross-deps: 1
 - **Decision:** Proceed
-    <!-- SECTION:PLAN:END -->
+  <!-- SECTION:PLAN:END -->

@@ -86,4 +86,4 @@ If testing framework issues, simplify to basic render tests.
 - Depth: 2
 - Cross-deps: 3
 - **Decision:** Proceed
-    <!-- SECTION:PLAN:END -->
+  <!-- SECTION:PLAN:END -->
