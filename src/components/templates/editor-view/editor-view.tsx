@@ -11,13 +11,10 @@ import { useEffect } from 'preact/hooks';
 interface EditorViewProperties {
 	treeNodes: TreeNode[];
 	editorValue: string;
-
 	// eslint-disable-next-line no-unused-vars
 	onExpand: (_node: TreeNode) => void;
-
 	// eslint-disable-next-line no-unused-vars
 	onSelect: (_node: TreeNode) => void;
-
 	// eslint-disable-next-line no-unused-vars
 	onEditorChange: (_value: string) => void;
 }
