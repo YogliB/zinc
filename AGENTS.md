@@ -16,6 +16,7 @@
 - Use **Signals** for reactive state management.
 - Use **TailwindCSS** for utility-first styling.
 - Use **Shadcn** for pre-built UI components.
+- Shadcn components in the `ui/` directory do not require corresponding stories files, test files, or the subdirectory structure.
 - Every component file must have a corresponding stories file.
 - Each component should have its own subdirectory containing the component file, test file, and stories file (e.g., `atoms/button/button.tsx`, `atoms/button/button.stories.tsx`, `atoms/button/button.test.tsx`).
 - Each component subdirectory must include an `index.ts` or `index.tsx` file that exports the component.
