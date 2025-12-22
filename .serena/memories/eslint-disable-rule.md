@@ -1,0 +1,1 @@
+Temporarily disable unicorn/consistent-function-scoping for async functions in WelcomePage to maintain component reactivity with Preact signals. The functions need to be inside the component for proper signal updates and re-renders.

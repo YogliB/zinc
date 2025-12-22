@@ -1,0 +1,1 @@
+Moving async functions back inside WelcomePage component and wrapping with useCallback to restore proper Preact signal reactivity. The functions need component scope to trigger re-renders when global signals change.

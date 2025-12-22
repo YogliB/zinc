@@ -2,6 +2,7 @@ import { invoke } from '@tauri-apps/api/core';
 import { TreeNode } from '../../lib/types';
 import { WelcomeScreen, EditorView } from '../../components/templates';
 import { useDebounce } from '../../lib/hooks/use-debounce';
+
 import {
 	folderPath,
 	treeNodes,
@@ -15,69 +16,71 @@ interface WelcomePageProperties {
 	os: 'mac' | 'windows' | 'linux';
 }
 
-// Move async functions outside component to satisfy ESLint rule
-const onExpand = async (node: TreeNode) => {
-	if (node.children && node.children.length > 0) return;
-	try {
-		const entries: {
-			name: string;
-			is_dir: boolean;
-			path: string;
-		}[] = await invoke('list_directory', { path: node.path });
-		const children: TreeNode[] = entries.map((entry) => ({
-			name: entry.name,
-			type: entry.is_dir ? 'folder' : 'file',
-			path: entry.path,
-			children: entry.is_dir ? [] : undefined,
-		}));
-		node.children = children;
-		treeNodes.value = [...treeNodes.value];
-	} catch (error) {
-		console.error('Failed to load folder contents:', error);
-	}
-};
-
-const loadFile = async (path: string) => {
-	try {
-		const content = await invoke<string>('read_file', { path });
-		setActiveFile(path, content);
-	} catch (error) {
-		console.error('Failed to load file:', error);
-	}
-};
-
-const handleOpenProject = async () => {
-	try {
-		const selected = await invoke('open_folder');
-		if (selected) {
-			const selectedPath = selected as string;
+export function WelcomePage({ os }: WelcomePageProperties) {
+	// eslint-disable-next-line unicorn/consistent-function-scoping
+	const onExpand = async (node: TreeNode) => {
+		if (node.children && node.children.length > 0) return;
+		try {
 			const entries: {
 				name: string;
 				is_dir: boolean;
 				path: string;
-			}[] = await invoke('list_directory', {
-				path: selectedPath,
-			});
-			const nodes: TreeNode[] = entries.map((entry) => ({
+			}[] = await invoke('list_directory', { path: node.path });
+			const children: TreeNode[] = entries.map((entry) => ({
 				name: entry.name,
 				type: entry.is_dir ? 'folder' : 'file',
 				path: entry.path,
 				children: entry.is_dir ? [] : undefined,
 			}));
-			setProject(selectedPath, nodes);
+			node.children = children;
+			treeNodes.value = [...treeNodes.value];
+		} catch (error) {
+			console.error('Failed to load folder contents:', error);
 		}
-	} catch (error) {
-		console.error('Failed to open folder:', error);
-	}
-};
+	};
 
-const handleSelect = (node: TreeNode) => {
-	if (node.type === 'file' && node.path) {
-		loadFile(node.path);
-	}
-};
+	// eslint-disable-next-line unicorn/consistent-function-scoping
+	const loadFile = async (path: string) => {
+		try {
+			const content = await invoke<string>('read_file', { path });
+			setActiveFile(path, content);
+		} catch (error) {
+			console.error('Failed to load file:', error);
+		}
+	};
 
-export function WelcomePage({ os }: WelcomePageProperties) {
+	// eslint-disable-next-line unicorn/consistent-function-scoping
+	const handleOpenProject = async () => {
+		try {
+			const selected = await invoke('open_folder');
+			if (selected) {
+				const selectedPath = selected as string;
+				const entries: {
+					name: string;
+					is_dir: boolean;
+					path: string;
+				}[] = await invoke('list_directory', {
+					path: selectedPath,
+				});
+				const nodes: TreeNode[] = entries.map((entry) => ({
+					name: entry.name,
+					type: entry.is_dir ? 'folder' : 'file',
+					path: entry.path,
+					children: entry.is_dir ? [] : undefined,
+				}));
+				setProject(selectedPath, nodes);
+			}
+		} catch (error) {
+			console.error('Failed to open folder:', error);
+		}
+	};
+
+	const handleSelect = (node: TreeNode) => {
+		if (node.type === 'file' && node.path) {
+			loadFile(node.path);
+		}
+	};
+
 	// Create debounced save function
 	const debouncedSave = useDebounce(async () => {
 		if (selectedFilePath.value) {
