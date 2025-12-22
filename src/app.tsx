@@ -4,6 +4,7 @@ import { untracked, useSignal } from '@preact/signals';
 import { Router, Route } from 'wouter-preact';
 import { invoke } from '@tauri-apps/api/core';
 import { WelcomePage } from './pages';
+import { EditorPage } from './pages/editor';
 import { useEffect } from 'preact/hooks';
 
 function App() {
@@ -24,6 +25,9 @@ function App() {
 		<Router>
 			<Route path="/">
 				<WelcomePage os={osSignal.value} />
+			</Route>
+			<Route path="/editor">
+				<EditorPage />
 			</Route>
 		</Router>
 	);
