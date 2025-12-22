@@ -13,25 +13,26 @@ import {
 	setActiveFile,
 } from '../../lib/stores/editor-store';
 
-const loadFile = async (path: string) => {
-	try {
-		const content = await invoke<string>('read_file', { path });
-		setActiveFile(path, content);
-	} catch (error) {
-		console.error('Failed to load file:', error);
-	}
-};
-
-const handleSelect = (node: TreeNode) => {
-	if (node.type === 'file' && node.path) {
-		loadFile(node.path);
-	}
-};
-
 export function EditorPage() {
 	const search = useSearch();
 	const urlParameters = new URLSearchParams(search);
 	const projectPath = urlParameters.get('path');
+
+	// eslint-disable-next-line unicorn/consistent-function-scoping
+	const loadFile = async (path: string) => {
+		try {
+			const content = await invoke<string>('read_file', { path });
+			setActiveFile(path, content);
+		} catch (error) {
+			console.error('Failed to load file:', error);
+		}
+	};
+
+	const handleSelect = (node: TreeNode) => {
+		if (node.type === 'file' && node.path) {
+			loadFile(node.path);
+		}
+	};
 
 	if (projectPath && !folderPath.value) {
 		const initializeProject = async () => {
