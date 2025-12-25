@@ -1,10 +1,10 @@
 ---
 id: task-042
 title: Extend Editor Store for Multi-File State
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-12-25 18:00'
-updated_date: '2025-12-25 18:00'
+updated_date: '2025-12-25 18:28'
 labels:
     - state
     - signals
