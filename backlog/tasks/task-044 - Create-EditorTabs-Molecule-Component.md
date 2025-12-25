@@ -1,10 +1,10 @@
 ---
 id: task-044
 title: Create EditorTabs Molecule Component
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-12-25 18:01'
-updated_date: '2025-12-25 18:01'
+updated_date: '2025-12-25 18:32'
 labels:
     - component
     - molecule
