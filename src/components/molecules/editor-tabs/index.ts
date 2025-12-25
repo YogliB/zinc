@@ -1,2 +1,1 @@
-export { TreeItem } from './tree-item';
 export { EditorTabs } from './editor-tabs';
