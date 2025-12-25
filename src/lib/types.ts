@@ -5,3 +5,9 @@ export interface TreeNode {
 	path?: string;
 	isExpanded?: boolean;
 }
+
+export interface OpenFile {
+	path: string;
+	name: string;
+	content: string;
+}
