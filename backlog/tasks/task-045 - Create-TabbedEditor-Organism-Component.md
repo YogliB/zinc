@@ -1,10 +1,10 @@
 ---
 id: task-045
 title: Create TabbedEditor Organism Component
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-12-25 18:01'
-updated_date: '2025-12-25 18:01'
+updated_date: '2025-12-25 18:33'
 labels:
     - component
     - organism
