@@ -7,11 +7,21 @@ import { useSearch } from 'wouter-preact';
 import {
 	folderPath,
 	treeNodes,
-	editorValue,
-	selectedFilePath,
+	openFiles,
+	activeFilePath,
 	setProject,
-	setActiveFile,
+	addOpenFile,
+	removeOpenFile,
+	setActiveTab,
 } from '../../lib/stores/editor-store';
+
+const handleTabSelect = (path: string) => {
+	setActiveTab(path);
+};
+
+const handleTabClose = (path: string) => {
+	removeOpenFile(path);
+};
 
 export function EditorPage() {
 	const search = useSearch();
@@ -22,7 +32,8 @@ export function EditorPage() {
 	const loadFile = async (path: string) => {
 		try {
 			const content = await invoke<string>('read_file', { path });
-			setActiveFile(path, content);
+			const name = path.split('/').pop() || 'unknown';
+			addOpenFile(path, name, content);
 		} catch (error) {
 			console.error('Failed to load file:', error);
 		}
@@ -30,7 +41,14 @@ export function EditorPage() {
 
 	const handleSelect = (node: TreeNode) => {
 		if (node.type === 'file' && node.path) {
-			loadFile(node.path);
+			const existingFile = openFiles.value.find(
+				(f) => f.path === node.path,
+			);
+			if (existingFile) {
+				setActiveTab(node.path);
+			} else {
+				loadFile(node.path);
+			}
 		}
 	};
 
@@ -78,13 +96,18 @@ export function EditorPage() {
 	};
 
 	const debouncedSave = useDebounce(async () => {
-		if (selectedFilePath.value) {
+		if (activeFilePath.value) {
 			try {
-				await invoke('write_file', {
-					path: selectedFilePath.value,
-					content: editorValue.value,
-				});
-				console.log('File auto-saved:', selectedFilePath.value);
+				const activeFile = openFiles.value.find(
+					(f) => f.path === activeFilePath.value,
+				);
+				if (activeFile) {
+					await invoke('write_file', {
+						path: activeFilePath.value,
+						content: activeFile.content,
+					});
+					console.log('File auto-saved:', activeFilePath.value);
+				}
 			} catch (error) {
 				console.error('Failed to auto-save file:', error);
 			}
@@ -92,16 +115,25 @@ export function EditorPage() {
 	}, 1000);
 
 	const handleEditorChange = (value: string) => {
-		editorValue.value = value;
+		const activeFile = openFiles.value.find(
+			(f) => f.path === activeFilePath.value,
+		);
+		if (activeFile) {
+			activeFile.content = value;
+			openFiles.value = [...openFiles.value]; // Trigger reactivity
+		}
 		debouncedSave();
 	};
 
 	return (
 		<EditorView
 			treeNodes={treeNodes.value}
-			editorValue={editorValue.value}
+			openFiles={openFiles.value}
+			activeFilePath={activeFilePath.value}
 			onExpand={onExpand}
 			onSelect={handleSelect}
+			onTabSelect={handleTabSelect}
+			onTabClose={handleTabClose}
 			onEditorChange={handleEditorChange}
 		/>
 	);
