@@ -3,29 +3,39 @@ import {
 	ResizablePanel,
 	ResizableHandle,
 } from '../../../components/ui/resizable';
-import { FileTree, CodeEditor } from '../../../components/organisms';
-import { TreeNode } from '../../../lib/types';
+import { FileTree, TabbedEditor } from '../../../components/organisms';
+import { TreeNode, OpenFile } from '../../../lib/types';
 import { useGroupRef, usePanelRef } from 'react-resizable-panels';
 import { useEffect } from 'preact/hooks';
 
 interface EditorViewProperties {
 	treeNodes: TreeNode[];
-	editorValue: string;
+	openFiles: OpenFile[];
+	activeFilePath: string | undefined;
 	// eslint-disable-next-line no-unused-vars
 	onExpand: (_node: TreeNode) => void;
 	// eslint-disable-next-line no-unused-vars
 	onSelect: (_node: TreeNode) => void;
+	// eslint-disable-next-line no-unused-vars
+	onTabSelect: (_path: string) => void;
+	// eslint-disable-next-line no-unused-vars
+	onTabClose: (_path: string) => void;
 	// eslint-disable-next-line no-unused-vars
 	onEditorChange: (_value: string) => void;
 }
 
 export function EditorView({
 	treeNodes,
-	editorValue,
+	openFiles,
+	activeFilePath,
 	onExpand,
 	onSelect,
+	onTabSelect,
+	onTabClose,
 	onEditorChange,
 }: EditorViewProperties) {
+	const activeContent =
+		openFiles.find((f) => f.path === activeFilePath)?.content || '';
 	const groupReference = useGroupRef();
 	const fileTreeReference = usePanelRef();
 	const codeEditorReference = usePanelRef();
@@ -58,7 +68,14 @@ export function EditorView({
 			<ResizableHandle withHandle />
 			<ResizablePanel id="code-editor" defaultSize={70}>
 				<div className="flex h-full">
-					<CodeEditor value={editorValue} onChange={onEditorChange} />
+					<TabbedEditor
+						openFiles={openFiles}
+						activeFilePath={activeFilePath}
+						activeContent={activeContent}
+						onTabSelect={onTabSelect}
+						onTabClose={onTabClose}
+						onEditorChange={onEditorChange}
+					/>
 				</div>
 			</ResizablePanel>
 		</ResizablePanelGroup>

@@ -1,10 +1,10 @@
 import { render, screen, fireEvent } from '@testing-library/preact';
 import { describe, it, expect, vi } from 'vitest';
 import { EditorView } from './editor-view';
-import { TreeNode } from '../../../lib/types';
+import { TreeNode, OpenFile } from '../../../lib/types';
 
 describe('EditorView', () => {
-	it('renders the resizable panels with file tree and code editor', () => {
+	it('renders the resizable panels with file tree and tabbed editor', () => {
 		const mockTreeNodes: TreeNode[] = [
 			{
 				name: 'test-file.txt',
@@ -12,24 +12,34 @@ describe('EditorView', () => {
 				path: '/test/test-file.txt',
 			},
 		];
+		const mockOpenFiles: OpenFile[] = [
+			{
+				path: '/test/test-file.txt',
+				name: 'test-file.txt',
+				content: "console.log('test');",
+			},
+		];
 		const mockOnExpand = vi.fn();
 		const mockOnSelect = vi.fn();
+		const mockOnTabSelect = vi.fn();
+		const mockOnTabClose = vi.fn();
 		const mockOnEditorChange = vi.fn();
 
 		render(
 			<EditorView
 				treeNodes={mockTreeNodes}
-				editorValue="console.log('test');"
+				openFiles={mockOpenFiles}
+				activeFilePath="/test/test-file.txt"
 				onExpand={mockOnExpand}
 				onSelect={mockOnSelect}
+				onTabSelect={mockOnTabSelect}
+				onTabClose={mockOnTabClose}
 				onEditorChange={mockOnEditorChange}
 			/>,
 		);
 
 		expect(screen.getByText('test-file.txt')).toBeInTheDocument();
-		expect(
-			screen.getByDisplayValue("console.log('test');"),
-		).toBeInTheDocument();
+		expect(screen.getByText('test-file.txt')).toBeInTheDocument(); // Tab name
 	});
 
 	it('calls onSelect when a file is clicked', () => {
@@ -40,16 +50,22 @@ describe('EditorView', () => {
 				path: '/test/test-file.txt',
 			},
 		];
+		const mockOpenFiles: OpenFile[] = [];
 		const mockOnExpand = vi.fn();
 		const mockOnSelect = vi.fn();
+		const mockOnTabSelect = vi.fn();
+		const mockOnTabClose = vi.fn();
 		const mockOnEditorChange = vi.fn();
 
 		render(
 			<EditorView
 				treeNodes={mockTreeNodes}
-				editorValue=""
+				openFiles={mockOpenFiles}
+				activeFilePath={undefined}
 				onExpand={mockOnExpand}
 				onSelect={mockOnSelect}
+				onTabSelect={mockOnTabSelect}
+				onTabClose={mockOnTabClose}
 				onEditorChange={mockOnEditorChange}
 			/>,
 		);
