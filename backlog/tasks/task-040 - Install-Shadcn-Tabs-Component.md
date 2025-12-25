@@ -4,7 +4,7 @@ title: Install Shadcn Tabs Component
 status: To Do
 assignee: []
 created_date: '2025-12-25 18:00'
-updated_date: '2025-12-25 18:00'
+updated_date: '2025-12-25 18:25'
 labels:
     - setup
     - dependency
@@ -36,7 +36,7 @@ Add the Shadcn UI Tabs component to the project to enable tab-based navigation f
 <!-- SECTION:PLAN:BEGIN -->
 
 1. Navigate to zinc project directory
-2. Run `npx shadcn@latest add tabs` command
+2. Run `bunx shadcn@latest add tabs` command
 3. Verify tabs.tsx created in src/components/ui/
 4. Create simple test component importing Tabs to verify compatibility
 5. Run `bun run typecheck` to ensure no TypeScript errors
