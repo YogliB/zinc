@@ -1,10 +1,10 @@
 ---
 id: task-048
 title: Create Integration Tests for Multi-File Editor
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-12-25 18:02'
-updated_date: '2025-12-25 18:02'
+updated_date: '2025-12-25 18:36'
 labels:
     - testing
     - integration
