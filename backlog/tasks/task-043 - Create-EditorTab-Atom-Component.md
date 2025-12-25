@@ -1,10 +1,10 @@
 ---
 id: task-043
 title: Create EditorTab Atom Component
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-12-25 18:01'
-updated_date: '2025-12-25 18:01'
+updated_date: '2025-12-25 18:29'
 labels:
     - component
     - atom
