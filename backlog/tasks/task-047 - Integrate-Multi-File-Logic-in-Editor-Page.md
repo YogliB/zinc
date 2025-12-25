@@ -1,10 +1,10 @@
 ---
 id: task-047
 title: Integrate Multi-File Logic in Editor Page
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-12-25 18:02'
-updated_date: '2025-12-25 18:02'
+updated_date: '2025-12-25 18:35'
 labels:
     - integration
     - page
