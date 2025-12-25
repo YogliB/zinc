@@ -1,10 +1,10 @@
 ---
 id: task-041
 title: Add OpenFile Type Definition
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-12-25 18:00'
-updated_date: '2025-12-25 18:00'
+updated_date: '2025-12-25 18:27'
 labels:
     - types
     - foundation
