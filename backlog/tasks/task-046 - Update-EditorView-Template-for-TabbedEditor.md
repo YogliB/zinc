@@ -1,10 +1,10 @@
 ---
 id: task-046
 title: Update EditorView Template for TabbedEditor
-status: To Do
+status: Done
 assignee: []
 created_date: '2025-12-25 18:01'
-updated_date: '2025-12-25 18:02'
+updated_date: '2025-12-25 18:34'
 labels:
     - component
     - template
