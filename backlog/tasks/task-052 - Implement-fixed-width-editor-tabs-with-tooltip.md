@@ -1,10 +1,10 @@
 ---
 id: task-052
 title: Implement fixed-width editor tabs with tooltip
-status: In Progress
+status: Done
 assignee: []
 created_date: '2025-12-27 19:32'
-updated_date: '2025-12-27 19:33'
+updated_date: '2025-12-27 19:34'
 labels:
     - ui
     - enhancement
