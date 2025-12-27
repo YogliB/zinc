@@ -6,7 +6,13 @@ describe('EditorTab', () => {
 	it('renders tab name correctly', () => {
 		const mockOnClose = vi.fn();
 
-		render(<EditorTab name="test.txt" onClose={mockOnClose} />);
+		render(
+			<EditorTab
+				name="test.txt"
+				path="/path/to/test.txt"
+				onClose={mockOnClose}
+			/>,
+		);
 
 		expect(screen.getByText('test.txt')).toBeInTheDocument();
 	});
@@ -14,7 +20,13 @@ describe('EditorTab', () => {
 	it('calls onClose when close button is clicked', () => {
 		const mockOnClose = vi.fn();
 
-		render(<EditorTab name="test.txt" onClose={mockOnClose} />);
+		render(
+			<EditorTab
+				name="test.txt"
+				path="/path/to/test.txt"
+				onClose={mockOnClose}
+			/>,
+		);
 
 		const closeButton = screen.getByRole('button', {
 			name: /close test\.txt/i,
@@ -27,7 +39,13 @@ describe('EditorTab', () => {
 	it('renders close button with correct aria-label', () => {
 		const mockOnClose = vi.fn();
 
-		render(<EditorTab name="file.js" onClose={mockOnClose} />);
+		render(
+			<EditorTab
+				name="file.js"
+				path="/path/to/file.js"
+				onClose={mockOnClose}
+			/>,
+		);
 
 		const closeButton = screen.getByRole('button', {
 			name: /close file\.js/i,

@@ -30,7 +30,7 @@ export function TabbedEditor({
 	}
 
 	return (
-		<div className="flex h-full flex-col">
+		<div className="flex h-full w-full flex-col">
 			<EditorTabs
 				openFiles={openFiles}
 				activeFilePath={activeFilePath}

@@ -30,14 +30,15 @@ export function EditorTabs({
 					<TabsTrigger
 						key={file.path}
 						value={file.path}
-						className="border-b-2 border-transparent p-0 data-[state=active]:border-blue-500 data-[state=active]:bg-blue-50 dark:data-[state=active]:bg-blue-900/20"
+						className="w-40 border-b-2 border-transparent p-0 data-[state=active]:border-blue-500 data-[state=active]:bg-blue-50 dark:data-[state=active]:bg-blue-900/20"
 					>
 						<div
-							className="flex cursor-pointer items-center gap-2 px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-800"
+							className="flex w-full cursor-pointer items-center gap-2 px-3 py-2 hover:bg-gray-100 dark:hover:bg-gray-800"
 							onClick={() => onTabSelect(file.path)}
 						>
 							<EditorTab
 								name={file.name}
+								path={file.path}
 								onClose={() => onTabClose(file.path)}
 							/>
 						</div>

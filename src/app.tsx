@@ -5,6 +5,7 @@ import { Router, Route } from 'wouter-preact';
 import { invoke } from '@tauri-apps/api/core';
 import { WelcomePage } from './pages';
 import { EditorPage } from './pages/editor';
+import { TooltipProvider } from '@/components/ui/tooltip';
 import { useEffect } from 'preact/hooks';
 
 function App() {
@@ -22,14 +23,16 @@ function App() {
 	}, []);
 
 	return (
-		<Router>
-			<Route path="/">
-				<WelcomePage os={osSignal.value} />
-			</Route>
-			<Route path="/editor">
-				<EditorPage />
-			</Route>
-		</Router>
+		<TooltipProvider delayDuration={300}>
+			<Router>
+				<Route path="/">
+					<WelcomePage os={osSignal.value} />
+				</Route>
+				<Route path="/editor">
+					<EditorPage />
+				</Route>
+			</Router>
+		</TooltipProvider>
 	);
 }
 

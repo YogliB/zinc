@@ -1,5 +1,5 @@
 import { describe, it, expect, vi } from 'vitest';
-import { render, screen, fireEvent } from '@testing-library/preact';
+import { render, screen, fireEvent, waitFor } from '@testing-library/preact';
 import { EditorTabs } from './editor-tabs';
 import { OpenFile } from '@/lib/types';
 
@@ -123,5 +123,71 @@ describe('EditorTabs', () => {
 
 		expect(mockOnTabClose).toHaveBeenCalledWith('/path/to/file1.txt');
 		expect(mockOnTabSelect).not.toHaveBeenCalled();
+	});
+
+	it('applies fixed width to tabs', () => {
+		const mockOnTabSelect = vi.fn();
+		const mockOnTabClose = vi.fn();
+
+		render(
+			<EditorTabs
+				openFiles={mockOpenFiles}
+				activeFilePath="/path/to/file1.txt"
+				onTabSelect={mockOnTabSelect}
+				onTabClose={mockOnTabClose}
+			/>,
+		);
+
+		const tabs = screen.getAllByRole('tab');
+		for (const tab of tabs) {
+			expect(tab).toHaveClass('w-40');
+		}
+	});
+
+	it('truncates long filenames', () => {
+		const longName = 'very-long-filename-that-should-be-truncated.tsx';
+		const mockFiles: OpenFile[] = [
+			{
+				path: `/path/to/${longName}`,
+				name: longName,
+				content: 'content',
+			},
+		];
+		const mockOnTabSelect = vi.fn();
+		const mockOnTabClose = vi.fn();
+
+		render(
+			<EditorTabs
+				openFiles={mockFiles}
+				activeFilePath={`/path/to/${longName}`}
+				onTabSelect={mockOnTabSelect}
+				onTabClose={mockOnTabClose}
+			/>,
+		);
+
+		const span = screen.getByText(longName);
+		expect(span).toHaveClass('truncate');
+		expect(span).toHaveClass('max-w-32');
+	});
+
+	it('shows tooltip with full path on hover', async () => {
+		const mockOnTabSelect = vi.fn();
+		const mockOnTabClose = vi.fn();
+
+		render(
+			<EditorTabs
+				openFiles={mockOpenFiles}
+				activeFilePath="/path/to/file1.txt"
+				onTabSelect={mockOnTabSelect}
+				onTabClose={mockOnTabClose}
+			/>,
+		);
+
+		const tab = screen.getByText('file1.txt');
+		fireEvent.mouseEnter(tab);
+
+		await waitFor(() => {
+			expect(screen.getByText('/path/to/file1.txt')).toBeInTheDocument();
+		});
 	});
 });
