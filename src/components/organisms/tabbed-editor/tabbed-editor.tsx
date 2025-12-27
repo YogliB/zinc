@@ -21,7 +21,7 @@ export function TabbedEditor({
 }: TabbedEditorProperties) {
 	if (openFiles.length === 0) {
 		return (
-			<div className="flex h-full items-center justify-center text-gray-500 dark:text-gray-400">
+			<div className="flex h-full w-full items-center justify-center text-gray-500 dark:text-gray-400">
 				<p>
 					No files open. Select a file from the tree to begin editing.
 				</p>
