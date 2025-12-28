@@ -28,6 +28,7 @@
         "wouter-preact": "3.8.1",
       },
       "devDependencies": {
+        "@preact/compat": "18.3.1",
         "@preact/preset-vite": "2.9.3",
         "@storybook/preact-vite": "10.1.10",
         "@tailwindcss/vite": "4.1.18",
@@ -263,6 +264,8 @@
     "@nicolo-ribaudo/eslint-scope-5-internals": ["@nicolo-ribaudo/eslint-scope-5-internals@5.1.1-v1", "", { "dependencies": { "eslint-scope": "5.1.1" } }, "sha512-54/JRvkLIzzDWshCWfuhadfrfZVPiElY8Fcgmg1HroEly/EDSszzhBAsarCux+D/kOslTRquNzuyGSmUSTTHGg=="],
 
     "@pkgr/core": ["@pkgr/core@0.2.9", "", {}, "sha512-QNqXyfVS2wm9hweSYD2O7F0G06uurj9kZ96TRQE5Y9hU7+tgdZwIkbAKc5Ocy1HxEY2kuDQa6cQ1WRs/O5LFKA=="],
+
+    "@preact/compat": ["@preact/compat@18.3.1", "https://cyberark.jfrog.io/artifactory/api/npm/everest-npm-virtual/@preact/compat/-/compat-18.3.1.tgz", { "peerDependencies": { "preact": "*" } }, "sha512-Kog4PSRxtT4COtOXjsuQPV1vMXpUzREQfv+6Dmcy9/rMk0HOPK0HTE9fspFjAmY8R80T/T8gtgmZ68u5bOSngw=="],
 
     "@preact/preset-vite": ["@preact/preset-vite@2.9.3", "", { "dependencies": { "@babel/code-frame": "^7.22.13", "@babel/plugin-transform-react-jsx": "^7.22.15", "@babel/plugin-transform-react-jsx-development": "^7.22.5", "@prefresh/vite": "^2.4.1", "@rollup/pluginutils": "^4.1.1", "babel-plugin-transform-hook-names": "^1.0.2", "debug": "^4.3.4", "kolorist": "^1.8.0", "magic-string": "0.30.5", "node-html-parser": "^6.1.10", "source-map": "^0.7.4", "stack-trace": "^1.0.0-pre2" }, "peerDependencies": { "@babel/core": "7.x", "vite": "2.x || 3.x || 4.x || 5.x || 6.x" } }, "sha512-uVDSKsFnPa/bmRTAcPiYpTvC04T1lhIH2ho3CJZLYibwcwliElS/i64iyATZkgR4DJxSc/JwOCSQS4IF/a03OQ=="],
 
