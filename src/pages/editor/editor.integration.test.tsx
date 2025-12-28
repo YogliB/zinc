@@ -9,7 +9,11 @@
 import { render, screen, fireEvent, waitFor } from '@testing-library/preact';
 import { EditorPage } from './editor';
 import { invoke } from '@tauri-apps/api/core';
-import { resetEditorState } from '../../lib/stores/editor-store';
+import {
+	resetEditorState,
+	treeNodes,
+	folderPath,
+} from '../../lib/stores/editor-store';
 
 // Mock Tauri invoke
 vi.mock('@tauri-apps/api/core', () => ({
@@ -21,12 +25,31 @@ vi.mock('wouter-preact', () => ({
 	useSearch: vi.fn(() => '?path=/test/project'),
 }));
 
-const mockInvoke = vi.mocked(invoke);
+const mockInvoke = invoke as any;
 
 describe('EditorPage Integration Tests', () => {
 	beforeEach(() => {
 		resetEditorState();
 		mockInvoke.mockClear();
+		// Set initial state for test
+		folderPath.value = '/test/project';
+		treeNodes.value = [
+			{
+				name: 'file1.txt',
+				type: 'file',
+				path: '/test/project/file1.txt',
+			},
+			{
+				name: 'file2.js',
+				type: 'file',
+				path: '/test/project/file2.js',
+			},
+			{
+				name: 'file3.tsx',
+				type: 'file',
+				path: '/test/project/file3.tsx',
+			},
+		];
 		// Mock initial project load
 		mockInvoke.mockImplementation(
 			async (command: string, arguments_: any) => {
@@ -219,7 +242,7 @@ describe('EditorPage Integration Tests', () => {
 			expect(screen.getAllByText('file1.txt')).toHaveLength(2);
 		});
 
-		fireEvent.click(screen.getByText('file1.txt'));
+		fireEvent.click(screen.getAllByText('file1.txt')[0]);
 
 		// Should still only have one tab
 		expect(screen.getAllByText('file1.txt')).toHaveLength(2); // Tree and one tab

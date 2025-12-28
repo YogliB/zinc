@@ -1,28 +1,116 @@
+import { JSDOM } from 'jsdom';
 import '@testing-library/jest-dom/vitest';
+
+// Manually set up JSDOM since Vitest environment is not working with Bun
+const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>', {
+	url: 'http://localhost',
+});
+
+globalThis.window = dom.window;
+globalThis.document = dom.window.document;
+globalThis.navigator = dom.window.navigator;
+// @ts-expect-error: Importing h from preact in test setup for mocking
+import { h } from 'preact';
 
 // Mock lucide-react icons to return simple elements for testing
 import { vi } from 'vitest';
 vi.mock('lucide-react', () => ({
-	FileIcon: () => 'file-icon',
-	FolderIcon: () => 'folder-icon',
-	XIcon: () => 'x-icon',
-	X: () => 'x-icon',
-	FolderOpen: () => 'folder-open-icon',
-	GripVerticalIcon: () => 'grip-icon',
+	FileIcon: (properties) => h('img', { role: 'img', ...properties }),
+	FolderIcon: (properties) => h('img', { role: 'img', ...properties }),
+	Folder: (properties) => h('img', { role: 'img', ...properties }),
+	XIcon: (properties) => h('img', { role: 'img', ...properties }),
+	X: (properties) => h('img', { role: 'img', ...properties }),
+	FolderOpen: (properties) => h('img', { role: 'img', ...properties }),
+	GripVerticalIcon: (properties) => h('img', { role: 'img', ...properties }),
+	File: (properties) => h('img', { role: 'img', ...properties }),
 }));
 
 // Ensure React is mapped to Preact in tests
-import * as preactCompat from '@preact/compat';
-import * as preactJsxRuntime from '@preact/jsx-runtime';
-vi.mock('react', () => preactCompat);
-vi.mock('react-dom', () => preactCompat);
-vi.mock('react/jsx-runtime', () => preactJsxRuntime);
+// eslint-disable-next-line @typescript-eslint/no-require-imports, unicorn/prefer-module
+vi.mock('react', () => require('@preact/compat'));
+// eslint-disable-next-line @typescript-eslint/no-require-imports, unicorn/prefer-module
+vi.mock('react-dom', () => require('@preact/compat'));
+// eslint-disable-next-line @typescript-eslint/no-require-imports, unicorn/prefer-module
+vi.mock('react/jsx-runtime', () => require('@preact/jsx-runtime'));
 
 // Mock react-resizable-panels to prevent React hook conflicts
 vi.mock('react-resizable-panels', () => ({
 	PanelGroup: ({ children }) => children,
+	Group: ({ children }) => children,
 	Panel: ({ children }) => children,
 	PanelResizeHandle: () => 'resize-handle',
+	ResizableHandle: () => 'resize-handle',
+	Separator: () => 'separator',
 	usePanelRef: () => ({ current: undefined }),
 	useGroupRef: () => ({ current: undefined }),
+}));
+
+// Mock radix-ui tooltip to avoid React hooks
+vi.mock('@radix-ui/react-tooltip', () => ({
+	Provider: ({ children }) => children,
+	Root: ({ children }) => children,
+	Trigger: ({ children }) => children,
+	// eslint-disable-next-line @typescript-eslint/no-empty-function
+	Content: () => {},
+	Portal: ({ children }) => children,
+	// eslint-disable-next-line @typescript-eslint/no-empty-function
+	Arrow: () => {},
+	Tooltip: ({ children }) => children,
+	TooltipTrigger: ({ children }) => children,
+	// eslint-disable-next-line @typescript-eslint/no-empty-function
+	TooltipContent: () => {},
+	TooltipProvider: ({ children }) => children,
+}));
+
+// Mock ui collapsible to avoid React hooks
+vi.mock('@/components/ui/collapsible', () => ({
+	Collapsible: ({ children, ...properties }) =>
+		h('div', properties, children),
+	CollapsibleTrigger: ({ children, ...properties }) =>
+		h('div', properties, children),
+	CollapsibleContent: ({ children, ...properties }) =>
+		h('div', properties, children),
+}));
+
+// Mock ui tabs to avoid React hooks
+vi.mock('@/components/ui/tabs', () => ({
+	Tabs: ({ children, ...properties }) => h('div', properties, children),
+	TabsList: ({ children, ...properties }) => h('div', properties, children),
+	TabsTrigger: ({ children, ...properties }) =>
+		h('button', properties, children),
+	TabsContent: ({ children, ...properties }) =>
+		h('div', properties, children),
+}));
+
+// Mock tauri plugin-log to avoid invoke calls in tests
+vi.mock('@tauri-apps/plugin-log', () => ({
+	warn: vi.fn(),
+	debug: vi.fn(),
+	trace: vi.fn(),
+	info: vi.fn(),
+	error: vi.fn(),
+}));
+
+// Mock @uiw/react-codemirror to avoid CodeMirror rendering issues
+vi.mock('@uiw/react-codemirror', () => ({
+	default: ({ value, onChange }) =>
+		h(
+			'div',
+			{
+				className: 'cm-editor',
+				onInput: (event_) => onChange(event_.target.value),
+			},
+			value,
+		),
+}));
+
+// Mock ui tooltip to avoid React hooks
+vi.mock('@/components/ui/tooltip', () => ({
+	Tooltip: ({ children, ...properties }) => h('div', properties, children),
+	TooltipTrigger: ({ children, ...properties }) =>
+		h('div', properties, children),
+	TooltipContent: ({ children, ...properties }) =>
+		h('div', properties, children),
+	TooltipProvider: ({ children, ...properties }) =>
+		h('div', properties, children),
 }));

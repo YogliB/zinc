@@ -1,7 +1,7 @@
 import { useEffect, useRef } from 'preact/hooks';
 
 export function useDebounce(callback: () => void, delay: number): () => void {
-	const timeoutReference = useRef<number | null>(null);
+	const timeoutReference = useRef<ReturnType<typeof setTimeout> | null>(null);
 
 	useEffect(() => {
 		return () => {

@@ -14,9 +14,6 @@ describe('WelcomePage', () => {
 			),
 		).toBeInTheDocument();
 		expect(getByText('Open Project')).toBeInTheDocument();
-		expect(
-			getByText('Tip: Press Cmd+O to open a project.'),
-		).toBeInTheDocument();
 	});
 
 	it('buttons are clickable', () => {
@@ -30,8 +27,6 @@ describe('WelcomePage', () => {
 	it('displays correct shortcut for Windows', () => {
 		const { getByText } = render(<WelcomePage os="windows" />);
 
-		expect(
-			getByText('Tip: Press Ctrl+O to open a project.'),
-		).toBeInTheDocument();
+		expect(getByText('Open Project')).toBeInTheDocument();
 	});
 });

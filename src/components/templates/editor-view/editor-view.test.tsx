@@ -38,8 +38,7 @@ describe('EditorView', () => {
 			/>,
 		);
 
-		expect(screen.getByText('test-file.txt')).toBeInTheDocument();
-		expect(screen.getByText('test-file.txt')).toBeInTheDocument(); // Tab name
+		expect(screen.getAllByText('test-file.txt')).toHaveLength(2);
 	});
 
 	it('calls onSelect when a file is clicked', () => {
@@ -70,7 +69,7 @@ describe('EditorView', () => {
 			/>,
 		);
 
-		fireEvent.click(screen.getByText('test-file.txt'));
+		fireEvent.click(screen.getAllByText('test-file.txt')[0]);
 
 		expect(mockOnSelect).toHaveBeenCalledWith(mockTreeNodes[0]);
 	});

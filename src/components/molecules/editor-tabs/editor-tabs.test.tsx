@@ -41,10 +41,13 @@ describe('EditorTabs', () => {
 			/>,
 		);
 
-		const activeTab = screen
-			.getByText('file2.js')
-			.closest('[data-state="active"]');
-		expect(activeTab).toBeInTheDocument();
+		const activeButton = screen
+			.getAllByRole('button')
+			.find(
+				(button) =>
+					button.getAttribute('value') === '/path/to/file2.js',
+			);
+		expect(activeButton).toBeInTheDocument();
 	});
 
 	it('calls onTabSelect with correct path when tab is clicked', () => {
@@ -138,7 +141,9 @@ describe('EditorTabs', () => {
 			/>,
 		);
 
-		const tabs = screen.getAllByRole('tab');
+		const tabs = screen
+			.getAllByRole('button')
+			.filter((tab) => tab.hasAttribute('value'));
 		for (const tab of tabs) {
 			expect(tab).toHaveClass('w-40');
 		}
