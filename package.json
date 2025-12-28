@@ -32,7 +32,6 @@
 		"class-variance-authority": "0.7.1",
 		"clsx": "2.1.1",
 		"eslint": "9.39.2",
-		"happy-dom": "20.0.11",
 		"lucide-react": "0.561.0",
 		"preact": "10.25.1",
 		"react-resizable-panels": "4.0.8",
@@ -41,7 +40,6 @@
 		"wouter-preact": "3.8.1"
 	},
 	"devDependencies": {
-		"@preact/compat": "18.3.1",
 		"@preact/preset-vite": "2.9.3",
 		"@storybook/preact-vite": "10.1.10",
 		"@tailwindcss/vite": "4.1.18",

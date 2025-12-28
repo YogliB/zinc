@@ -1,8 +1,6 @@
 import '@testing-library/jest-dom/vitest';
 
 import { h } from 'preact';
-import React from '@preact/compat';
-import { jsx, jsxs, Fragment } from 'preact/jsx-runtime';
 
 // Mock lucide-react icons to return simple elements for testing
 import { vi } from 'vitest';
@@ -16,11 +14,6 @@ vi.mock('lucide-react', () => ({
 	GripVerticalIcon: (properties) => h('img', { role: 'img', ...properties }),
 	File: (properties) => h('img', { role: 'img', ...properties }),
 }));
-
-// Ensure React is mapped to Preact in tests
-vi.mock('react', () => ({ default: React }));
-vi.mock('react-dom', () => ({ default: React }));
-vi.mock('react/jsx-runtime', () => ({ jsx, jsxs, Fragment }));
 
 // Mock react-resizable-panels to prevent React hook conflicts
 vi.mock('react-resizable-panels', () => ({

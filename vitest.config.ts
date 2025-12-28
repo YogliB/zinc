@@ -1,8 +1,10 @@
 import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 import { defineConfig } from 'vitest/config';
+import preact from '@preact/preset-vite';
 
 export default defineConfig({
+	plugins: [preact()],
 	test: {
 		environment: 'jsdom',
 		globals: true,
