@@ -1,15 +1,5 @@
-import { JSDOM } from 'jsdom';
 import '@testing-library/jest-dom/vitest';
 
-// Manually set up JSDOM since Vitest environment is not working with Bun
-const dom = new JSDOM('<!DOCTYPE html><html><body></body></html>', {
-	url: 'http://localhost',
-});
-
-globalThis.window = dom.window;
-globalThis.document = dom.window.document;
-globalThis.navigator = dom.window.navigator;
-// @ts-expect-error: Importing h from preact in test setup for mocking
 import { h } from 'preact';
 
 // Mock lucide-react icons to return simple elements for testing

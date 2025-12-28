@@ -32,6 +32,7 @@
 ## Testing
 
 - Use **Vitest** for all tests.
+- Run tests using `bun run test` (not `bun test`).
 - Each `.ts`/`.tsx` file must have a corresponding test file.
 - After implementation:
     - Run ESLint and TypeScript checks.
