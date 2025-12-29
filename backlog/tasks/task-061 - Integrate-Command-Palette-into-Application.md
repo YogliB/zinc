@@ -1,7 +1,7 @@
 ---
 id: task-061
 title: Integrate Command Palette into Application
-status: In Progress
+status: Done
 assignee: []
 created_date: '2025-12-29 10:27'
 updated_date: '2025-12-29 10:32'
