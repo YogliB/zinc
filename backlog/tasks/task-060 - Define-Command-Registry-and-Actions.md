@@ -1,7 +1,7 @@
 ---
 id: task-060
 title: Define Command Registry and Actions
-status: In Progress
+status: Done
 assignee: []
 created_date: '2025-12-29 10:27'
 updated_date: '2025-12-29 10:32'
