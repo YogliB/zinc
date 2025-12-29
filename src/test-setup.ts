@@ -96,3 +96,42 @@ vi.mock('@/components/ui/tooltip', () => ({
 	TooltipProvider: ({ children, ...properties }) =>
 		h('div', properties, children),
 }));
+
+// Mock radix dialog to avoid React hooks
+vi.mock('@radix-ui/react-dialog', () => ({
+	Dialog: ({ children, ...properties }) => h('div', properties, children),
+	DialogContent: ({ children, ...properties }) =>
+		h('div', properties, children),
+	DialogHeader: ({ children, ...properties }) =>
+		h('div', properties, children),
+	DialogTitle: ({ children, ...properties }) =>
+		h('div', properties, children),
+	DialogTrigger: ({ children, ...properties }) =>
+		h('div', properties, children),
+	DialogClose: ({ children, ...properties }) =>
+		h('div', properties, children),
+	DialogOverlay: ({ children, ...properties }) =>
+		h('div', properties, children),
+	DialogPortal: ({ children, ...properties }) =>
+		h('div', properties, children),
+}));
+
+// Mock ui dialog
+vi.mock('@/components/ui/dialog', () => ({
+	Dialog: ({ children, ...properties }) => h('div', properties, children),
+	DialogContent: ({ children, ...properties }) =>
+		h('div', properties, children),
+	DialogHeader: ({ children, ...properties }) =>
+		h('div', properties, children),
+	DialogTitle: ({ children, ...properties }) =>
+		h('div', properties, children),
+	DialogTrigger: ({ children, ...properties }) =>
+		h('div', properties, children),
+	DialogClose: ({ children, ...properties }) =>
+		h('div', properties, children),
+}));
+
+// Mock ui input
+vi.mock('@/components/ui/input', () => ({
+	Input: (properties) => h('input', properties),
+}));

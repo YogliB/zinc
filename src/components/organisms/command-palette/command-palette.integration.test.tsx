@@ -1,0 +1,59 @@
+/* eslint-disable @typescript-eslint/no-empty-function */
+import { render, screen, fireEvent } from '@testing-library/preact';
+import { describe, it, expect, vi, beforeEach } from 'vitest';
+import { CommandPalette } from './command-palette';
+import { getCommandsForContext } from '../../../lib/commands/registry';
+import { appMode } from '../../../lib/stores/modes';
+import { isCommandPaletteOpen } from '../../../lib/stores/command-palette';
+
+// Mock Tauri invoke
+vi.mock('@tauri-apps/api/core', () => ({
+	invoke: vi.fn().mockResolvedValue('/mock/path'),
+}));
+
+describe('CommandPalette Integration', () => {
+	beforeEach(() => {
+		appMode.value = 'welcome';
+		isCommandPaletteOpen.value = false;
+	});
+
+	it('opens palette and executes command', async () => {
+		const commands = getCommandsForContext('welcome');
+		render(
+			<CommandPalette
+				isOpen={true}
+				onClose={() => {}}
+				commands={commands.map((cmd) => ({
+					id: cmd.id,
+					title: cmd.title,
+					action: cmd.action,
+					keywords: cmd.keywords,
+					category: cmd.category,
+				}))}
+			/>,
+		);
+
+		expect(screen.getByText('Command Palette')).toBeInTheDocument();
+
+		// Find and click a command
+		const openFolderButton = screen.getByText('Open Folder');
+		fireEvent.click(openFolderButton);
+
+		// Verify appMode changed (since command sets it)
+		expect(appMode.value).toBe('editor');
+	});
+
+	it('filters commands based on context', () => {
+		appMode.value = 'editor';
+		const editorCommands = getCommandsForContext('editor');
+		const welcomeCommands = getCommandsForContext('welcome');
+
+		expect(editorCommands.length).toBeGreaterThan(welcomeCommands.length);
+		expect(
+			editorCommands.some((cmd) => cmd.id === 'close-active-tab'),
+		).toBe(true);
+		expect(
+			welcomeCommands.some((cmd) => cmd.id === 'close-active-tab'),
+		).toBe(false);
+	});
+});
