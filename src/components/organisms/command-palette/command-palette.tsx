@@ -1,5 +1,4 @@
-import { signal } from '@preact/signals';
-import { useEffect } from 'preact/hooks';
+import { useMemo, useCallback } from 'preact/hooks';
 import {
 	CommandDialog,
 	CommandEmpty,
@@ -24,43 +23,51 @@ interface CommandPaletteProperties {
 	commands: Command[];
 }
 
-const searchQuery = signal('');
-
 export function CommandPalette({
 	isOpen,
 	onClose,
 	commands,
 }: CommandPaletteProperties) {
-	useEffect(() => {
-		if (!isOpen) {
-			searchQuery.value = '';
-		}
-	}, [isOpen]);
+	const handleOpenChange = useCallback(
+		(open: boolean) => {
+			if (open === isOpen) {
+				return;
+			}
+			onClose(open);
+		},
+		[isOpen, onClose],
+	);
 
-	const handleSelect = (commandId: string) => {
-		const command = commands.find((cmd) => cmd.id === commandId);
-		if (command) {
-			command.action();
-			onClose(false);
-		}
-	};
+	const handleSelect = useCallback(
+		(commandId: string) => {
+			const command = commands.find((cmd) => cmd.id === commandId);
+			if (command) {
+				command.action();
+				onClose(false);
+			}
+		},
+		[commands, onClose],
+	);
 
-	const groupedCommands: Record<string, Command[]> = {};
-	for (const command of commands) {
-		const category = command.category || 'General';
-		if (!groupedCommands[category]) {
-			groupedCommands[category] = [];
+	const groupedCommands = useMemo(() => {
+		const result: Record<string, Command[]> = {};
+		for (const command of commands) {
+			const category = command.category || 'General';
+			if (!result[category]) {
+				result[category] = [];
+			}
+			result[category].push(command);
 		}
-		groupedCommands[category].push(command);
-	}
+		return result;
+	}, [commands]);
 
 	return (
-		<CommandDialog open={isOpen} onOpenChange={onClose}>
-			<CommandInput
-				placeholder="Search commands..."
-				value={searchQuery.value}
-				onValueChange={(value) => (searchQuery.value = value)}
-			/>
+		<CommandDialog
+			open={isOpen}
+			onOpenChange={handleOpenChange}
+			modal={true}
+		>
+			<CommandInput placeholder="Search commands..." />
 			<CommandList>
 				<CommandEmpty>No results found.</CommandEmpty>
 				{Object.entries(groupedCommands).map(

@@ -9,10 +9,11 @@ export function useKeyboardShortcuts(os: 'mac' | 'windows' | 'linux') {
 
 			if (isCmdOrCtrl && isK) {
 				event.preventDefault();
+				event.stopPropagation();
 				isCommandPaletteOpen.value = !isCommandPaletteOpen.value;
-			}
-
-			if (event.key === 'Escape' && isCommandPaletteOpen.value) {
+			} else if (event.key === 'Escape' && isCommandPaletteOpen.value) {
+				event.preventDefault();
+				event.stopPropagation();
 				isCommandPaletteOpen.value = false;
 			}
 		};
