@@ -1,14 +1,13 @@
 import { signal } from '@preact/signals';
-import { useEffect, useRef } from 'preact/hooks';
-import Fuse from 'fuse.js';
+import { useEffect } from 'preact/hooks';
 import {
-	Dialog,
-	DialogContent,
-	DialogHeader,
-	DialogTitle,
-} from '../../ui/dialog';
-import { Input } from '../../ui/input';
-import { Button } from '../../ui/button';
+	CommandDialog,
+	CommandEmpty,
+	CommandGroup,
+	CommandInput,
+	CommandItem,
+	CommandList,
+} from '../../ui/command';
 
 interface Command {
 	id: string;
@@ -20,106 +19,67 @@ interface Command {
 
 interface CommandPaletteProperties {
 	isOpen: boolean;
-	onClose: () => void;
+	// eslint-disable-next-line no-unused-vars
+	onClose: (shouldBeOpen: boolean) => void;
 	commands: Command[];
 }
 
 const searchQuery = signal('');
-const selectedIndex = signal(0);
 
 export function CommandPalette({
 	isOpen,
 	onClose,
 	commands,
 }: CommandPaletteProperties) {
-	const fuse = new Fuse(commands, {
-		keys: ['title', 'keywords', 'category'],
-		threshold: 0.1,
-		includeScore: true,
-	});
-
-	const filteredCommands = searchQuery.value
-		? fuse.search(searchQuery.value).map((result) => result.item)
-		: commands;
-
-	const inputReference = useRef<HTMLInputElement>(null);
-
 	useEffect(() => {
-		selectedIndex.value = 0;
-	}, [filteredCommands.length]);
+		if (!isOpen) {
+			searchQuery.value = '';
+		}
+	}, [isOpen]);
 
-	useEffect(() => {
-		const handleKeyDown = (event: KeyboardEvent) => {
-			if (!isOpen) return;
+	const handleSelect = (commandId: string) => {
+		const command = commands.find((cmd) => cmd.id === commandId);
+		if (command) {
+			command.action();
+			onClose(false);
+		}
+	};
 
-			switch (event.key) {
-				case 'ArrowDown': {
-					event.preventDefault();
-					selectedIndex.value =
-						(selectedIndex.value + 1) % filteredCommands.length;
-					break;
-				}
-				case 'ArrowUp': {
-					event.preventDefault();
-					selectedIndex.value =
-						selectedIndex.value === 0
-							? filteredCommands.length - 1
-							: selectedIndex.value - 1;
-					break;
-				}
-				case 'Enter': {
-					event.preventDefault();
-					if (filteredCommands[selectedIndex.value]) {
-						filteredCommands[selectedIndex.value].action();
-						onClose();
-					}
-					break;
-				}
-				case 'Escape': {
-					event.preventDefault();
-					onClose();
-					break;
-				}
-			}
-		};
-
-		document.addEventListener('keydown', handleKeyDown);
-		return () => document.removeEventListener('keydown', handleKeyDown);
-	}, [isOpen, filteredCommands, onClose]);
+	const groupedCommands: Record<string, Command[]> = {};
+	for (const command of commands) {
+		const category = command.category || 'General';
+		if (!groupedCommands[category]) {
+			groupedCommands[category] = [];
+		}
+		groupedCommands[category].push(command);
+	}
 
 	return (
-		<Dialog open={isOpen} onOpenChange={onClose}>
-			<DialogContent>
-				<DialogHeader>
-					<DialogTitle>Command Palette</DialogTitle>
-				</DialogHeader>
-				<Input
-					ref={inputReference}
-					placeholder="Search commands..."
-					value={searchQuery.value}
-					onChange={(event) =>
-						(searchQuery.value = (
-							event.target as HTMLInputElement
-						).value)
-					}
-				/>
-				<div className="max-h-64 overflow-y-auto">
-					{filteredCommands.map((command, index) => (
-						<Button
-							key={command.id}
-							data-command-index={index}
-							variant="ghost"
-							className={`w-full justify-start ${index === selectedIndex.value ? 'bg-accent' : ''}`}
-							onClick={() => {
-								command.action();
-								onClose();
-							}}
-						>
-							{command.title}
-						</Button>
-					))}
-				</div>
-			</DialogContent>
-		</Dialog>
+		<CommandDialog open={isOpen} onOpenChange={onClose}>
+			<CommandInput
+				placeholder="Search commands..."
+				value={searchQuery.value}
+				onValueChange={(value) => (searchQuery.value = value)}
+			/>
+			<CommandList>
+				<CommandEmpty>No results found.</CommandEmpty>
+				{Object.entries(groupedCommands).map(
+					([category, categoryCommands]) => (
+						<CommandGroup key={category} heading={category}>
+							{categoryCommands.map((command) => (
+								<CommandItem
+									key={command.id}
+									value={command.title}
+									keywords={command.keywords}
+									onSelect={() => handleSelect(command.id)}
+								>
+									{command.title}
+								</CommandItem>
+							))}
+						</CommandGroup>
+					),
+				)}
+			</CommandList>
+		</CommandDialog>
 	);
 }

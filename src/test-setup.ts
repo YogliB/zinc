@@ -99,21 +99,15 @@ vi.mock('@/components/ui/tooltip', () => ({
 
 // Mock radix dialog to avoid React hooks
 vi.mock('@radix-ui/react-dialog', () => ({
-	Dialog: ({ children, ...properties }) => h('div', properties, children),
-	DialogContent: ({ children, ...properties }) =>
+	Root: ({ children, ...properties }) => h('div', properties, children),
+	Portal: ({ children, ...properties }) => h('div', properties, children),
+	Overlay: ({ children, ...properties }) => h('div', properties, children),
+	Content: ({ children, ...properties }) => h('div', properties, children),
+	Title: ({ children, ...properties }) => h('div', properties, children),
+	Description: ({ children, ...properties }) =>
 		h('div', properties, children),
-	DialogHeader: ({ children, ...properties }) =>
-		h('div', properties, children),
-	DialogTitle: ({ children, ...properties }) =>
-		h('div', properties, children),
-	DialogTrigger: ({ children, ...properties }) =>
-		h('div', properties, children),
-	DialogClose: ({ children, ...properties }) =>
-		h('div', properties, children),
-	DialogOverlay: ({ children, ...properties }) =>
-		h('div', properties, children),
-	DialogPortal: ({ children, ...properties }) =>
-		h('div', properties, children),
+	Trigger: ({ children, ...properties }) => h('div', properties, children),
+	Close: ({ children, ...properties }) => h('div', properties, children),
 }));
 
 // Mock ui dialog
@@ -125,10 +119,42 @@ vi.mock('@/components/ui/dialog', () => ({
 		h('div', properties, children),
 	DialogTitle: ({ children, ...properties }) =>
 		h('div', properties, children),
+	DialogDescription: ({ children, ...properties }) =>
+		h('div', properties, children),
 	DialogTrigger: ({ children, ...properties }) =>
 		h('div', properties, children),
 	DialogClose: ({ children, ...properties }) =>
 		h('div', properties, children),
+	DialogOverlay: ({ children, ...properties }) =>
+		h('div', properties, children),
+	DialogPortal: ({ children, ...properties }) =>
+		h('div', properties, children),
+	DialogFooter: ({ children, ...properties }) =>
+		h('div', properties, children),
+}));
+
+// Mock cmdk
+vi.mock('cmdk', () => ({
+	Command: ({ children, ...properties }) => h('div', properties, children),
+}));
+
+// Mock ui command
+vi.mock('@/components/ui/command', () => ({
+	Command: ({ children, ...properties }) => h('div', properties, children),
+	CommandDialog: ({ children, open, ...properties }) =>
+		open ? h('div', properties, children) : undefined,
+	CommandInput: (properties) => h('input', properties),
+	CommandList: ({ children, ...properties }) =>
+		h('div', properties, children),
+	CommandEmpty: ({ children, ...properties }) =>
+		h('div', properties, children),
+	CommandGroup: ({ children, ...properties }) =>
+		h('div', properties, children),
+	CommandItem: ({ children, onSelect, ...properties }) =>
+		h('div', { ...properties, onClick: onSelect }, children),
+	CommandSeparator: (properties) => h('div', properties),
+	CommandShortcut: ({ children, ...properties }) =>
+		h('span', properties, children),
 }));
 
 // Mock ui input

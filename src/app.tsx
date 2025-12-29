@@ -6,7 +6,7 @@ import { invoke } from '@tauri-apps/api/core';
 import { WelcomePage } from './pages';
 import { EditorPage } from './pages/editor';
 import { TooltipProvider } from '@/components/ui/tooltip';
-import { useEffect } from 'preact/hooks';
+import { useEffect, useMemo, useCallback } from 'preact/hooks';
 import { appMode } from './lib/stores/modes';
 import { useKeyboardShortcuts } from './lib/hooks/use-keyboard-shortcuts';
 import { CommandPalette } from './components/organisms/command-palette/command-palette';
@@ -40,18 +40,28 @@ function App() {
 
 	const commandsForContext = getCommandsForContext(appMode.value);
 
+	const handleDialogChange = useCallback((open: boolean) => {
+		isCommandPaletteOpen.value = open;
+	}, []);
+
+	const commandsForPalette = useMemo(
+		() =>
+			commandsForContext.map((cmd) => ({
+				id: cmd.id,
+				title: cmd.title,
+				action: cmd.action,
+				keywords: cmd.keywords,
+				category: cmd.category,
+			})),
+		[commandsForContext],
+	);
+
 	return (
 		<TooltipProvider delayDuration={300}>
 			<CommandPalette
 				isOpen={isCommandPaletteOpen.value}
-				onClose={() => (isCommandPaletteOpen.value = false)}
-				commands={commandsForContext.map((cmd) => ({
-					id: cmd.id,
-					title: cmd.title,
-					action: cmd.action,
-					keywords: cmd.keywords,
-					category: cmd.category,
-				}))}
+				onClose={handleDialogChange}
+				commands={commandsForPalette}
 			/>
 			<Router>
 				<Route path="/">
