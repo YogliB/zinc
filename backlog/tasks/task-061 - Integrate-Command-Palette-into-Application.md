@@ -60,4 +60,4 @@ Wire up the CommandPalette component to the main application by adding it to app
 - Pass the filtered command list based on current app mode
 - Handle Escape key to close the palette
 - Ensure proper z-index so palette appears above all other content
-  <!-- SECTION:NOTES:END -->
+      <!-- SECTION:NOTES:END -->

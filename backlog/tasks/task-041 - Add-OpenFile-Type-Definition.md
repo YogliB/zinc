@@ -51,4 +51,4 @@ Extend the type definitions to support multiple open files by adding an OpenFile
 - path should be the full file path (matches TreeNode.path)
 - name is the display name (matches TreeNode.name)
 - content is the raw file content string
-  <!-- SECTION:NOTES:END -->
+      <!-- SECTION:NOTES:END -->

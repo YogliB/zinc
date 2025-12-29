@@ -78,4 +78,4 @@ Update the editor page to integrate with the new multi-file store and pass the c
 - Derive activeContent using computed or inline: openFiles.value.find(f => f.path === activeFilePath.value)?.content ?? ''
 - handleTabClose should switch to another tab after closing if tabs remain
 - Add console logs for: file opened, file closed, tab switched
-  <!-- SECTION:NOTES:END -->
+      <!-- SECTION:NOTES:END -->

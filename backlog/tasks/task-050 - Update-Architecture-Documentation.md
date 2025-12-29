@@ -67,4 +67,4 @@ Update project documentation to reflect the new multi-file editor architecture, 
 - Mention the computed activeFileContent signal
 - Update any diagrams if they exist
 - Check if USAGE.md needs updates for end-user perspective
-  <!-- SECTION:NOTES:END -->
+      <!-- SECTION:NOTES:END -->

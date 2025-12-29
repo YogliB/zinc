@@ -79,4 +79,4 @@ Perform comprehensive manual testing of the multi-file editor in development mod
 - Check Storybook renders correctly: `bun run storybook`
 - Document any UI issues found and fix them
 - Consider adding CSS for: tab width limits, text overflow ellipsis, smooth scrolling
-  <!-- SECTION:NOTES:END -->
+      <!-- SECTION:NOTES:END -->

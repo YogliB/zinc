@@ -27,4 +27,4 @@ Added tests for file opening functionality in EditorView:
 - Used fireEvent to simulate file click interactions
 - Verified that onSelect prop receives the correct TreeNode
 - Maintained existing test structure and patterns
-  <!-- SECTION:DESCRIPTION:END -->
+      <!-- SECTION:DESCRIPTION:END -->

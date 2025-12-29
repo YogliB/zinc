@@ -28,4 +28,4 @@ Designed file loading integration for EditorView component:
 - Added read_file and write_file Tauri commands in lib.rs
 - Updated WelcomePage to use new file loading functions
 - Maintained functional programming principles and atomic design
-  <!-- SECTION:DESCRIPTION:END -->
+      <!-- SECTION:DESCRIPTION:END -->

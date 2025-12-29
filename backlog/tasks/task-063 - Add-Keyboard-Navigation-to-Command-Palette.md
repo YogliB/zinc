@@ -60,4 +60,4 @@ Implement keyboard navigation within the command palette to allow users to brows
 - Use signals to track selected command index
 - Consider adding visual indicators for keyboard shortcuts next to commands
 - This improves accessibility and power-user workflow
-  <!-- SECTION:NOTES:END -->
+      <!-- SECTION:NOTES:END -->

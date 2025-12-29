@@ -80,4 +80,4 @@ Refactor the EditorTabs component to use fixed-width tabs instead of dynamic siz
 - Very short filenames in wide tabs (centered text might look odd)
 - Many tabs open (consider horizontal scrolling in future iteration)
 - Tooltip positioning at viewport edges
-  <!-- SECTION:NOTES:END -->
+      <!-- SECTION:NOTES:END -->

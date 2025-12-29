@@ -54,4 +54,4 @@ Implement a global keyboard shortcut handler that listens for Cmd+K (Mac) or Ctr
 - Consider creating a reusable keyboard shortcut system for future shortcuts
 - The handler should be attached at the App level to work globally
 - Use `event.preventDefault()` to stop browser's search bar from opening
-  <!-- SECTION:NOTES:END -->
+      <!-- SECTION:NOTES:END -->

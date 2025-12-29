@@ -57,4 +57,4 @@ Create a centralized command registry that defines all available commands in the
 - Consider commands like: Open File, Close Tab, Close All Tabs, Go to Welcome, Format Code, Toggle Sidebar, etc.
 - Some commands may only be relevant in certain modes (e.g., Close Tab only in editor mode)
 - Future commands could include AI-related actions like 'Ask AI', 'Explain Code', etc.
-  <!-- SECTION:NOTES:END -->
+      <!-- SECTION:NOTES:END -->

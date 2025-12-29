@@ -80,4 +80,4 @@ Create the TabbedEditor organism component that combines the EditorTabs molecule
 - Empty state should be user-friendly (e.g., "No files open. Select a file from the tree to begin.")
 - activeContent should default to empty string if undefined
 - This organism orchestrates but doesn't manage state (pure presentation)
-  <!-- SECTION:NOTES:END -->
+      <!-- SECTION:NOTES:END -->

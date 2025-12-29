@@ -78,4 +78,4 @@ Create an EditorTabs molecule component that orchestrates multiple EditorTab ato
 - Handle horizontal scrolling if many tabs (Shadcn tabs should handle this)
 - Consider adding TabsContent for semantic correctness (though content rendered separately)
 - Map openFiles array to generate TabsTriggers dynamically
-  <!-- SECTION:NOTES:END -->
+      <!-- SECTION:NOTES:END -->

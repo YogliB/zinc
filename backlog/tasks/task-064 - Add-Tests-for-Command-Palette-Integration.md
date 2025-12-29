@@ -58,4 +58,4 @@ Create comprehensive integration tests for the command palette system, covering 
 - Test real user workflows: open palette → search → select → execute → verify result
 - Mock Tauri commands where necessary (e.g., open_folder)
 - Use existing test patterns from editor.integration.test.tsx as reference
-  <!-- SECTION:NOTES:END -->
+      <!-- SECTION:NOTES:END -->

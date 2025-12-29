@@ -65,4 +65,4 @@ Extend the editor store to support multiple open files by adding new signals and
 - removeOpenFile should handle switching to another tab if closing active file
 - selectedFilePath.value should be kept in sync with activeFilePath.value for backward compatibility
 - Add console.log statements for debugging (file opened/closed/switched)
-  <!-- SECTION:NOTES:END -->
+      <!-- SECTION:NOTES:END -->

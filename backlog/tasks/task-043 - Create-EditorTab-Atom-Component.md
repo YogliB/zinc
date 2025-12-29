@@ -75,4 +75,4 @@ Create an atomic EditorTab component that represents a single file tab with a na
 - Active state should have distinct visual (border, background, or text color)
 - Follow atomic design: this is a pure presentational component with no internal state
 - Ensure close button stops propagation so clicking X doesn't trigger onSelect
-  <!-- SECTION:NOTES:END -->
+      <!-- SECTION:NOTES:END -->

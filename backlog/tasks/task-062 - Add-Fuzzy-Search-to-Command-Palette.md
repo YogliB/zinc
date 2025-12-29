@@ -59,4 +59,4 @@ Enhance the command palette with fuzzy search using fuse.js (already installed) 
 - Consider searching across: title, keywords, category
 - Weight title matches higher than keyword matches
 - Include matched text highlighting in future enhancement
-  <!-- SECTION:NOTES:END -->
+      <!-- SECTION:NOTES:END -->

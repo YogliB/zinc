@@ -27,4 +27,4 @@ File selection mechanism in EditorView component:
 - Current implementation handles file selection and loading through page-level logic
 - Tauri backend was missing read_file command (added during implementation)
 - File loading integration designed but not fully implemented in EditorView component
-  <!-- SECTION:DESCRIPTION:END -->
+      <!-- SECTION:DESCRIPTION:END -->

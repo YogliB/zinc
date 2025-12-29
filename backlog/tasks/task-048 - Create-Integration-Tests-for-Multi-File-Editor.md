@@ -89,4 +89,4 @@ Create comprehensive integration tests for the full multi-file editor flow, from
 - Use userEvent or fireEvent for simulating clicks
 - Reset store signals between tests using resetEditorState
 - Consider using fake timers for debounce testing
-  <!-- SECTION:NOTES:END -->
+      <!-- SECTION:NOTES:END -->

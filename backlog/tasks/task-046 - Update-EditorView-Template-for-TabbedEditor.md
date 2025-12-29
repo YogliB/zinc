@@ -76,4 +76,4 @@ Update the EditorView template to integrate the new TabbedEditor organism, repla
 - activeContent should be derived from openFiles + activeFilePath before passing to TabbedEditor
 - Consider making new props optional initially for gradual migration
 - Update the div wrapper inside code-editor panel to pass full height to TabbedEditor
-  <!-- SECTION:NOTES:END -->
+      <!-- SECTION:NOTES:END -->

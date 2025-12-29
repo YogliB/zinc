@@ -52,4 +52,4 @@ Add the Shadcn UI Tabs component to the project to enable tab-based navigation f
 - Shadcn uses Radix UI primitives which should be compatible with Preact
 - Test immediately after installation to catch any compatibility issues early
 - The tabs component follows the ui/ directory exception (no stories/tests required per AGENTS.md)
-  <!-- SECTION:NOTES:END -->
+      <!-- SECTION:NOTES:END -->
