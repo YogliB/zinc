@@ -25,13 +25,13 @@
 
 ### Signal Guidelines
 
-- **Component state**: Use `useSignal()` inside components, NEVER module-level `signal()`.
-- **Global state**: Only use module-level `signal()` for truly global app state (e.g., `isCommandPaletteOpen`, `appMode`).
-- **Controlled inputs**: Avoid controlling third-party component inputs with signals unless necessary; prefer uncontrolled when possible.
-- **Memoization**: Always memoize computed values derived from props using `useMemo()`.
-- **Callbacks**: Memoize callbacks that depend on signals or props using `useCallback()`.
-- **Dependency arrays**: Signals don't need to be in useEffect dependency arrays; add `// eslint-disable-next-line react-hooks/exhaustive-deps` when needed.
-- **Event handling**: Prevent event propagation with `event.stopPropagation()` when global listeners might conflict with component handlers.
+- **Local state**: Use `useSignal()` and `useComputed()` hooks inside components.
+- **Global state**: Use `signal()` and `computed()` outside components for shared app state.
+- **Passing signals**: Pass signals as props/context—components re-render only when accessing `.value`.
+- **JSX optimization**: Use signals directly in JSX (e.g., `{count}`) instead of accessing `.value`.
+- **Memoization**: Memoize callbacks with `useCallback()` when they depend on props.
+- **Derived state**: Use `computed()` to derive state; maintain single source of truth.
+- **Effects**: Use `effect()` for side effects outside components; return cleanup function when needed.
 
 ## Tooling
 
