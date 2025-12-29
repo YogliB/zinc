@@ -23,6 +23,16 @@
 - Each component subdirectory must include an `index.ts` or `index.tsx` file that exports the component.
 - The main directories (`atoms`, `molecules`, etc.) must have an `index.ts` or `index.tsx` file that exports all components within them.
 
+### Signal Guidelines
+
+- **Component state**: Use `useSignal()` inside components, NEVER module-level `signal()`.
+- **Global state**: Only use module-level `signal()` for truly global app state (e.g., `isCommandPaletteOpen`, `appMode`).
+- **Controlled inputs**: Avoid controlling third-party component inputs with signals unless necessary; prefer uncontrolled when possible.
+- **Memoization**: Always memoize computed values derived from props using `useMemo()`.
+- **Callbacks**: Memoize callbacks that depend on signals or props using `useCallback()`.
+- **Dependency arrays**: Signals don't need to be in useEffect dependency arrays; add `// eslint-disable-next-line react-hooks/exhaustive-deps` when needed.
+- **Event handling**: Prevent event propagation with `event.stopPropagation()` when global listeners might conflict with component handlers.
+
 ## Tooling
 
 - Use **bun** as the package manager.
