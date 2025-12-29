@@ -1,10 +1,10 @@
 ---
 id: task-063
 title: Add Keyboard Navigation to Command Palette
-status: To Do
+status: In Progress
 assignee: []
 created_date: '2025-12-29 10:28'
-updated_date: '2025-12-29 10:28'
+updated_date: '2025-12-29 10:33'
 labels:
     - enhancement
     - ux
