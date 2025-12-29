@@ -1,10 +1,10 @@
 ---
 id: task-060
 title: Define Command Registry and Actions
-status: To Do
+status: In Progress
 assignee: []
 created_date: '2025-12-29 10:27'
-updated_date: '2025-12-29 10:27'
+updated_date: '2025-12-29 10:32'
 labels:
     - enhancement
     - architecture
