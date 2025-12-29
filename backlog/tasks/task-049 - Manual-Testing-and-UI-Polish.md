@@ -4,7 +4,7 @@ title: Manual Testing and UI Polish
 status: Done
 assignee: []
 created_date: '2025-12-25 18:02'
-updated_date: '2025-12-25 18:36'
+updated_date: '2025-12-29 09:57'
 labels:
     - testing
     - manual
@@ -12,6 +12,7 @@ labels:
 dependencies:
     - task-048
 priority: medium
+ordinal: 17000
 ---
 
 ## Description

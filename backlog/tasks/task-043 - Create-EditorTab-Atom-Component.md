@@ -4,7 +4,7 @@ title: Create EditorTab Atom Component
 status: Done
 assignee: []
 created_date: '2025-12-25 18:01'
-updated_date: '2025-12-25 18:29'
+updated_date: '2025-12-29 09:57'
 labels:
     - component
     - atom
@@ -12,6 +12,7 @@ labels:
 dependencies:
     - task-042
 priority: high
+ordinal: 23000
 ---
 
 ## Description

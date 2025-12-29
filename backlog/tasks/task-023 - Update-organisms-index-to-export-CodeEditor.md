@@ -4,9 +4,10 @@ title: Update organisms index to export CodeEditor
 status: Done
 assignee: []
 created_date: '2025-12-15 21:22'
-updated_date: '2025-12-15 21:28'
+updated_date: '2025-12-29 09:57'
 labels: []
 dependencies: []
+ordinal: 38000
 ---
 
 ## Implementation Plan

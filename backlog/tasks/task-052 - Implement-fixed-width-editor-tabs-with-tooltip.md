@@ -4,13 +4,14 @@ title: Implement fixed-width editor tabs with tooltip
 status: Done
 assignee: []
 created_date: '2025-12-27 19:32'
-updated_date: '2025-12-27 19:34'
+updated_date: '2025-12-29 09:57'
 labels:
     - ui
     - enhancement
     - editor
 dependencies: []
 priority: medium
+ordinal: 15000
 ---
 
 ## Description

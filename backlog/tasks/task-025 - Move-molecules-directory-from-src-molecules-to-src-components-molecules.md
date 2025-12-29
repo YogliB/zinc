@@ -4,9 +4,10 @@ title: Move molecules directory from src/molecules to src/components/molecules
 status: Done
 assignee: []
 created_date: '2025-12-16 13:04'
-updated_date: '2025-12-16 14:06'
+updated_date: '2025-12-29 09:57'
 labels: []
 dependencies: []
+ordinal: 33000
 ---
 
 ## Description

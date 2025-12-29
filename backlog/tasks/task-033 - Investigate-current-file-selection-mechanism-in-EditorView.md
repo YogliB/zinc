@@ -4,12 +4,15 @@ title: Investigate current file selection mechanism in EditorView
 status: Done
 assignee: []
 created_date: '2025-12-21 07:56'
-updated_date: '2025-12-21 08:14'
+updated_date: '2025-12-29 09:57'
 labels: []
 dependencies: []
+ordinal: 27000
 ---
 
 ## Description
+
+<!-- SECTION:DESCRIPTION:BEGIN -->
 
 File selection mechanism in EditorView:
 
@@ -24,3 +27,4 @@ File selection mechanism in EditorView:
 - Current implementation handles file selection and loading through page-level logic
 - Tauri backend was missing read_file command (added during implementation)
 - File loading integration designed but not fully implemented in EditorView component
+  <!-- SECTION:DESCRIPTION:END -->

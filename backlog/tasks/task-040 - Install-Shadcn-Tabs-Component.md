@@ -4,13 +4,14 @@ title: Install Shadcn Tabs Component
 status: Done
 assignee: []
 created_date: '2025-12-25 18:00'
-updated_date: '2025-12-25 18:27'
+updated_date: '2025-12-29 09:57'
 labels:
     - setup
     - dependency
     - ui
 dependencies: []
 priority: high
+ordinal: 25000
 ---
 
 ## Description

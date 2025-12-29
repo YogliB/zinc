@@ -4,9 +4,10 @@ title: Move atoms directory from src/atoms to src/components/atoms
 status: Done
 assignee: []
 created_date: '2025-12-16 13:04'
-updated_date: '2025-12-16 14:06'
+updated_date: '2025-12-29 09:57'
 labels: []
 dependencies: []
+ordinal: 32000
 ---
 
 ## Description

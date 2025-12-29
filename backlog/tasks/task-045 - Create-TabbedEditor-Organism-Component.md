@@ -4,7 +4,7 @@ title: Create TabbedEditor Organism Component
 status: Done
 assignee: []
 created_date: '2025-12-25 18:01'
-updated_date: '2025-12-25 18:33'
+updated_date: '2025-12-29 09:57'
 labels:
     - component
     - organism
@@ -12,6 +12,7 @@ labels:
 dependencies:
     - task-044
 priority: high
+ordinal: 21000
 ---
 
 ## Description

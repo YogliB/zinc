@@ -4,12 +4,15 @@ title: Add tests for file opening functionality
 status: Done
 assignee: []
 created_date: '2025-12-21 07:57'
-updated_date: '2025-12-21 08:14'
+updated_date: '2025-12-29 09:57'
 labels: []
 dependencies: []
+ordinal: 30000
 ---
 
 ## Description
+
+<!-- SECTION:DESCRIPTION:BEGIN -->
 
 Added tests for file opening functionality in EditorView:
 
@@ -24,3 +27,4 @@ Added tests for file opening functionality in EditorView:
 - Used fireEvent to simulate file click interactions
 - Verified that onSelect prop receives the correct TreeNode
 - Maintained existing test structure and patterns
+  <!-- SECTION:DESCRIPTION:END -->

@@ -4,7 +4,7 @@ title: Integrate Multi-File Logic in Editor Page
 status: Done
 assignee: []
 created_date: '2025-12-25 18:02'
-updated_date: '2025-12-25 18:35'
+updated_date: '2025-12-29 09:57'
 labels:
     - integration
     - page
@@ -12,6 +12,7 @@ labels:
 dependencies:
     - task-046
 priority: high
+ordinal: 19000
 ---
 
 ## Description

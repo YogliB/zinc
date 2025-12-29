@@ -4,7 +4,7 @@ title: Extend Editor Store for Multi-File State
 status: Done
 assignee: []
 created_date: '2025-12-25 18:00'
-updated_date: '2025-12-25 18:28'
+updated_date: '2025-12-29 09:57'
 labels:
     - state
     - signals
@@ -12,6 +12,7 @@ labels:
 dependencies:
     - task-041
 priority: high
+ordinal: 24000
 ---
 
 ## Description

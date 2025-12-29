@@ -4,7 +4,7 @@ title: Update EditorView Template for TabbedEditor
 status: Done
 assignee: []
 created_date: '2025-12-25 18:01'
-updated_date: '2025-12-25 18:34'
+updated_date: '2025-12-29 09:57'
 labels:
     - component
     - template
@@ -12,6 +12,7 @@ labels:
 dependencies:
     - task-045
 priority: high
+ordinal: 20000
 ---
 
 ## Description

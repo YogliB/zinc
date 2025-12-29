@@ -4,12 +4,13 @@ title: Update import paths in affected files after moving atomic directories
 status: Done
 assignee: []
 created_date: '2025-12-16 13:05'
-updated_date: '2025-12-16 14:06'
+updated_date: '2025-12-29 09:57'
 labels: []
 dependencies:
     - task-024
     - task-025
     - task-026
+ordinal: 35000
 ---
 
 ## Description

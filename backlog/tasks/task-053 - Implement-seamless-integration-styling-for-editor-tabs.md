@@ -4,7 +4,7 @@ title: Implement seamless integration styling for editor tabs
 status: Done
 assignee: []
 created_date: '2025-12-27 19:55'
-updated_date: '2025-12-27 19:56'
+updated_date: '2025-12-29 09:57'
 labels:
     - ui
     - styling
@@ -12,6 +12,7 @@ labels:
     - editor
 dependencies: []
 priority: medium
+ordinal: 14000
 ---
 
 ## Description

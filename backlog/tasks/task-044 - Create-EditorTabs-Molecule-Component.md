@@ -4,7 +4,7 @@ title: Create EditorTabs Molecule Component
 status: Done
 assignee: []
 created_date: '2025-12-25 18:01'
-updated_date: '2025-12-25 18:32'
+updated_date: '2025-12-29 09:57'
 labels:
     - component
     - molecule
@@ -12,6 +12,7 @@ labels:
 dependencies:
     - task-043
 priority: high
+ordinal: 22000
 ---
 
 ## Description
