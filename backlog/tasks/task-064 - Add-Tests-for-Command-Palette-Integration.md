@@ -1,7 +1,7 @@
 ---
 id: task-064
 title: Add Tests for Command Palette Integration
-status: In Progress
+status: Done
 assignee: []
 created_date: '2025-12-29 10:28'
 updated_date: '2025-12-29 10:34'
