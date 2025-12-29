@@ -1,10 +1,10 @@
 ---
 id: task-059
 title: Add Global Keyboard Shortcut Handler
-status: In Progress
+status: Done
 assignee: []
 created_date: '2025-12-29 10:27'
-updated_date: '2025-12-29 10:30'
+updated_date: '2025-12-29 10:32'
 labels:
     - enhancement
     - ux
