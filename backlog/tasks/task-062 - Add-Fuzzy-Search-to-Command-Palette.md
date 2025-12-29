@@ -1,7 +1,7 @@
 ---
 id: task-062
 title: Add Fuzzy Search to Command Palette
-status: In Progress
+status: Done
 assignee: []
 created_date: '2025-12-29 10:28'
 updated_date: '2025-12-29 10:33'
